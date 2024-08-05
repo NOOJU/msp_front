@@ -1,20 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // react-router-dom에서 Router, Route, Routes를 임포트
-import Home from './routes/Home'; // Home 컴포넌트를 임포트
-import Login from './routes/Login/Login'; // Login 컴포넌트를 임포트
-import Apply from './routes/Apply/Apply'; // Apply 컴포넌트를 임포트
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './routes/Home';
+import Apply from './routes/Apply';
 
-// App 컴포넌트 정의
-const App: React.FC = () => {
-    return (
-        <Router> {/* Router 컴포넌트로 애플리케이션을 감쌉니다 */}
-            <Routes> {/* Routes 컴포넌트로 라우트를 정의합니다 */}
-                <Route path="/" element={<Login />} /> {/* 기본 경로로 Login 컴포넌트를 렌더링합니다 */}
-                <Route path="/home" element={<Home />} /> {/* /home 경로로 Home 컴포넌트를 렌더링합니다 */}
-                <Route path="/apply" element={<Apply />} /> {/* /apply 경로로 Apply 컴포넌트를 렌더링합니다 */}
-            </Routes>
-        </Router>
-    );
-};
+const App: React.FC = () => (
+    <Router>
+        <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/apply" element={<Apply />} />
+        </Routes>
+    </Router>
+);
 
-export default App; // App 컴포넌트를 내보냅니다
+export default App;

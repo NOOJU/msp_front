@@ -14,18 +14,15 @@ const Apply: React.FC = () => {
         additionalRequest: '',
     });
 
-    // 입력 값 변경 처리 함수
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
 
         if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
-            // 체크박스일 경우 체크 여부를 상태로 설정
             setFormData({
                 ...formData,
                 [name]: e.target.checked,
             });
         } else {
-            // 입력 값 변경을 상태로 설정
             setFormData({
                 ...formData,
                 [name]: value,
@@ -34,7 +31,7 @@ const Apply: React.FC = () => {
             if (name === 'startDate') {
                 const startDate = new Date(value);
                 const endDate = new Date(startDate);
-                endDate.setDate(startDate.getDate() + 30); // 종료일을 시작일로부터 30일 후로 설정
+                endDate.setDate(startDate.getDate() + 30);
                 setFormData((prevState) => ({
                     ...prevState,
                     startDate: value,
@@ -44,21 +41,15 @@ const Apply: React.FC = () => {
         }
     };
 
-    // 폼 제출 처리 함수
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            // 백엔드로 폼 데이터 전송
-            const response = await axios.post('http://localhost:8000/vm-apply', formData, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` // 로컬 스토리지에서 토큰을 가져와 헤더에 포함
-                }
-            });
-            console.log(response.data); // 응답 데이터 콘솔 출력
-            alert('신청이 성공적으로 제출되었습니다.'); // 사용자에게 알림
+            const response = await axios.post('http://your-backend-api-url/vm-apply', formData);
+            console.log(response.data);
+            alert('신청이 성공적으로 제출되었습니다.');
         } catch (error) {
-            console.error(error); // 에러 콘솔 출력
-            alert('신청 제출에 실패했습니다.'); // 사용자에게 알림
+            console.error(error);
+            alert('신청 제출에 실패했습니다.');
         }
     };
 
@@ -116,4 +107,4 @@ const Apply: React.FC = () => {
     );
 };
 
-export default Apply; // Apply 컴포넌트를 내보냅니다
+export default Apply;
