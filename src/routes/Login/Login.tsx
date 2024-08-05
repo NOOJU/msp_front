@@ -1,9 +1,8 @@
-import React, { useState } from 'react'; // React와 useState를 import
-import axios from 'axios'; // axios를 import
-import { useNavigate } from 'react-router-dom'; // useNavigate를 import
-import styled from 'styled-components'; // styled-components를 import
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
-// 스타일 컴포넌트
 const Container = styled.div`
     max-width: 400px;
     margin: 2em auto;
@@ -56,55 +55,77 @@ const ErrorMessage = styled.div`
     margin-bottom: 1em;
 `;
 
-// Login 컴포넌트 정의
 const Login: React.FC = () => {
-    const [phoneNumber, setPhoneNumber] = useState(''); // phoneNumber 상태를 정의
-    const [verificationCode, setVerificationCode] = useState(''); // verificationCode 상태를 정의
-    const [isCodeSent, setIsCodeSent] = useState(false); // 인증번호 전송 여부를 나타내는 상태를 정의
-    const [error, setError] = useState(''); // 에러 메시지를 나타내는 상태를 정의
-    const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅 사용
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [verificationCode, setVerificationCode] = useState('');
+    const [isCodeSent, setIsCodeSent] = useState(false);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    // 휴대폰 번호 유효성 검사 함수
     const validatePhoneNumber = (number: string) => {
-        const phoneRegex = /^01[0-9]{8,9}$/; // 한국 휴대폰 번호 정규식
-        return phoneRegex.test(number); // 정규식을 사용하여 번호 유효성 검사
+        const phoneRegex = /^01[0-9]{8,9}$/;
+        return phoneRegex.test(number);
     };
 
-    // 인증번호 전송 함수
     const handleSendCode = async () => {
-        if (!validatePhoneNumber(phoneNumber)) { // 휴대폰 번호 유효성 검사
-            setError('유효한 휴대폰 번호를 입력하세요.'); // 유효하지 않으면 에러 메시지 설정
-            return; // 함수 종료
+        if (!validatePhoneNumber(phoneNumber)) {
+            setError('유효한 휴대폰 번호를 입력하세요.');
+            return;
         }
 
-        setError(''); // 에러 메시지 초기화
+        setError('');
 
         try {
-            // 인증번호 전송 API 호출
-            const response = await axios.post('http://your-backend-api-url/send-code', { phoneNumber });
-            console.log(response.data); // 응답 데이터 콘솔 출력
-            setIsCodeSent(true); // 인증번호 전송 여부 상태 설정
-            alert('인증번호가 전송되었습니다.'); // 사용자에게 알림
+            const response = await axios.post('http://127.0.0.1:8000/send_sms/', { phone_number: phoneNumber });
+            console.log(response.data);
+            setIsCodeSent(true);
+            alert('인증번호가 전송되었습니다.');
         } catch (error) {
-            console.error(error); // 에러 콘솔 출력
-            alert('인증번호 전송에 실패했습니다.'); // 사용자에게 알림
+            console.error('Error details:', error);
+            if (axios.isAxiosError(error)) {
+                console.error('Axios error:', error.message);
+                if (error.response) {
+                    console.error('Response data:', error.response.data);
+                    console.error('Response status:', error.response.status);
+                    console.error('Response headers:', error.response.headers);
+                } else if (error.request) {
+                    console.error('Request:', error.request);
+                } else {
+                    console.error('Error message:', error.message);
+                }
+            } else {
+                console.error('Unexpected error:', error);
+            }
+            alert('인증번호 전송에 실패했습니다.');
         }
     };
 
-    // 인증번호 검증 함수
     const handleVerifyCode = async () => {
         try {
-            // 인증번호 검증 API 호출
-            const response = await axios.post('http://your-backend-api-url/verify-code', { phoneNumber, verificationCode });
-            if (response.data.success) { // 인증 성공 여부 확인
-                alert('인증에 성공했습니다.'); // 사용자에게 알림
-                navigate('/home'); // 홈으로 이동
+            const response = await axios.post('http://127.0.0.1:8000/verify_sms/', { phone_number: phoneNumber, auth_code: verificationCode });
+            if (response.data.token) {
+                alert('인증에 성공했습니다.');
+                navigate('/home');
             } else {
-                alert('인증번호가 일치하지 않습니다.'); // 사용자에게 알림
+                alert('인증번호가 일치하지 않습니다.');
             }
         } catch (error) {
-            console.error(error); // 에러 콘솔 출력
-            alert('인증번호 검증에 실패했습니다.'); // 사용자에게 알림
+            console.error('Error details:', error);
+            if (axios.isAxiosError(error)) {
+                console.error('Axios error:', error.message);
+                if (error.response) {
+                    console.error('Response data:', error.response.data);
+                    console.error('Response status:', error.response.status);
+                    console.error('Response headers:', error.response.headers);
+                } else if (error.request) {
+                    console.error('Request:', error.request);
+                } else {
+                    console.error('Error message:', error.message);
+                }
+            } else {
+                console.error('Unexpected error:', error);
+            }
+            alert('인증번호 검증에 실패했습니다.');
         }
     };
 
@@ -118,9 +139,8 @@ const Login: React.FC = () => {
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder="휴대폰 번호를 입력하세요"
-                    disabled={isCodeSent} // 인증번호 전송 후 입력 비활성화
+                    disabled={isCodeSent}
                 />
-                {/*에러 메시지 표시*/}
                 {error && <ErrorMessage>{error}</ErrorMessage>}
             </FormGroup>
             {isCodeSent && (
