@@ -1,7 +1,7 @@
-import React, { useState } from 'react'; // React와 useState를 import
-import axios from 'axios'; // axios를 import
-import { useNavigate } from 'react-router-dom'; // useNavigate를 import
-import styled from 'styled-components'; // styled-components를 import
+import React, { useState } from 'react'; // React와 useState를 임포트
+import axios from 'axios'; // axios를 임포트
+import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
+import styled from 'styled-components'; // styled-components를 임포트
 
 // 스타일 컴포넌트
 const Container = styled.div`
@@ -81,7 +81,7 @@ const Login: React.FC = () => {
 
         try {
             // 인증번호 전송 API 호출
-            const response = await axios.post('http://your-backend-api-url/send-code', { phoneNumber });
+            const response = await axios.post('http://localhost:8000/send_sms/', { phone_number: phoneNumber });
             console.log(response.data); // 응답 데이터 콘솔 출력
             setIsCodeSent(true); // 인증번호 전송 여부 상태 설정
             alert('인증번호가 전송되었습니다.'); // 사용자에게 알림
@@ -95,9 +95,10 @@ const Login: React.FC = () => {
     const handleVerifyCode = async () => {
         try {
             // 인증번호 검증 API 호출
-            const response = await axios.post('http://your-backend-api-url/verify-code', { phoneNumber, verificationCode });
-            if (response.data.success) { // 인증 성공 여부 확인
+            const response = await axios.post('http://localhost:8000/verify_sms/', { phone_number: phoneNumber, auth_code: verificationCode });
+            if (response.data.token) { // 인증 성공 여부 확인
                 alert('인증에 성공했습니다.'); // 사용자에게 알림
+                localStorage.setItem('token', response.data.token); // 토큰을 로컬 스토리지에 저장
                 navigate('/home'); // 홈으로 이동
             } else {
                 alert('인증번호가 일치하지 않습니다.'); // 사용자에게 알림
@@ -109,36 +110,36 @@ const Login: React.FC = () => {
     };
 
     return (
-        <Container>
-            <Title>로그인</Title>
-            <FormGroup>
-                <Label>휴대폰 번호</Label>
+        <Container> {/* 컨테이너 스타일 적용 */}
+            <Title>로그인</Title> {/* 제목 스타일 적용 */}
+            <FormGroup> {/* 폼 그룹 스타일 적용 */}
+                <Label>휴대폰 번호</Label> {/* 라벨 스타일 적용 */}
                 <Input
                     type="text"
                     value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    onChange={(e) => setPhoneNumber(e.target.value)} // 입력 값 변경 시 상태 업데이트
                     placeholder="휴대폰 번호를 입력하세요"
                     disabled={isCodeSent} // 인증번호 전송 후 입력 비활성화
                 />
-                {/*에러 메시지 표시*/}
+                {/* 에러 메시지 표시 */}
                 {error && <ErrorMessage>{error}</ErrorMessage>}
             </FormGroup>
-            {isCodeSent && (
+            {isCodeSent && ( // 인증번호가 전송된 경우
                 <FormGroup>
                     <Label>인증번호</Label>
                     <Input
                         type="text"
                         value={verificationCode}
-                        onChange={(e) => setVerificationCode(e.target.value)}
+                        onChange={(e) => setVerificationCode(e.target.value)} // 입력 값 변경 시 상태 업데이트
                         placeholder="인증번호를 입력하세요"
                     />
                 </FormGroup>
             )}
             <Button onClick={isCodeSent ? handleVerifyCode : handleSendCode}>
-                {isCodeSent ? '인증하기' : '본인인증하기'}
+                {isCodeSent ? '인증하기' : '본인인증하기'} {/* 버튼 텍스트 조건에 따라 변경 */}
             </Button>
         </Container>
     );
 };
 
-export default Login;
+export default Login; // Login 컴포넌트를 내보냅니다
