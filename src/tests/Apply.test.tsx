@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import { BrowserRouter as Router } from 'react-router-dom';
-import Apply from './Apply';
+import Apply from '../routes/Apply/Apply';
 
 let container: HTMLElement;
 

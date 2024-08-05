@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { act } from 'react-dom/test-utils';
 import { BrowserRouter as Router } from 'react-router-dom';
-import Login from './Login';
+import Login from '../routes/Login/Login';
 
 let container: HTMLElement;
 
