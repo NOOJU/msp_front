@@ -1,11 +1,77 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import axios from 'axios';
+
+const Container = styled.div`
+    max-width: 400px;
+    margin: 2em auto;
+    padding: 2em;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+const Title = styled.h1`
+    text-align: center;
+    color: #343a40;
+`;
+
+const FormGroup = styled.div`
+    margin-bottom: 1em;
+`;
+
+const Label = styled.label`
+    display: block;
+    margin-bottom: 0.5em;
+    color: #495057;
+`;
+
+const Input = styled.input`
+    width: 100%;
+    padding: 0.5em;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+`;
+
+const TextArea = styled.textarea`
+    width: 100%;
+    padding: 0.5em;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+`;
+
+const Select = styled.select`
+    width: 100%;
+    padding: 0.5em;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+`;
+
+const CheckBox = styled.input`
+    margin-right: 0.5em;
+`;
+
+const Button = styled.button`
+    width: 100%;
+    padding: 0.75em;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #0056b3;
+    }
+`;
 
 const Apply: React.FC = () => {
     const [formData, setFormData] = useState({
         usage: '',
         startDate: '',
         endDate: '',
+        vmName: '',
         spec: '1',
         os: 'ubuntu',
         volume: '',
@@ -63,57 +129,61 @@ const Apply: React.FC = () => {
     };
 
     return (
-        <div className="container">
-            <h1>VM 신청</h1>
+        <Container>
+            <Title>VM 신청</Title>
             <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>사용 용도</label>
-                    <input type="text" name="usage" className="form-control" value={formData.usage} onChange={handleChange} required />
-                </div>
-                <div className="form-group">
-                    <label>시작일</label>
-                    <input type="date" name="startDate" className="form-control" value={formData.startDate} onChange={handleChange} required />
-                </div>
-                <div className="form-group">
-                    <label>종료일</label>
-                    <input type="date" name="endDate" className="form-control" value={formData.endDate} readOnly />
-                </div>
-                <div className="form-group">
-                    <label>스펙</label>
-                    <select name="spec" className="form-control" value={formData.spec} onChange={handleChange} required>
+                <FormGroup>
+                    <Label>사용 용도</Label>
+                    <Input type="text" name="usage" value={formData.usage} onChange={handleChange} required />
+                </FormGroup>
+                <FormGroup>
+                    <Label>시작일</Label>
+                    <Input type="date" name="startDate" value={formData.startDate} onChange={handleChange} required />
+                </FormGroup>
+                <FormGroup>
+                    <Label>종료일</Label>
+                    <Input type="date" name="endDate" value={formData.endDate} readOnly />
+                </FormGroup>
+                <FormGroup>
+                    <Label>VM 이름</Label>
+                    <Input type="text" name="vmName" value={formData.usage} onChange={handleChange} required />
+                </FormGroup>
+                <FormGroup>
+                    <Label>스펙</Label>
+                    <Select name="spec" value={formData.spec} onChange={handleChange} required>
                         <option value="1">2Core 4GB</option>
                         <option value="2">4Core 4GB</option>
                         <option value="3">4Core 8GB</option>
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label>운영 체제 (OS)</label>
-                    <select name="os" className="form-control" value={formData.os} onChange={handleChange} required>
+                    </Select>
+                </FormGroup>
+                <FormGroup>
+                    <Label>운영 체제 (OS)</Label>
+                    <Select name="os" value={formData.os} onChange={handleChange} required>
                         <option value="ubuntu">Ubuntu 20.04</option>
                         <option value="ubuntu">Ubuntu 22.04</option>
                         <option value="centos">CentOS 8</option>
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label>볼륨</label>
-                    <input type="text" name="volume" className="form-control" value={formData.volume} onChange={handleChange} required />
-                </div>
-                <div className="form-group">
-                    <label>시큐리티 그룹</label>
-                    <input type="text" name="securityGroup" className="form-control" value={formData.securityGroup} onChange={handleChange} required />
-                </div>
-                <div className="form-group">
-                    <label>기타 요청 사항</label>
-                    <textarea name="additionalRequest" className="form-control" value={formData.additionalRequest} onChange={handleChange} />
-                </div>
-                <div className="form-group form-check">
-                    <input type="checkbox" name="agreement" className="form-check-input" checked={formData.agreement} onChange={handleChange} required />
-                    <label className="form-check-label">동의 여부</label>
-                </div>
-                <button type="submit" className="btn btn-primary">제출</button>
+                    </Select>
+                </FormGroup>
+                <FormGroup>
+                    <Label>볼륨</Label>
+                    <Input type="text" name="volume" value={formData.volume} onChange={handleChange} required />
+                </FormGroup>
+                <FormGroup>
+                    <Label>시큐리티 그룹</Label>
+                    <Input type="text" name="securityGroup" value={formData.securityGroup} onChange={handleChange} required />
+                </FormGroup>
+                <FormGroup>
+                    <Label>기타 요청 사항</Label>
+                    <TextArea name="additionalRequest" value={formData.additionalRequest} onChange={handleChange} />
+                </FormGroup>
+                <FormGroup>
+                    <CheckBox type="checkbox" name="agreement" checked={formData.agreement} onChange={handleChange} required />
+                    <Label>동의 여부</Label>
+                </FormGroup>
+                <Button type="submit">제출</Button>
             </form>
-        </div>
+        </Container>
     );
 };
 
-export default Apply; // Apply 컴포넌트를 내보냅니다
+export default Apply;
