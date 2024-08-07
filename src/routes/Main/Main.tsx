@@ -46,6 +46,9 @@ const Main: React.FC = () => (
         <ButtonLink to="/userinfo">
             <Button>사용자 정보</Button>
         </ButtonLink>
+        <ButtonLink to="/vmlist">
+            <Button>Virtual Machine</Button>
+        </ButtonLink>
     </Container>
 );
 
