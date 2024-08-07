@@ -7,6 +7,7 @@ import Login from './routes/Login/Login'; // Login 컴포넌트를 임포트
 import Apply from './routes/Apply/Apply'; // Apply 컴포넌트를 임포트
 import Signup from './routes/Signup/Signup'; // Signup 컴포넌트를 임포트
 import Main from './routes/Main/Main'; // Main 컴포넌트를 임포트
+import VMListPage from './routes/vm/VMList'; // VMListPage 컴포넌트를 임포트
 
 // App 컴포넌트 정의
 const App: React.FC = () => {
@@ -18,6 +19,7 @@ const App: React.FC = () => {
                 <Route path="/apply" element={<Apply />} /> {/* /apply 경로로 Apply 컴포넌트를 렌더링합니다 */}
                 <Route path="/signup" element={<Signup />} /> {/* /signup 경로로 Signup 컴포넌트를 렌더링합니다 */}
                 <Route path="/main" element={<Main />} /> {/* /main 경로로 Main 컴포넌트를 렌더링합니다 */}
+                <Route path="/vm" element={<VMListPage />} /> {/* /vm 경로로 VMListPage 컴포넌트를 렌더링합니다 */}
             </Routes>
         </Router>
     );

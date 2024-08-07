@@ -1,12 +1,12 @@
 // src/routes/Main/Main.tsx
 
-import React, { useEffect, useState } from 'react'; // React, useState, useEffect를 임포트
+import React, { useState } from 'react'; // React와 useState를 임포트
 import axios from 'axios'; // axios를 임포트
 import styled from 'styled-components'; // styled-components를 임포트
 
 // 스타일 컴포넌트 정의
 const Container = styled.div`
-    max-width: 400px;
+    max-width: 800px;
     margin: 2em auto;
     padding: 2em;
     background-color: #f8f9fa;
@@ -28,6 +28,7 @@ const Button = styled.button`
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
+    margin-bottom: 1em;
 
     &:hover {
         background-color: #0056b3;
@@ -39,7 +40,6 @@ const UserInfo = styled.div`
     text-align: left;
 `;
 
-// Main 컴포넌트 정의
 const Main: React.FC = () => {
     const [userInfo, setUserInfo] = useState<any>(null); // userInfo 상태 정의, 초기값은 null
 
@@ -70,6 +70,7 @@ const Main: React.FC = () => {
                     <p>이메일: {userInfo.email}</p>
                 </UserInfo>
             )}
+            <Button onClick={() => window.location.href = '/vm'}>Virtual Machine</Button> {/* Virtual Machine 버튼 */}
         </Container>
     );
 };
