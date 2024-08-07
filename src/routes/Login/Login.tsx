@@ -99,7 +99,7 @@ const Login: React.FC = () => {
             if (response.data.token) { // 인증 성공 여부 확인
                 alert('인증에 성공했습니다.'); // 사용자에게 알림
                 localStorage.setItem('token', response.data.token); // 토큰을 로컬 스토리지에 저장
-                navigate('/home'); // 홈으로 이동
+                navigate('/main'); // 인증 성공 시 메인 페이지로 이동
             } else {
                 alert('인증번호가 일치하지 않습니다.'); // 사용자에게 알림
             }
