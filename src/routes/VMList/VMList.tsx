@@ -67,25 +67,13 @@ const VMList: React.FC = () => {
             <Table>
                 <thead>
                 <tr>
-                    <Th>VM 이름</Th>
-                    <Th>상태</Th>
-                    <Th>스펙</Th>
-                    <Th>운영 체제</Th>
-                    <Th>Public IP</Th> {/* Public IP 열 추가 */}
-                    <Th>시작일</Th>
-                    <Th>종료일</Th>
+                    <Th>VM 이름</Th><Th>상태</Th><Th>스펙</Th><Th>운영 체제</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th>
                 </tr>
                 </thead>
                 <tbody>
                 {vmList.map((vm) => (
                     <tr key={vm.id}>
-                        <Td>{vm.name}</Td>
-                        <Td>{vm.status}</Td>
-                        <Td>{vm.spec}</Td>
-                        <Td>{vm.os}</Td>
-                        <Td>{vm.publicIp}</Td> {/* Public IP 데이터 표시 */}
-                        <Td>{vm.startDate}</Td>
-                        <Td>{vm.endDate}</Td>
+                        <Td>{vm.name}</Td><Td>{vm.status}</Td><Td>{vm.spec}</Td><Td>{vm.os}</Td><Td>{vm.publicIp}</Td><Td>{vm.startDate}</Td><Td>{vm.endDate}</Td>
                     </tr>
                 ))}
                 </tbody>

@@ -1,14 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import axios from 'axios';
+import { MemoryRouter } from 'react-router-dom';
 import VMList from './VMList';
 
-// axios 모킹
+// axios 모듈을 모킹합니다.
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-// 모킹 데이터
+// 모킹 데이터 설정
 const mockData = [
     {
         id: 1,
@@ -32,7 +33,7 @@ const mockData = [
     }
 ];
 
-describe('VMList', () => {
+describe('VMList 컴포넌트', () => {
     // 각 테스트 전에 axios 모킹 설정
     beforeEach(() => {
         mockedAxios.get.mockResolvedValue({ data: mockData });
@@ -44,12 +45,16 @@ describe('VMList', () => {
     });
 
     it('VMList 컴포넌트를 렌더링하고 VM 데이터를 표시해야 한다', async () => {
-        render(<VMList />);
+        render(
+            <MemoryRouter>
+                <VMList />
+            </MemoryRouter>
+        );
 
-        // 제목이 렌더링되는지 확인
+        // 제목이 렌더링되는지 확인합니다.
         expect(screen.getByText('Virtual Machine 목록')).toBeInTheDocument();
 
-        // 개별적으로 VM 데이터가 표시되는지 확인
+        // VM 데이터가 개별적으로 표시되는지 확인합니다.
         expect(await screen.findByText('VM1')).toBeInTheDocument();
         expect(await screen.findByText('신청')).toBeInTheDocument();
         expect(await screen.findByText('2Core 4GB')).toBeInTheDocument();
@@ -70,8 +75,13 @@ describe('VMList', () => {
     it('API 호출이 실패할 때 에러 메시지를 표시해야 한다', async () => {
         mockedAxios.get.mockRejectedValueOnce(new Error('API call failed'));
 
-        render(<VMList />);
+        render(
+            <MemoryRouter>
+                <VMList />
+            </MemoryRouter>
+        );
 
+        // 에러 메시지가 표시되는지 확인합니다.
         expect(await screen.findByText('VM 목록을 가져오는데 실패했습니다.')).toBeInTheDocument();
     });
 });
