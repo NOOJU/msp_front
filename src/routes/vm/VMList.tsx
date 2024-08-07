@@ -1,10 +1,8 @@
-// src/routes/vm/VMList.tsx
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
-import React, { useEffect, useState } from 'react'; // React, useState, useEffect를 임포트
-import axios from 'axios'; // axios를 임포트
-import styled from 'styled-components'; // styled-components를 임포트
-
-// 스타일 컴포넌트 정의
 const Container = styled.div`
     max-width: 800px;
     margin: 2em auto;
@@ -48,36 +46,41 @@ const VMItem = styled.div`
 `;
 
 const VMListPage: React.FC = () => {
-    const [vmList, setVmList] = useState<any[]>([]); // vmList 상태 정의, 초기값은 빈 배열
+    const [vmList, setVmList] = useState<any[]>([]);
+    const navigate = useNavigate();
 
-    // VM 목록을 가져오는 함수 정의
     const handleGetVMList = async () => {
         try {
-            const token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰 가져오기
+            const token = localStorage.getItem('token');
             const response = await axios.get('http://localhost:8000/vm-list', {
                 headers: {
-                    Authorization: `Bearer ${token}` // 토큰을 헤더에 포함하여 API 호출
+                    Authorization: `Bearer ${token}`
                 }
             });
-            setVmList(response.data); // 가져온 VM 목록을 상태에 저장
+            console.log('Response:', response); // 응답 객체 출력
+            if (response && response.data) {
+                console.log('Data:', response.data); // 데이터 출력
+                setVmList(response.data);
+            } else {
+                console.error('No data found in response');
+            }
         } catch (error) {
-            console.error(error); // 에러 콘솔 출력
-            alert('VM 목록을 가져오는 데 실패했습니다.'); // 사용자에게 알림
+            console.error('Error:', error);
+            alert('VM 목록을 가져오는 데 실패했습니다.');
         }
     };
 
-    // 페이지 로드 시 VM 목록을 자동으로 가져오기 위한 useEffect 훅
     useEffect(() => {
-        handleGetVMList(); // 페이지 로드 시 handleGetVMList 함수 호출
+        handleGetVMList();
     }, []);
 
     return (
         <Container>
-            <Title>VM 목록</Title> {/* VM 목록 제목 */}
-            <Button onClick={() => window.location.href = '/apply'}>VM 신청</Button> {/* VM 신청 버튼 */}
-            <Button onClick={handleGetVMList}>VM 목록 새로고침</Button> {/* VM 목록 새로고침 버튼 */}
+            <Title>VM 목록</Title> {/* 페이지 제목 */}
+            <Button onClick={() => navigate('/apply')}>VM 신청</Button> {/* VM 신청 페이지로 이동하는 버튼 */}
+            <Button onClick={handleGetVMList}>VM 목록 새로고침</Button> {/* VM 목록을 새로고침하는 버튼 */}
             <VMList>
-                {vmList.map(vm => ( // vmList를 순회하며 VM 정보를 출력
+                {vmList.map(vm => (
                     <VMItem key={vm.id}>
                         <p>VM 이름: {vm.vmName}</p>
                         <p>VM 상태: {vm.status}</p>
@@ -93,4 +96,4 @@ const VMListPage: React.FC = () => {
     );
 };
 
-export default VMListPage; // VMListPage 컴포넌트 내보내기
+export default VMListPage;
