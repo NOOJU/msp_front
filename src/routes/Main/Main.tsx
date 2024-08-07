@@ -40,19 +40,16 @@ const Button = styled.button`
     }
 `;
 
-const Home: React.FC = () => (
+const Main: React.FC = () => (
     <Container>
-        <Title>가상머신 사용 신청 사이트</Title>
-        <ButtonLink to="/apply">
-            <Button>신청</Button>
+        <Title>메인 페이지</Title>
+        <ButtonLink to="/userinfo">
+            <Button>사용자 정보</Button>
         </ButtonLink>
-        <ButtonLink to="/login">
-            <Button>로그인</Button>
-        </ButtonLink>
-        <ButtonLink to="/signup">
-            <Button>회원가입</Button>
+        <ButtonLink to="/vmlist">
+            <Button>Virtual Machine</Button>
         </ButtonLink>
     </Container>
 );
 
-export default Home;
+export default Main;

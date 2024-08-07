@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import axios from 'axios';
 import { MemoryRouter } from 'react-router-dom';
-import Login from '../routes/Login/Login';
+import Login from './Login';
 
 // axios 모듈을 모킹합니다.
 jest.mock('axios');
