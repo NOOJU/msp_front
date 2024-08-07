@@ -1,9 +1,11 @@
+// src/routes/Login/Login.tsx
+
 import React, { useState } from 'react'; // React와 useState를 임포트
 import axios from 'axios'; // axios를 임포트
 import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
 import styled from 'styled-components'; // styled-components를 임포트
 
-// 스타일 컴포넌트
+// 스타일 컴포넌트 정의
 const Container = styled.div`
     max-width: 400px;
     margin: 2em auto;
@@ -99,7 +101,7 @@ const Login: React.FC = () => {
             if (response.data.token) { // 인증 성공 여부 확인
                 alert('인증에 성공했습니다.'); // 사용자에게 알림
                 localStorage.setItem('token', response.data.token); // 토큰을 로컬 스토리지에 저장
-                navigate('/home'); // 홈으로 이동
+                navigate('/main'); // 메인 페이지로 이동
             } else {
                 alert('인증번호가 일치하지 않습니다.'); // 사용자에게 알림
             }
