@@ -67,7 +67,7 @@ const VMList: React.FC = () => {
             <Table>
                 <thead>
                 <tr>
-                    <Th>VM 이름</Th><Th>상태</Th><Th>스펙</Th><Th>운영 체제</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th>
+                    <Th>VM 이름</Th><Th>상태</Th><Th>유형</Th><Th>이미지</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th>
                 </tr>
                 </thead>
                 <tbody>
