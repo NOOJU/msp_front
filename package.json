@@ -8,6 +8,7 @@
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.7.3",
     "bootstrap": "^5.3.3",
+    "dayjs": "^1.11.12",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
@@ -40,6 +41,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-env": "^7.25.3",
     "@babel/preset-react": "^7.24.7",
     "@testing-library/jest-dom": "^6.4.8",
