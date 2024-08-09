@@ -38,6 +38,7 @@ const Select = styled.select`
     padding: 0.5em;
     border: 1px solid #ced4da;
     border-radius: 4px;
+    color: ${props => (props.value === "" ? '#6c757d' : 'inherit')};
 `;
 
 const TextArea = styled.textarea`
@@ -45,10 +46,6 @@ const TextArea = styled.textarea`
     padding: 0.5em;
     border: 1px solid #ced4da;
     border-radius: 4px;
-`;
-
-const CheckBox = styled.input`
-    margin-right: 0.5em;
 `;
 
 const Button = styled.button`
@@ -64,18 +61,38 @@ const Button = styled.button`
     &:hover {
         background-color: #0056b3;
     }
+
+    &:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+    }
+`;
+
+const CheckBox = styled.input`
+    margin-right: 0.5em;
+    vertical-align: middle;
+`;
+
+const AgreementText = styled.div`
+    margin-bottom: 1em;
+    font-size: 0.85em;
+    line-height: 1.5;
+    color: #495057;
+    text-align: left;
 `;
 
 const Apply: React.FC = () => {
     const [formData, setFormData] = useState({
         vmName: '',
-        image: 'ubuntu',
-        instanceType: '1',
+        image: '',
+        instanceType: '',
         volume: '',
         securityGroup: '',
         usage: '',
         additionalRequest: '',
     });
+
+    const [agree, setAgree] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -85,8 +102,16 @@ const Apply: React.FC = () => {
         }));
     };
 
+    const handleAgree = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setAgree(e.target.checked);
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!agree) {
+            alert('가상 머신 사용에 대한 모든 조건에 동의해야 합니다.');
+            return;
+        }
         try {
             const response = await axios.post('http://localhost:8000/vm-apply', formData, {
                 headers: {
@@ -111,17 +136,19 @@ const Apply: React.FC = () => {
                 <FormGroup>
                     <Label>이미지</Label>
                     <Select name="image" value={formData.image} onChange={handleChange} required>
-                        <option value="ubuntu">Ubuntu 20.04</option>
-                        <option value="ubuntu">Ubuntu 22.04</option>
-                        <option value="centos">CentOS 8</option>
+                        <option value="" disabled>옵션을 선택해 주세요</option>
+                        <option value="ubuntu-20.04">Ubuntu 20.04</option>
+                        <option value="ubuntu-22.04">Ubuntu 22.04</option>
+                        <option value="centos-8">CentOS 8</option>
                     </Select>
                 </FormGroup>
                 <FormGroup>
                     <Label>인스턴스 유형</Label>
                     <Select name="instanceType" value={formData.instanceType} onChange={handleChange} required>
-                        <option value="1">2Core 4GB</option>
-                        <option value="2">4Core 4GB</option>
-                        <option value="3">4Core 8GB</option>
+                        <option value="" disabled>옵션을 선택해 주세요</option>
+                        <option value="2core-4gb">2Core 4GB</option>
+                        <option value="4core-8gb">4Core 8GB</option>
+                        <option value="4core-16gb">4Core 16GB</option>
                     </Select>
                 </FormGroup>
                 <FormGroup>
@@ -140,7 +167,26 @@ const Apply: React.FC = () => {
                     <Label>기타 요청 사항</Label>
                     <TextArea name="additionalRequest" value={formData.additionalRequest} onChange={handleChange} />
                 </FormGroup>
-                <Button type="submit">제출</Button>
+                <AgreementText>
+                    본 가상 머신 서비스는 삼육대학교 예산을 통해 제공되는 소중한 자산입니다. 사용자는 가상 머신을 목적에 부합하는 용도로만 사용하기로 동의합니다.<br />
+                    가상 머신을 사용하는 동안, 다음과 같은 악의적인 용도로 사용하지 않기로 동의합니다.
+                    <ul>
+                        <li>무단으로 타인의 데이터에 접근하거나 유출하기</li>
+                        <li>해킹, 바이러스 배포, 또는 기타 사이버 공격에 관여하기</li>
+                        <li>불법적인 콘텐츠의 생성, 저장, 또는 배포하기</li>
+                    </ul>
+                    가상 머신을 사용하여 다음과 같은 개인적 이득을 취하는 용도로 사용하지 않기로 동의합니다.
+                    <ul>
+                        <li>상업적인 활동 또는 광고에 사용하기</li>
+                    </ul>
+                    가상 머신을 요청한 후 사용하지 않을 경우, 즉시 반납(삭제 요청)하기로 합니다.<br />
+                    이러한 조건들은 삼육대학교의 자산을 책임감 있게 사용하고, 가상 머신 서비스의 지속 가능성을 보장하기 위해 필수적입니다. 사용자는 이 조건들에 동의함으로써, 가상 머신 서비스를 적절하고 효율적으로 사용할 책임이 있음을 인지합니다.
+                </AgreementText>
+                <FormGroup>
+                    <CheckBox type="checkbox" checked={agree} onChange={handleAgree} />
+                    <Label style={{ display: 'inline' }}>위의 모든 조건에 동의합니다.</Label>
+                </FormGroup>
+                <Button type="submit" disabled={!agree}>제출</Button>
             </form>
         </Container>
     );
