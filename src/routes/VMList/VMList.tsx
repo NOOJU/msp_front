@@ -2,7 +2,20 @@ import React, { useEffect, useState } from 'react'; // React와 훅 임포트
 import axios from 'axios'; // axios 임포트 (현재는 사용되지 않지만, 실제 API 사용 시 필요)
 import styled from 'styled-components'; // styled-components 임포트
 import dayjs from 'dayjs'; // dayjs 임포트하여 날짜 비교에 사용
-import { Link } from 'react-router-dom'; // Link 컴포넌트 임포트
+import { Link, useNavigate } from 'react-router-dom'; // Link 컴포넌트 임포트
+
+import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
+
+// Mock Adapter 설정
+const mock = new MockAdapter(axios);
+const mockData = [
+    { id: '1', name: 'VM1', status: 'running', spec: '2core-4gb', os: 'Ubuntu 20.04', publicIp: '192.168.0.1', startDate: '2024-07-07', endDate: '2024-08-12' },
+    { id: '2', name: 'VM2', status: 'stopped', spec: '4core-8gb', os: 'Ubuntu 22.04', publicIp: '192.168.0.2', startDate: '2024-02-01', endDate: '2024-08-31' },
+];
+mock.onGet('http://localhost:8000/vmlist').reply(200, mockData);
+
+
+
 
 // 스타일 컴포넌트 정의
 const Container = styled.div`
@@ -72,6 +85,7 @@ const CreateButton = styled(Link)`
 const VMList: React.FC = () => {
     const [vmList, setVmList] = useState<any[]>([]); // VM 목록을 저장할 상태 변수
     const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태 변수
+    const navigate = useNavigate();
 
     // 실제 API 호출을 사용하는 경우
     useEffect(() => {
@@ -91,13 +105,14 @@ const VMList: React.FC = () => {
     }, []);
 
     // 연장 요청 처리 함수
-    const handleExtendRequest = (vmId: string) => {
-        alert(`VM ID ${vmId}에 대한 연장 요청이 처리되었습니다.`);
+    const handleExtendRequest = (vmName: string) => {
+        navigate(`/extendrequest/${vmName}`);
+        // alert(`${vmName}에 대한 연장 요청이 처리되었습니다.`);
     };
 
     // 삭제 요청 처리 함수
-    const handleDeleteRequest = (vmId: string) => {
-        alert(`VM ID ${vmId}에 대한 삭제 요청이 처리되었습니다.`);
+    const handleDeleteRequest = (vmName: string) => {
+        alert(`${vmName}에 대한 삭제 요청이 처리되었습니다.`);
     };
 
     // 버튼 비활성화 여부를 결정하는 함수
@@ -115,10 +130,11 @@ const VMList: React.FC = () => {
         <Container>
             <Title>Virtual Machine 목록</Title>
             <CreateButton to="/apply">+ VM 생성 요청</CreateButton>
+            <CreateButton to="/supportrequest">+ 기타 요청 사항</CreateButton>
             <Table>
                 <thead>
                 <tr>
-                    <Th>VM 이름</Th><Th>상태</Th><Th>유형</Th><Th>이미지</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장 요청</Th><Th>삭제 요청</Th>
+                    <Th>VM 이름</Th><Th>상태</Th><Th>Spec</Th><Th>Image</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장 요청</Th><Th>삭제 요청</Th>
                 </tr>
                 </thead>
                 <tbody>
@@ -133,7 +149,7 @@ const VMList: React.FC = () => {
                         <Td>{vm.endDate}</Td>
                         <Td>
                             <Button
-                                onClick={() => handleExtendRequest(vm.id)} // 연장 요청 버튼 클릭 시 호출
+                                onClick={() => handleExtendRequest(vm.name)} // 연장 요청 버튼 클릭 시 호출
                                 disabled={isButtonDisabled(vm.endDate)} // 종료일이 일주일 이상 남았는지 확인하여 버튼 비활성화 여부 결정
                             >
                                 연장 요청
@@ -141,7 +157,7 @@ const VMList: React.FC = () => {
                         </Td>
                         <Td>
                             <Button
-                                onClick={() => handleDeleteRequest(vm.id)} // 삭제 요청 버튼 클릭 시 호출
+                                onClick={() => handleDeleteRequest(vm.name)} // 삭제 요청 버튼 클릭 시 호출
                                 disabled={isButtonDisabled(vm.endDate)} // 종료일이 일주일 이상 남았는지 확인하여 버튼 비활성화 여부 결정
                             >
                                 삭제 요청

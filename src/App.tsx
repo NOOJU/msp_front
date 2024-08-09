@@ -6,7 +6,9 @@ import Apply from './routes/Apply/Apply'; // Apply 컴포넌트를 임포트
 import Signup from './routes/Signup/Signup'; // Signup 컴포넌트를 임포트
 import UserInfo from './routes/UserInfo/UserInfo'; // UserInfo 컴포넌트를 임포트
 import Main from './routes/Main/Main'; // Main 컴포넌트를 임포트
-import VMList from './routes/VMList/VMList'; // VMList 컴포넌트를 임포트
+import VMList from './routes/VMList/VMList';
+import SupportRequest from "./routes/Request/SupportRequest";
+import ExtendRequest from "./routes/Request/ExtendRequest"; // VMList 컴포넌트를 임포트
 
 // App 컴포넌트 정의
 const App: React.FC = () => {
@@ -20,6 +22,9 @@ const App: React.FC = () => {
                 <Route path="/userinfo" element={<UserInfo />} /> {/* /userinfo 경로로 UserInfo 컴포넌트를 렌더링합니다 */}
                 <Route path="/main" element={<Main />} /> {/* /main 경로로 Main 컴포넌트를 렌더링합니다 */}
                 <Route path="/vmlist" element={<VMList />} /> {/* /vmlist 경로로 VMList 컴포넌트를 렌더링합니다 */}
+                <Route path="/supportrequest" element={<SupportRequest />} />
+                <Route path="/extendrequest" element={<ExtendRequest />} />
+                <Route path="/extendrequest/:vmName" element={<ExtendRequest />} />
             </Routes>
         </Router>
     );
