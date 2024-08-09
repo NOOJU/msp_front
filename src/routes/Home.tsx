@@ -43,9 +43,6 @@ const Button = styled.button`
 const Home: React.FC = () => (
     <Container>
         <Title>가상머신 사용 신청 사이트</Title>
-        <ButtonLink to="/apply">
-            <Button>신청</Button>
-        </ButtonLink>
         <ButtonLink to="/login">
             <Button>로그인</Button>
         </ButtonLink>

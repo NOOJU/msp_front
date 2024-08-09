@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'; // React와 훅 임포트
 import axios from 'axios'; // axios 임포트 (현재는 사용되지 않지만, 실제 API 사용 시 필요)
 import styled from 'styled-components'; // styled-components 임포트
 import dayjs from 'dayjs'; // dayjs 임포트하여 날짜 비교에 사용
+import { Link } from 'react-router-dom'; // Link 컴포넌트 임포트
 
 // 스타일 컴포넌트 정의
 const Container = styled.div`
@@ -11,6 +12,7 @@ const Container = styled.div`
     background-color: #f8f9fa;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
 `;
 
 const Title = styled.h1`
@@ -52,6 +54,20 @@ const Button = styled.button`
     }
 `;
 
+const CreateButton = styled(Link)`
+    display: inline-block;
+    margin-bottom: 1em;
+    padding: 0.5em 1em;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    &:hover {
+        background-color: #218838;
+    }
+`;
+
 // VMList 컴포넌트 정의
 const VMList: React.FC = () => {
     const [vmList, setVmList] = useState<any[]>([]); // VM 목록을 저장할 상태 변수
@@ -73,30 +89,6 @@ const VMList: React.FC = () => {
         };
         fetchVMList(); // 컴포넌트 마운트 시 API 호출
     }, []);
-
-    // 예시 VM 데이터 주석 처리
-    // const [vmList, setVmList] = useState<any[]>([
-    //     {
-    //         id: '1',
-    //         name: 'Example VM 1',
-    //         status: 'Running',
-    //         spec: '2Core 4GB',
-    //         os: 'Ubuntu 20.04',
-    //         publicIp: '192.168.0.1',
-    //         startDate: '2023-08-01',
-    //         endDate: '2023-08-15' // 종료일 예시
-    //     },
-    //     {
-    //         id: '2',
-    //         name: 'Example VM 2',
-    //         status: 'Stopped',
-    //         spec: '4Core 8GB',
-    //         os: 'CentOS 8',
-    //         publicIp: '192.168.0.2',
-    //         startDate: '2023-07-20',
-    //         endDate: '2023-08-20' // 종료일 예시
-    //     }
-    // ]);
 
     // 연장 요청 처리 함수
     const handleExtendRequest = (vmId: string) => {
@@ -122,6 +114,7 @@ const VMList: React.FC = () => {
     return (
         <Container>
             <Title>Virtual Machine 목록</Title>
+            <CreateButton to="/apply">+ VM 생성 요청</CreateButton>
             <Table>
                 <thead>
                 <tr>
