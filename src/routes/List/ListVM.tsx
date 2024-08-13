@@ -6,13 +6,6 @@ import { Link, useNavigate } from 'react-router-dom'; // Link 컴포넌트 임�
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
-// Mock Adapter 설정
-const mock = new MockAdapter(axios);
-const mockData = [
-    { id: '1', name: 'VM1', status: 'running', spec: '2core-4gb', os: 'Ubuntu 20.04', publicIp: '192.168.0.1', startDate: '2024-07-07', endDate: '2024-08-12' },
-    { id: '2', name: 'VM2', status: 'stopped', spec: '4core-8gb', os: 'Ubuntu 22.04', publicIp: '192.168.0.2', startDate: '2024-02-01', endDate: '2024-08-31' },
-];
-mock.onGet('http://localhost:8000/vmlist').reply(200, mockData);
 
 
 
@@ -81,11 +74,21 @@ const CreateButton = styled(Link)`
     }
 `;
 
-// VMList 컴포넌트 정의
-const VMList: React.FC = () => {
+// List 컴포넌트 정의
+const ListVM: React.FC = () => {
     const [vmList, setVmList] = useState<any[]>([]); // VM 목록을 저장할 상태 변수
     const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태 변수
     const navigate = useNavigate();
+
+    // Mock Adapter 테스트 코드
+    const mock = new MockAdapter(axios);
+    const mockData = [
+        { id: '1', name: 'Web1', status: 'running', spec: '2core-4gb', os: 'Ubuntu 20.04', publicIp: '192.168.0.1', startDate: '2024-07-07', endDate: '2024-08-12' },
+        { id: '2', name: 'Web2', status: 'stopped', spec: '4core-8gb', os: 'Ubuntu 22.04', publicIp: '192.168.0.2', startDate: '2024-02-01', endDate: '2024-08-31' },
+    ];
+    mock.onGet('http://localhost:8000/vmlist').reply(200, mockData);
+
+
 
     // 실제 API 호출을 사용하는 경우
     useEffect(() => {
@@ -96,9 +99,11 @@ const VMList: React.FC = () => {
                         'Authorization': `Bearer ${localStorage.getItem('token')}` // 토큰을 헤더에 포함
                     }
                 });
+                console.log(response);
                 setVmList(response.data); // API 응답 데이터를 상태에 저장
             } catch (error) {
                 setError('VM 목록을 가져오는데 실패했습니다.'); // 에러 발생 시 메시지 설정
+                alert('VM 목록을 가져오는데 실패했습니다.');
             }
         };
         fetchVMList(); // 컴포넌트 마운트 시 API 호출
@@ -122,9 +127,9 @@ const VMList: React.FC = () => {
         return end.diff(today, 'day') > 7; // 종료일이 일주일 이상 남았는지 확인
     };
 
-    if (error) {
-        return <Container>{error}</Container>; // 에러 메시지를 표시
-    }
+    // if (error) {
+    //     return <Container>{error}</Container>; // 에러 메시지를 표시
+    // }
 
     return (
         <Container>
@@ -171,4 +176,4 @@ const VMList: React.FC = () => {
     );
 };
 
-export default VMList;
+export default ListVM;

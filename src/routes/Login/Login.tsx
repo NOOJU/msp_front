@@ -3,6 +3,10 @@ import axios from 'axios'; // axios를 임포트
 import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
 import styled from 'styled-components'; // styled-components를 임포트
 
+import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
+
+
+
 // 스타일 컴포넌트
 const Container = styled.div`
     max-width: 400px;
@@ -63,6 +67,17 @@ const Login: React.FC = () => {
     const [isCodeSent, setIsCodeSent] = useState(false); // 인증번호 전송 여부를 나타내는 상태를 정의
     const [error, setError] = useState(''); // 에러 메시지를 나타내는 상태를 정의
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅 사용
+
+
+    // Mock Adapter 테스트 코드
+    const mock = new MockAdapter(axios);
+    mock.onPost('http://localhost:8000/send_sms/').reply(200, {
+        message: '인증번호가 전송되었습니다.',
+    });
+    mock.onPost('http://localhost:8000/verify_sms/').reply(200, {
+        token: 'mocked_token',
+    });
+
 
     // 휴대폰 번호 유효성 검사 함수
     const validatePhoneNumber = (number: string) => {
