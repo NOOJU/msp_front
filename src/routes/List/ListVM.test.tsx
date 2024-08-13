@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import axios from 'axios';
 import { MemoryRouter } from 'react-router-dom';
-import VMList from './VMList';
+import ListVM from './ListVM';
 
 // axios 모듈을 모킹합니다.
 jest.mock('axios');
@@ -33,7 +33,7 @@ const mockData = [
     }
 ];
 
-describe('VMList 컴포넌트', () => {
+describe('List 컴포넌트', () => {
     // 각 테스트 전에 axios 모킹 설정
     beforeEach(() => {
         mockedAxios.get.mockResolvedValue({ data: mockData });
@@ -44,10 +44,10 @@ describe('VMList 컴포넌트', () => {
         jest.clearAllMocks();
     });
 
-    it('VMList 컴포넌트를 렌더링하고 VM 데이터를 표시해야 한다', async () => {
+    it('List 컴포넌트를 렌더링하고 VM 데이터를 표시해야 한다', async () => {
         render(
             <MemoryRouter>
-                <VMList />
+                <ListVM />
             </MemoryRouter>
         );
 
@@ -77,7 +77,7 @@ describe('VMList 컴포넌트', () => {
 
         render(
             <MemoryRouter>
-                <VMList />
+                <ListVM />
             </MemoryRouter>
         );
 
