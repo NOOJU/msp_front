@@ -83,12 +83,13 @@ const AgreementText = styled.div`
 
 const Apply: React.FC = () => {
     const [formData, setFormData] = useState({
-        vmName: '',
-        image: '',
-        instanceType: '',
-        volume: '',
-        securityGroup: '',
         usage: '',
+        applyReason: '',
+        vmName: '',
+        vmimage: '',
+        vmSpec: '',
+        inboundRule: '',
+        outboundRule: '',
         additionalRequest: '',
     });
 
@@ -130,38 +131,50 @@ const Apply: React.FC = () => {
             <Title>VM 신청</Title>
             <form onSubmit={handleSubmit}>
                 <FormGroup>
+                    <Label>사용 목적</Label>
+                    <Select name="usage" value={formData.usage} onChange={handleChange} required>
+                        <option value="" disabled>옵션을 선택해 주세요</option>
+                        <option value="personal">개인 프로젝트</option>
+                        <option value="Team">팀 프로젝트</option>
+                        <option value="School">학교 수업</option>
+                        <option value="research">연구 </option>
+                    </Select>
+                </FormGroup>
+                <FormGroup>
+                <Label>사용 목적 설명 (자세하게 작성)</Label>
+                    <TextArea name="applyReason" value={formData.applyReason} onChange={handleChange} required />
+                </FormGroup>
+                <FormGroup>
                     <Label>VM 이름</Label>
                     <Input type="text" name="vmName" value={formData.vmName} onChange={handleChange} required />
                 </FormGroup>
                 <FormGroup>
-                    <Label>이미지</Label>
-                    <Select name="image" value={formData.image} onChange={handleChange} required>
+                    <Label>스펙</Label>
+                    <Select name="vmSpec" value={formData.vmSpec} onChange={handleChange} required>
                         <option value="" disabled>옵션을 선택해 주세요</option>
+                        <option value="2core-4gb">2 vCPU, 4GiB memory, SSD 30GB</option>
+                        <option value="4core-8gb">4 vCPU, 8GiB memory, SSD 30GB</option>
+                        <option value="over-spec">상위 스펙은 검토 후 제공</option>
+                    </Select>
+                </FormGroup>
+                <FormGroup>
+                    <Label>운영체제</Label>
+                    <Select name="image" value={formData.vmimage} onChange={handleChange} required>
+                        <option value="" disabled>옵션을 선택해 주세요</option>
+                        <option value="centos-8">CentOS 8</option>
                         <option value="ubuntu-20.04">Ubuntu 20.04</option>
                         <option value="ubuntu-22.04">Ubuntu 22.04</option>
-                        <option value="centos-8">CentOS 8</option>
+                        <option value="window-server-2019">Windows Server 2019</option>
+                        <option value="window-server-2022">Windows Server 2022</option>
                     </Select>
                 </FormGroup>
                 <FormGroup>
-                    <Label>인스턴스 유형</Label>
-                    <Select name="instanceType" value={formData.instanceType} onChange={handleChange} required>
-                        <option value="" disabled>옵션을 선택해 주세요</option>
-                        <option value="2core-4gb">2Core 4GB</option>
-                        <option value="4core-8gb">4Core 8GB</option>
-                        <option value="4core-16gb">4Core 16GB</option>
-                    </Select>
+                    <Label>인바운드 규칙</Label>
+                    <Input type="text" name="inboundRule" value={formData.inboundRule} onChange={handleChange} required />
                 </FormGroup>
                 <FormGroup>
-                    <Label>볼륨</Label>
-                    <Input type="text" name="volume" value={formData.volume} onChange={handleChange} required />
-                </FormGroup>
-                <FormGroup>
-                    <Label>보안 그룹</Label>
-                    <Input type="text" name="securityGroup" value={formData.securityGroup} onChange={handleChange} required />
-                </FormGroup>
-                <FormGroup>
-                    <Label>사용 용도</Label>
-                    <Input type="text" name="usage" value={formData.usage} onChange={handleChange} required />
+                    <Label>아웃바운드 규칙 </Label>
+                    <Input type="text" name="outboundRule" value={formData.outboundRule} onChange={handleChange} required />
                 </FormGroup>
                 <FormGroup>
                     <Label>기타 요청 사항</Label>
