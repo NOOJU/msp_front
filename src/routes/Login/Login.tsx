@@ -1,22 +1,13 @@
-// src/routes/Login/Login.tsx
+import React, { useState } from 'react'; // React와 useState를 임포트
+import axios from 'axios'; // axios를 임포트
+import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
+import styled from 'styled-components'; // styled-components를 임포트
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useRecoilState } from 'recoil';
-import styled from 'styled-components';
-import {
-    phoneNumberState,
-    verificationCodeState,
-    timerState,
-    timerActiveState,
-    verificationStatusState,
-    INITIAL_TIMER_SECONDS,
-    PHONE_NUMBER_LENGTH,
-    VERIFICATION_CODE_LENGTH,
-} from '../../state/recoilState';  // recoilState 경로를 올바르게 설정
-import { useNavigate } from 'react-router-dom';
+import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
-// 스타일 컴포넌트 정의
+
+
+// 스타일 컴포넌트
 const Container = styled.div`
     max-width: 400px;
     margin: 2em auto;
@@ -69,161 +60,99 @@ const ErrorMessage = styled.div`
     margin-bottom: 1em;
 `;
 
-const Timer = styled.div`
-    text-align: right;
-    font-weight: bold;
-    color: #007bff;
-    margin-top: -1em;
-    margin-bottom: 1em;
-`;
-
-// 타이머 로직을 처리하는 커스텀 훅
-function useTimer() {
-    const [timer, setTimer] = useRecoilState(timerState); // 타이머 상태를 Recoil로 관리
-    const [isActive, setIsActive] = useRecoilState(timerActiveState); // 타이머 활성화 상태 관리
-
-    useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (isActive) {
-            interval = setInterval(() => {
-                setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0)); // 타이머 감소
-            }, 1000);
-        }
-        return () => clearInterval(interval); // 컴포넌트 언마운트 시 타이머 클리어
-    }, [isActive, setTimer]);
-
-    const resetTimer = () => {
-        setTimer(INITIAL_TIMER_SECONDS); // 타이머를 초기값으로 리셋
-        setIsActive(true); // 타이머 활성화
-    };
-
-    const stopTimer = () => {
-        setIsActive(false); // 타이머 중지
-    };
-
-    return { timer, resetTimer, stopTimer };
-}
-
 // Login 컴포넌트 정의
 const Login: React.FC = () => {
-    const [phoneNumber, setPhoneNumber] = useRecoilState(phoneNumberState); // 전화번호 상태 관리
-    const [verificationCode, setVerificationCode] = useRecoilState(verificationCodeState); // 인증번호 상태 관리
-    const [verificationStatus, setVerificationStatus] = useRecoilState(verificationStatusState); // 인증 상태 관리
-    const [error, setError] = useState(''); // 에러 메시지 상태 관리
-    const navigate = useNavigate(); // 페이지 이동을 위한 훅 사용
-    const { timer, resetTimer, stopTimer } = useTimer(); // 타이머 커스텀 훅 사용
+    const [phoneNumber, setPhoneNumber] = useState(''); // phoneNumber 상태를 정의
+    const [verificationCode, setVerificationCode] = useState(''); // verificationCode 상태를 정의
+    const [isCodeSent, setIsCodeSent] = useState(false); // 인증번호 전송 여부를 나타내는 상태를 정의
+    const [error, setError] = useState(''); // 에러 메시지를 나타내는 상태를 정의
+    const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅 사용
 
-    // 전화번호 입력 시 숫자만 입력하고, 하이픈을 추가하여 포맷
-    const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const numbersOnly = e.target.value.replace(/\D/g, ''); // 숫자만 남기기
-        if (numbersOnly.length <= PHONE_NUMBER_LENGTH) {
-            setPhoneNumber(numbersOnly); // 상태 업데이트
-        }
-    };
 
-    // 화면에 표시할 때 전화번호를 하이픈 포함한 형식으로 변환
-    const displayFormattedPhoneNumber = (numbers: string) => {
-        if (numbers.length <= 3) {
-            return numbers;
-        } else if (numbers.length <= 7) {
-            return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
-        } else {
-            return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7)}`;
-        }
+    // Mock Adapter 테스트 코드
+    const mock = new MockAdapter(axios);
+    mock.onPost('http://localhost:8000/send_sms/').reply(200, {
+        message: '인증번호가 전송되었습니다.',
+    });
+    mock.onPost('http://localhost:8000/verify_sms/').reply(200, {
+        token: 'mocked_token',
+    });
+
+
+    // 휴대폰 번호 유효성 검사 함수
+    const validatePhoneNumber = (number: string) => {
+        const phoneRegex = /^01[0-9]{8,9}$/; // 한국 휴대폰 번호 정규식
+        return phoneRegex.test(number); // 정규식을 사용하여 번호 유효성 검사
     };
 
     // 인증번호 전송 함수
     const handleSendCode = async () => {
-        if (phoneNumber.length !== PHONE_NUMBER_LENGTH) {
-            setError('유효한 휴대폰 번호를 입력하세요.'); // 유효성 검사 실패 시 에러 메시지 설정
-            return;
+        if (!validatePhoneNumber(phoneNumber)) { // 휴대폰 번호 유효성 검사
+            setError('유효한 휴대폰 번호를 입력하세요.'); // 유효하지 않으면 에러 메시지 설정
+            return; // 함수 종료
         }
 
-        setError('');
+        setError(''); // 에러 메시지 초기화
+
         try {
-            const response = await axios.post('http://localhost:8000/send_sms/', { phone_number: phoneNumber }); // 인증번호 전송 API 호출
-            console.log(response.data);
-            setVerificationStatus({ ...verificationStatus, sent: true }); // 인증번호 전송 상태 업데이트
-            resetTimer(); // 타이머 리셋 및 시작
-            alert('인증번호가 전송되었습니다.');
+            // 인증번호 전송 API 호출
+            const response = await axios.post('http://localhost:8000/send_sms/', { phone_number: phoneNumber });
+            console.log(response.data); // 응답 데이터 콘솔 출력
+            setIsCodeSent(true); // 인증번호 전송 여부 상태 설정
+            alert('인증번호가 전송되었습니다.'); // 사용자에게 알림
         } catch (error) {
-            console.error(error);
-            alert('인증번호 전송에 실패했습니다.'); // 에러 발생 시 알림
+            console.error(error); // 에러 콘솔 출력
+            alert('인증번호 전송에 실패했습니다.'); // 사용자에게 알림
         }
     };
 
     // 인증번호 검증 함수
     const handleVerifyCode = async () => {
-        if (verificationCode.length !== VERIFICATION_CODE_LENGTH) {
-            setVerificationStatus({ sent: true, verified: false, message: '인증번호가 잘못되었습니다.' });
-            return;
-        }
-
         try {
-            const response = await axios.post('http://localhost:8000/verify_sms/', {
-                phone_number: phoneNumber,
-                auth_code: verificationCode,
-            });
-
-            if (response.data.token) { // 인증 성공 시 백엔드에서 발급한 JWT 토큰을 로컬 스토리지에 저장
-                setVerificationStatus({ sent: true, verified: true, message: '인증 성공' });
-                stopTimer(); // 인증 성공 시 타이머 중지
-                localStorage.setItem('token', response.data.token); // JWT를 로컬 스토리지에 저장
+            // 인증번호 검증 API 호출
+            const response = await axios.post('http://localhost:8000/verify_sms/', { phone_number: phoneNumber, auth_code: verificationCode });
+            if (response.data.token) { // 인증 성공 여부 확인
+                alert('인증에 성공했습니다.'); // 사용자에게 알림
+                localStorage.setItem('token', response.data.token); // 토큰을 로컬 스토리지에 저장
                 navigate('/main'); // 인증 성공 시 메인 페이지로 이동
             } else {
-                setVerificationStatus({ sent: true, verified: false, message: '인증번호가 잘못되었습니다.' });
+                alert('인증번호가 일치하지 않습니다.'); // 사용자에게 알림
             }
         } catch (error) {
-            console.error(error);
-            setVerificationStatus({ sent: true, verified: false, message: '인증번호 검증에 실패했습니다.' });
-        }
-    };
-
-    // 인증번호 입력 시 숫자만 입력하고, 최대 6글자까지 제한
-    const handleVerificationCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const numbersOnly = e.target.value.replace(/\D/g, ''); // 숫자만 남기기
-        if (numbersOnly.length <= VERIFICATION_CODE_LENGTH) {
-            setVerificationCode(numbersOnly); // 상태 업데이트
+            console.error(error); // 에러 콘솔 출력
+            alert('인증번호 검증에 실패했습니다.'); // 사용자에게 알림
         }
     };
 
     return (
-        <Container>
-            <Title>로그인</Title>
-            <FormGroup>
-                <Label>휴대폰 번호</Label>
+        <Container> {/* 컨테이너 스타일 적용 */}
+            <Title>로그인</Title> {/* 제목 스타일 적용 */}
+            <FormGroup> {/* 폼 그룹 스타일 적용 */}
+                <Label>휴대폰 번호</Label> {/* 라벨 스타일 적용 */}
                 <Input
                     type="text"
-                    value={displayFormattedPhoneNumber(phoneNumber)} // 입력된 전화번호를 포맷하여 출력
-                    onChange={handlePhoneNumberChange}
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)} // 입력 값 변경 시 상태 업데이트
                     placeholder="휴대폰 번호를 입력하세요"
-                    disabled={verificationStatus.sent} // 인증번호가 전송된 후에는 입력 비활성화
+                    disabled={isCodeSent} // 인증번호 전송 후 입력 비활성화
                 />
+                {/* 에러 메시지 표시 */}
                 {error && <ErrorMessage>{error}</ErrorMessage>}
             </FormGroup>
-            <Button onClick={handleSendCode}>
-                {!verificationStatus.sent ? '본인인증하기' : '재전송'} {/* 인증번호 전송 상태에 따라 버튼 텍스트 변경 */}
-            </Button>
-            {verificationStatus.sent && (
-                <>
-                    <Timer>{`남은 시간: ${Math.floor(timer / 60)}:${timer % 60 < 10 ? '0' : ''}${timer % 60}`}</Timer> {/* 타이머 표시 */}
-                    <FormGroup>
-                        <Label>인증번호</Label>
-                        <Input
-                            type="text"
-                            value={verificationCode}
-                            onChange={handleVerificationCodeChange}
-                            placeholder="인증번호를 입력하세요"
-                        />
-                    </FormGroup>
-                    <Button onClick={handleVerifyCode}>
-                        인증하기
-                    </Button>
-                    {verificationStatus.message && (
-                        <ErrorMessage>{verificationStatus.message}</ErrorMessage>
-                    )}
-                </>
+            {isCodeSent && ( // 인증번호가 전송된 경우
+                <FormGroup>
+                    <Label>인증번호</Label>
+                    <Input
+                        type="text"
+                        value={verificationCode}
+                        onChange={(e) => setVerificationCode(e.target.value)} // 입력 값 변경 시 상태 업데이트
+                        placeholder="인증번호를 입력하세요"
+                    />
+                </FormGroup>
             )}
+            <Button onClick={isCodeSent ? handleVerifyCode : handleSendCode}>
+                {isCodeSent ? '인증하기' : '본인인증하기'} {/* 버튼 텍스트 조건에 따라 변경 */}
+            </Button>
         </Container>
     );
 };
