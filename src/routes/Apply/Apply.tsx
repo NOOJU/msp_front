@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
-// 스타일 컴포넌트 정의 (기존 코드 유지)
 const Container = styled.div`
     max-width: 400px;
     margin: 2em auto;
@@ -27,30 +26,25 @@ const Label = styled.label`
     color: #495057;
 `;
 
-// Input 컴포넌트에 isValid 속성을 추가하여 유효성 검사를 반영한 스타일링 적용
-const Input = styled.input<{ isValid?: boolean }>`
+const Input = styled.input`
     width: 100%;
     padding: 0.5em;
-    border: 1px solid ${props => props.isValid !== false ? '#ced4da' : 'red'};
+    border: 1px solid #ced4da;
     border-radius: 4px;
 `;
 
-// Input 컴포넌트에 기본값을 설정하여 isValid 속성이 전달되지 않아도 기본값으로 true가 설정되도록 함
-Input.defaultProps = {
-    isValid: true,
-};
-
-const Select = styled.select<{ isValid?: boolean }>`
+const Select = styled.select`
     width: 100%;
     padding: 0.5em;
-    border: 1px solid ${props => props.isValid !== false ? '#ced4da' : 'red'};
+    border: 1px solid #ced4da;
     border-radius: 4px;
+    color: ${props => (props.value === "" ? '#6c757d' : 'inherit')};
 `;
 
-const TextArea = styled.textarea<{ isValid?: boolean }>`
+const TextArea = styled.textarea`
     width: 100%;
     padding: 0.5em;
-    border: 1px solid ${props => props.isValid !== false ? '#ced4da' : 'red'};
+    border: 1px solid #ced4da;
     border-radius: 4px;
 `;
 
@@ -87,123 +81,39 @@ const AgreementText = styled.div`
     text-align: left;
 `;
 
-// 에러 메시지를 표시하기 위한 컴포넌트
-const ErrorMessage = styled.div`
-    color: red;
-    margin-top: 0.5em;
-    font-size: 0.875em;
-`;
-
 const Apply: React.FC = () => {
-    // formData 상태와 에러 메시지를 저장할 상태를 정의
     const [formData, setFormData] = useState({
-        vmName: '',
-        image: '',
-        instanceType: '',
-        volume: '',
-        securityGroup: '',
         usage: '',
+        applyReason: '',
+        vmName: '',
+        vmimage: '',
+        vmSpec: '',
+        inboundRule: '',
+        outboundRule: '',
         additionalRequest: '',
     });
 
     const [agree, setAgree] = useState(false);
-    const [errors, setErrors] = useState({
-        vmName: '',
-        image: '',
-        instanceType: '',
-        volume: '',
-        securityGroup: '',
-        usage: '',
-        additionalRequest: '',
-    });
 
-    // 필드 이름을 사용자에게 친숙한 이름으로 매핑하는 객체
-    const fieldNames: { [key: string]: string } = {
-        vmName: 'VM 이름',
-        image: '운영체제',
-        instanceType: '스펙',
-        volume: '인바운드 규칙',
-        securityGroup: '아웃바운드 규칙',
-        usage: '사용 목적',
-        additionalRequest: '사용 목적 설명',
-    };
-
-    // 입력 변경 시 호출되는 함수로, 유효성 검사를 포함함
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-
-        // 필수 입력 필드에 대한 유효성 검사
-        let error = '';
-        if (value.trim() === '') {
-            error = `${fieldNames[name]}을 입력해주세요.`;
-        }
-
-        // VM 이름 유효성 검사 로직
-        if (name === 'vmName') {
-            const vmNameRegex = /^[a-zA-Z0-9-_]{1,52}$/;
-
-            // 영문, 숫자, 하이픈(-), 언더바(_) 이외의 문자가 입력된 경우 에러 메시지 설정
-            if (!vmNameRegex.test(value)) {
-                error = '영문, 숫자, 하이픈(-), 언더바(_)만 입력 가능(1~52자)';
-            }
-
-            // 첫 글자가 하이픈(-) 또는 언더바(_)인 경우 에러 메시지 설정
-            if (/^[\-_]/.test(value)) {
-                error = '첫 글자는 하이픈(-)과 언더바(_)를 사용할 수 없습니다.';
-            }
-
-            // 마지막 글자가 하이픈(-) 또는 언더바(_)인 경우 에러 메시지 설정
-            if (/[\-_]$/.test(value)) {
-                error = '마지막 글자는 하이픈(-)과 언더바(_)를 사용할 수 없습니다.';
-            }
-        }
-
-        // 에러 상태 업데이트
-        setErrors(prevErrors => ({
-            ...prevErrors,
-            [name]: error,
-        }));
-
-        // 입력된 값 업데이트
         setFormData(prevState => ({
             ...prevState,
             [name]: value,
         }));
     };
 
-    // 동의 체크박스 변경 시 호출되는 함수
     const handleAgree = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAgree(e.target.checked);
     };
 
-    // 폼 제출 시 호출되는 함수
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // 동의하지 않은 경우 경고 메시지 출력
         if (!agree) {
             alert('가상 머신 사용에 대한 모든 조건에 동의해야 합니다.');
             return;
         }
-
-        // 필수 필드에 값이 입력되었는지 확인하고 에러 메시지 설정
-        const newErrors = { ...errors };
-        let hasError = false;
-
-        Object.keys(formData).forEach(key => {
-            if (formData[key as keyof typeof formData].trim() === '') {
-                newErrors[key as keyof typeof errors] = `${fieldNames[key]}을 입력해주세요.`;
-                hasError = true;
-            }
-        });
-
-        // 유효성 검사에 실패하거나 필드가 비어 있는 경우 제출 방지
-        if (hasError) {
-            setErrors(newErrors);
-            return;
-        }
-
         try {
-            // 서버에 폼 데이터 전송
             const response = await axios.post('http://localhost:8000/vm-apply', formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -221,55 +131,54 @@ const Apply: React.FC = () => {
             <Title>VM 신청</Title>
             <form onSubmit={handleSubmit}>
                 <FormGroup>
-                    <Label>VM 이름</Label>
-                    <Input
-                        type="text"
-                        name="vmName"
-                        value={formData.vmName}
-                        onChange={handleChange}
-                        isValid={errors.vmName === ''}
-                    />
-                    {errors.vmName && <ErrorMessage>{errors.vmName}</ErrorMessage>}
+                    <Label>사용 목적</Label>
+                    <Select name="usage" value={formData.usage} onChange={handleChange} required>
+                        <option value="" disabled>옵션을 선택해 주세요</option>
+                        <option value="personal">개인 프로젝트</option>
+                        <option value="Team">팀 프로젝트</option>
+                        <option value="School">학교 수업</option>
+                        <option value="research">연구 </option>
+                    </Select>
                 </FormGroup>
                 <FormGroup>
-                    <Label>운영체제</Label>
-                    <Select name="image" value={formData.image} onChange={handleChange} isValid={errors.image === ''}>
-                        <option value="" disabled>옵션을 선택해 주세요</option>
-                        <option value="ubuntu-20.04">Ubuntu 20.04</option>
-                        <option value="ubuntu-22.04">Ubuntu 22.04</option>
-                        <option value="centos-8">CentOS 8</option>
-                    </Select>
-                    {errors.image && <ErrorMessage>{errors.image}</ErrorMessage>}
+                <Label>사용 목적 설명 (자세하게 작성)</Label>
+                    <TextArea name="applyReason" value={formData.applyReason} onChange={handleChange} required />
+                </FormGroup>
+                <FormGroup>
+                    <Label>VM 이름</Label>
+                    <Input type="text" name="vmName" value={formData.vmName} onChange={handleChange} required />
                 </FormGroup>
                 <FormGroup>
                     <Label>스펙</Label>
-                    <Select name="instanceType" value={formData.instanceType} onChange={handleChange} isValid={errors.instanceType === ''}>
+                    <Select name="vmSpec" value={formData.vmSpec} onChange={handleChange} required>
                         <option value="" disabled>옵션을 선택해 주세요</option>
-                        <option value="2core-4gb">2Core 4GB</option>
-                        <option value="4core-8gb">4Core 8GB</option>
-                        <option value="4core-16gb">4Core 16GB</option>
+                        <option value="2core-4gb">2 vCPU, 4GiB memory, SSD 30GB</option>
+                        <option value="4core-8gb">4 vCPU, 8GiB memory, SSD 30GB</option>
+                        <option value="over-spec">상위 스펙은 검토 후 제공</option>
                     </Select>
-                    {errors.instanceType && <ErrorMessage>{errors.instanceType}</ErrorMessage>}
+                </FormGroup>
+                <FormGroup>
+                    <Label>운영체제</Label>
+                    <Select name="image" value={formData.vmimage} onChange={handleChange} required>
+                        <option value="" disabled>옵션을 선택해 주세요</option>
+                        <option value="centos-8">CentOS 8</option>
+                        <option value="ubuntu-20.04">Ubuntu 20.04</option>
+                        <option value="ubuntu-22.04">Ubuntu 22.04</option>
+                        <option value="window-server-2019">Windows Server 2019</option>
+                        <option value="window-server-2022">Windows Server 2022</option>
+                    </Select>
                 </FormGroup>
                 <FormGroup>
                     <Label>인바운드 규칙</Label>
-                    <Input type="text" name="volume" value={formData.volume} onChange={handleChange} isValid={errors.volume === ''} />
-                    {errors.volume && <ErrorMessage>{errors.volume}</ErrorMessage>}
+                    <Input type="text" name="inboundRule" value={formData.inboundRule} onChange={handleChange} required />
                 </FormGroup>
                 <FormGroup>
-                    <Label>아웃바운드 규칙</Label>
-                    <Input type="text" name="securityGroup" value={formData.securityGroup} onChange={handleChange} isValid={errors.securityGroup === ''} />
-                    {errors.securityGroup && <ErrorMessage>{errors.securityGroup}</ErrorMessage>}
+                    <Label>아웃바운드 규칙 </Label>
+                    <Input type="text" name="outboundRule" value={formData.outboundRule} onChange={handleChange} required />
                 </FormGroup>
                 <FormGroup>
-                    <Label>사용 목적</Label>
-                    <Input type="text" name="usage" value={formData.usage} onChange={handleChange} isValid={errors.usage === ''} />
-                    {errors.usage && <ErrorMessage>{errors.usage}</ErrorMessage>}
-                </FormGroup>
-                <FormGroup>
-                    <Label>사용 목적 설명 (자세하게 작성)</Label>
-                    <TextArea name="additionalRequest" value={formData.additionalRequest} onChange={handleChange} isValid={errors.additionalRequest === ''} />
-                    {errors.additionalRequest && <ErrorMessage>{errors.additionalRequest}</ErrorMessage>}
+                    <Label>기타 요청 사항</Label>
+                    <TextArea name="additionalRequest" value={formData.additionalRequest} onChange={handleChange} />
                 </FormGroup>
                 <AgreementText>
                     본 가상 머신 서비스는 삼육대학교 예산을 통해 제공되는 소중한 자산입니다. 사용자는 가상 머신을 목적에 부합하는 용도로만 사용하기로 동의합니다.<br />
