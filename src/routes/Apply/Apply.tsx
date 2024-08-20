@@ -39,18 +39,17 @@ Input.defaultProps = {
     isValid: true,
 };
 
-const Select = styled.select`
+const Select = styled.select<{ isValid?: boolean }>`
     width: 100%;
     padding: 0.5em;
-    border: 1px solid #ced4da;
+    border: 1px solid ${props => props.isValid !== false ? '#ced4da' : 'red'};
     border-radius: 4px;
-    color: ${props => (props.value === "" ? '#6c757d' : 'inherit')};
 `;
 
-const TextArea = styled.textarea`
+const TextArea = styled.textarea<{ isValid?: boolean }>`
     width: 100%;
     padding: 0.5em;
-    border: 1px solid #ced4da;
+    border: 1px solid ${props => props.isValid !== false ? '#ced4da' : 'red'};
     border-radius: 4px;
 `;
 
@@ -236,7 +235,7 @@ const Apply: React.FC = () => {
             <form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label>사용 목적</Label>
-                    <Select name="usage" value={formData.usage} onChange={handleChange} required>
+                    <Select name="usage" value={formData.usage} onChange={handleChange} isValid={errors.usage === ''}>
                         <option value="" disabled>옵션을 선택해 주세요</option>
                         <option value="personal">개인 프로젝트</option>
                         <option value="Team">팀 프로젝트</option>
@@ -247,7 +246,8 @@ const Apply: React.FC = () => {
                 </FormGroup>
                 <FormGroup>
                 <Label>사용 목적 설명 (자세하게 작성)</Label>
-                    <TextArea name="applyReason" value={formData.applyReason} onChange={handleChange} required />
+                    <TextArea name="applyReason" value={formData.applyReason} onChange={handleChange} isValid={errors.applyReason === ''} />
+                    {errors.applyReason && <ErrorMessage>{errors.applyReason}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
                     <Label>VM 이름</Label>
@@ -262,7 +262,7 @@ const Apply: React.FC = () => {
                 </FormGroup>
                 <FormGroup>
                     <Label>스펙</Label>
-                    <Select name="vmSpec" value={formData.vmSpec} onChange={handleChange} required>
+                    <Select name="vmSpec" value={formData.vmSpec} onChange={handleChange} isValid={errors.vmSpec === ''}>
                         <option value="" disabled>옵션을 선택해 주세요</option>
                         <option value="2core-4gb">2 vCPU, 4GiB memory, SSD 30GB</option>
                         <option value="4core-8gb">4 vCPU, 8GiB memory, SSD 30GB</option>
@@ -272,7 +272,7 @@ const Apply: React.FC = () => {
                 </FormGroup>
                 <FormGroup>
                     <Label>운영체제</Label>
-                    <Select name="vmimage" value={formData.vmimage} onChange={handleChange} required>
+                    <Select name="vmimage" value={formData.vmimage} onChange={handleChange} isValid={errors.vmimage === ''}>
                         <option value="" disabled>옵션을 선택해 주세요</option>
                         <option value="centos-8">CentOS 8</option>
                         <option value="ubuntu-20.04">Ubuntu 20.04</option>
@@ -284,17 +284,17 @@ const Apply: React.FC = () => {
                 </FormGroup>
                 <FormGroup>
                     <Label>인바운드 규칙</Label>
-                    <Input type="text" name="inboundRule" value={formData.inboundRule} onChange={handleChange} required />
+                    <Input type="text" name="inboundRule" value={formData.inboundRule} onChange={handleChange} isValid={errors.inboundRule === ''} />
                     {errors.inboundRule && <ErrorMessage>{errors.inboundRule}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
                     <Label>아웃바운드 규칙 </Label>
-                    <Input type="text" name="outboundRule" value={formData.outboundRule} onChange={handleChange} required />
+                    <Input type="text" name="outboundRule" value={formData.outboundRule} onChange={handleChange} isValid={errors.outboundRule === ''} />
                     {errors.outboundRule && <ErrorMessage>{errors.outboundRule}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
                     <Label>기타 요청 사항</Label>
-                    <TextArea name="additionalRequest" value={formData.additionalRequest} onChange={handleChange} />
+                    <TextArea name="additionalRequest" value={formData.additionalRequest} onChange={handleChange} isValid={errors.additionalRequest === ''}/>
                 </FormGroup>
                 <AgreementText>
                     본 가상 머신 서비스는 삼육대학교 예산을 통해 제공되는 소중한 자산입니다. 사용자는 가상 머신을 목적에 부합하는 용도로만 사용하기로 동의합니다.<br />
