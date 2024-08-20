@@ -21,6 +21,13 @@ const Container = styled.div`
     position: relative;
 `;
 
+const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5em;
+    margin-bottom: 1em;
+`;
+
 const Title = styled.h1`
     text-align: center;
     color: #343a40;
@@ -61,14 +68,13 @@ const Button = styled.button`
 `;
 
 const CreateButton = styled(Link)`
-    display: inline-block;
-    margin-bottom: 1em;
     padding: 0.5em 1em;
     background-color: #28a745;
     color: white;
     text-decoration: none;
     border-radius: 4px;
     transition: background-color 0.2s;
+
     &:hover {
         background-color: #218838;
     }
@@ -134,8 +140,10 @@ const ListVM: React.FC = () => {
     return (
         <Container>
             <Title>Virtual Machine 목록</Title>
-            <CreateButton to="/apply">+ VM 생성 요청</CreateButton>
-            <CreateButton to="/supportrequest">+ 기타 요청 사항</CreateButton>
+            <ButtonContainer>
+                <CreateButton to="/apply">VM 생성 요청</CreateButton>
+                <CreateButton to="/supportrequest">기타 요청 사항</CreateButton>
+            </ButtonContainer>
             <Table>
                 <thead>
                 <tr>
