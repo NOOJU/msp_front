@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { Logout } from '../Auth/Logout'; // useLogout 훅을 임포트
 
-// 스타일 컴포넌트
 const Container = styled.div`
     max-width: 400px;
     margin: 2em auto;
@@ -40,16 +40,31 @@ const Button = styled.button`
     }
 `;
 
-const Main: React.FC = () => (
-    <Container>
-        <Title>메인 페이지</Title>
-        <ButtonLink to="/userinfo">
-            <Button>사용자 정보</Button>
-        </ButtonLink>
-        <ButtonLink to="/listvm">
-            <Button>Virtual Machine</Button>
-        </ButtonLink>
-    </Container>
-);
+const LogoutButton = styled(Button)`
+    background-color: #dc3545;
+
+    &:hover {
+        background-color: #c82333;
+    }
+`;
+
+const Main: React.FC = () => {
+    const logoutHandler = Logout(); // 로그아웃 핸들러 호출
+
+    return (
+        <Container>
+            <Title>메인 페이지</Title>
+            <ButtonLink to="/userinfo">
+                <Button>사용자 정보</Button>
+            </ButtonLink>
+            <ButtonLink to="/listvm">
+                <Button>Virtual Machine</Button>
+            </ButtonLink>
+            <LogoutButton onClick={logoutHandler}>
+                로그아웃
+            </LogoutButton>
+        </Container>
+    );
+};
 
 export default Main;

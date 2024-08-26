@@ -12,9 +12,9 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 // window.alert를 모킹합니다.
 global.alert = jest.fn();
 
-describe('Login Component', () => {
+describe('Auth Component', () => {
     // 로그인 컴포넌트를 렌더링하고 기본 요소들이 존재하는지 확인하는 테스트입니다.
-    test('renders Login component', () => {
+    test('renders Auth component', () => {
         render(
             <MemoryRouter>
                 <Login />
