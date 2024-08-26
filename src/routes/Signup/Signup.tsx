@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { LoginState } from '../../recoil/authAtom';
 
 // 스타일 컴포넌트
 const Container = styled.div`
@@ -52,27 +54,33 @@ const Button = styled.button`
 
 const ErrorMessage = styled.div`
     color: red;
-    margin-top: -0.5em;
+    margin-top: 0.5em;
     margin-bottom: 1em;
 `;
 
 const Signup: React.FC = () => {
+    const location = useLocation(); // 현재 URL 정보를 가져오기 위한 훅
+    const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState); // Recoil을 통한 로그인 상태 전역 관리
+
+    // URL에서 쿼리 파라미터 추출
+    const queryParams = new URLSearchParams(location.search);
+    const phoneNumberFromUrl = queryParams.get('phone_number') || ''; // URL 쿼리에서 phone_number를 추출, 없으면 빈 문자열
+
     const [formData, setFormData] = useState({
         name: '',
-        studentId: '',
+        student_number: '',
         department: '',
         email: '',
-        phone: '',
+        contact: phoneNumberFromUrl, // URL 파라미터로 받은 전화번호를 기본값으로 설정
     });
 
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [validationErrors, setValidationErrors] = useState({
         email: '',
-        phone: '',
+        contact: '',
     });
-
-    const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -98,26 +106,27 @@ const Signup: React.FC = () => {
         e.preventDefault();
 
         const isEmailValid = validateEmail(formData.email);
-        const isPhoneValid = validatePhoneNumber(formData.phone);
+        const isPhoneValid = validatePhoneNumber(formData.contact);
 
         if (!isEmailValid || !isPhoneValid) {
             setValidationErrors({
                 email: isEmailValid ? '' : '유효한 이메일 주소를 입력해주세요.',
-                phone: isPhoneValid ? '' : '유효한 전화번호를 입력해주세요.',
+                contact: isPhoneValid ? '' : '유효한 전화번호를 입력해주세요.',
             });
             return;
         }
 
         setValidationErrors({
             email: '',
-            phone: '',
+            contact: '',
         });
 
         try {
-            const response = await axios.post('https://your-backend-api.com/signup', formData);
+            const response = await axios.post('http://127.0.0.1:8000/signup/', formData);
             setSuccess('회원가입에 성공했습니다!');
             setError(null);
             console.log('Form Data Submitted:', response.data);
+            setIsLoggedIn(true); // 로그인 전역 상태 관리
             navigate('/Home'); // 회원가입 성공 시 /Home 경로로 이동
         } catch (error) {
             setError('회원가입에 실패했습니다. 다시 시도해 주세요.');
@@ -131,7 +140,7 @@ const Signup: React.FC = () => {
             <Title>회원가입</Title>
             <form onSubmit={handleSubmit}>
                 <FormGroup>
-                    <Label htmlFor="name">이름:</Label>
+                    <Label htmlFor="name">이름</Label>
                     <Input
                         type="text"
                         id="name"
@@ -142,18 +151,18 @@ const Signup: React.FC = () => {
                     />
                 </FormGroup>
                 <FormGroup>
-                    <Label htmlFor="studentId">학번:</Label>
+                    <Label htmlFor="student_number">학번</Label>
                     <Input
                         type="text"
-                        id="studentId"
-                        name="studentId"
-                        value={formData.studentId}
+                        id="student_number"
+                        name="student_number"
+                        value={formData.student_number}
                         onChange={handleChange}
                         required
                     />
                 </FormGroup>
                 <FormGroup>
-                    <Label htmlFor="department">학과:</Label>
+                    <Label htmlFor="department">학과</Label>
                     <Input
                         type="text"
                         id="department"
@@ -164,7 +173,7 @@ const Signup: React.FC = () => {
                     />
                 </FormGroup>
                 <FormGroup>
-                    <Label htmlFor="email">이메일:</Label>
+                    <Label htmlFor="email">이메일</Label>
                     <Input
                         type="email"
                         id="email"
@@ -176,16 +185,16 @@ const Signup: React.FC = () => {
                     {validationErrors.email && <ErrorMessage>{validationErrors.email}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
-                    <Label htmlFor="phone">전화번호:</Label>
+                    <Label htmlFor="contact">전화번호</Label>
                     <Input
                         type="tel"
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
+                        id="contact"
+                        name="contact"
+                        value={formData.contact}
                         onChange={handleChange}
                         required
                     />
-                    {validationErrors.phone && <ErrorMessage>{validationErrors.phone}</ErrorMessage>}
+                    {validationErrors.contact && <ErrorMessage>{validationErrors.contact}</ErrorMessage>}
                 </FormGroup>
                 <Button type="submit">회원가입</Button>
                 {error && <ErrorMessage>{error}</ErrorMessage>}

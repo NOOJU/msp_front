@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'; // React와 useState를 임�
 import axios from 'axios'; // axios를 임포트
 import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
 import styled from 'styled-components'; // styled-components를 임포트
+import { useRecoilState } from 'recoil';
+import { LoginState } from '../../recoil/authAtom';
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
@@ -98,7 +100,7 @@ function useTimer(initialSeconds: number) {
     return { timer, resetTimer, stopTimer };
 }
 
-// Login 컴포넌트 정의
+// Auth 컴포넌트 정의
 const Login: React.FC = () => {
     const [phoneNumber, setPhoneNumber] = useState(''); // phoneNumber 상태를 정의
     const [verificationCode, setVerificationCode] = useState(''); // verificationCode 상태를 정의
@@ -110,9 +112,12 @@ const Login: React.FC = () => {
         message: '',
     });
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅 사용
+    const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState); // recoil을 통한 로그인 상태 전역 관리
 
     // 타이머 훅 사용
     const { timer, resetTimer, stopTimer } = useTimer(INITIAL_TIMER_SECONDS);
+
+
 
     // Mock Adapter 테스트 코드
     const mock = new MockAdapter(axios);
@@ -121,7 +126,10 @@ const Login: React.FC = () => {
     });
     mock.onPost('http://localhost:8000/verify_sms/').reply(200, {
         token: 'mocked_token',
+        message: 'Auth successful'
+        // message: 'Verification successful, proceed to signup'
     });
+
 
     // 전화번호 입력 시 숫자만 입력하고, 하이픈을 추가하여 포맷
     const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,7 +187,15 @@ const Login: React.FC = () => {
                 setVerificationStatus({ sent: true, verified: true, message: '인증 성공' });
                 stopTimer();
                 localStorage.setItem('token', response.data.token);
-                navigate('/main');
+
+                if (response.data.message === "Auth successful") {
+                    setIsLoggedIn(true);
+                    // 등록된 사용자라면 main 페이지로 이동
+                    navigate('/main');
+                } else if (response.data.message === "Verification successful, proceed to signup") {
+                    // 등록되지 않은 사용자라면 signup 페이지로 이동
+                    navigate(`/signup?phone_number=${phoneNumber}`);
+                }
             } else {
                 setVerificationStatus({ sent: true, verified: false, message: '인증번호가 잘못되었습니다.' });
             }
@@ -237,4 +253,4 @@ const Login: React.FC = () => {
     );
 };
 
-export default Login; // Login 컴포넌트를 내보냅니다
+export default Login; // Auth 컴포넌트를 내보냅니다

@@ -17,14 +17,14 @@ const App: React.FC = () => {
         <Router> {/* Router 컴포넌트로 애플리케이션을 감쌉니다 */}
             <Routes> {/* Routes 컴포넌트로 라우트를 정의합니다 */}
                 <Route path="/" element={<Home />} /> {/* 기본 경로로 Home 컴포넌트를 렌더링합니다 */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Login />} /> {/* /login 경로로 Auth 컴포넌트를 렌더링합니다 */}
+                <Route path="/signup" element={<Signup />} /> {/* /signup 경로로 Signup 컴포넌트를 렌더링합니다 */}
 
-                <Route element={<ProtectedRoute />}>  // 로그인했을시에만 접근 가능한 protectedroute 구현
-                    <Route path="/apply" element={<Apply />} />
-                    <Route path="/userinfo" element={<UserInfo />} />
-                    <Route path="/main" element={<Main />} />
-                    <Route path="/listvm" element={<ListVM />} />
+                <Route element={<ProtectedRoute />}>
+                    <Route path="/apply" element={<Apply />} /> {/* /apply 경로로 Apply 컴포넌트를 렌더링합니다 */}
+                    <Route path="/userinfo" element={<UserInfo />} /> {/* /userinfo 경로로 UserInfo 컴포넌트를 렌더링합니다 */}
+                    <Route path="/main" element={<Main />} /> {/* /main 경로로 Main 컴포넌트를 렌더링합니다 */}
+                    <Route path="/listvm" element={<ListVM />} /> {/* /vmlist 경로로 List 컴포넌트를 렌더링합니다 */}
                     <Route path="/supportrequest" element={<SupportRequest />} />
                     <Route path="/extendrequest" element={<ExtendRequest />} />
                     <Route path="/extendrequest/:vmName" element={<ExtendRequest />} />
