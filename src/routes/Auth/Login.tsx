@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
 import styled from 'styled-components'; // styled-components를 임포트
 import { useRecoilState } from 'recoil';
 import { LoginState } from '../../recoil/authAtom';
+import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
