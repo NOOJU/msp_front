@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import axios from 'axios';
 import { MemoryRouter } from 'react-router-dom';
 import Login from './Login';
+import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 // axios 모듈을 모킹합니다.
 jest.mock('axios');
@@ -59,7 +60,7 @@ describe('Auth Component', () => {
         fireEvent.click(button); // 본인인증하기 버튼 클릭
 
         // 인증번호 전송 API가 호출되었는지 확인합니다.
-        await waitFor(() => expect(mockedAxios.post).toHaveBeenCalledWith('http://localhost:8000/send_sms/', { phone_number: '01012345678' }));
+        await waitFor(() => expect(mockedAxios.post).toHaveBeenCalledWith(`${API_BASE_URL}/send_sms/`, { phone_number: '01012345678' }));
 
         // 인증번호 입력 필드가 렌더링되는지 확인합니다.
         expect(screen.getByPlaceholderText('인증번호를 입력하세요')).toBeInTheDocument();
@@ -85,7 +86,7 @@ describe('Auth Component', () => {
         fireEvent.click(sendCodeButton); // 본인인증하기 버튼 클릭
 
         // 인증번호 전송 API가 호출되었는지 확인합니다.
-        await waitFor(() => expect(mockedAxios.post).toHaveBeenCalledWith('http://localhost:8000/send_sms/', { phone_number: '01012345678' }));
+        await waitFor(() => expect(mockedAxios.post).toHaveBeenCalledWith(`${API_BASE_URL}/send_sms/`, { phone_number: '01012345678' }));
 
         const codeInput = screen.getByPlaceholderText('인증번호를 입력하세요');
         fireEvent.change(codeInput, { target: { value: '123456' } }); // 인증번호 입력
@@ -93,7 +94,7 @@ describe('Auth Component', () => {
         fireEvent.click(verifyButton); // 인증하기 버튼 클릭
 
         // 인증번호 검증 API가 호출되었는지 확인합니다.
-        await waitFor(() => expect(mockedAxios.post).toHaveBeenCalledWith('http://localhost:8000/verify_sms/', { phone_number: '01012345678', auth_code: '123456' }));
+        await waitFor(() => expect(mockedAxios.post).toHaveBeenCalledWith(`${API_BASE_URL}/verify_sms/`, { phone_number: '01012345678', auth_code: '123456' }));
 
         // 로컬 스토리지에 토큰이 저장되었는지 확인합니다.
         expect(localStorage.getItem('token')).toBe('test-token');
@@ -119,7 +120,7 @@ describe('Auth Component', () => {
         fireEvent.click(sendCodeButton); // 본인인증하기 버튼 클릭
 
         // 인증번호 전송 API가 호출되었는지 확인합니다.
-        await waitFor(() => expect(mockedAxios.post).toHaveBeenCalledWith('http://localhost:8000/send_sms/', { phone_number: '01012345678' }));
+        await waitFor(() => expect(mockedAxios.post).toHaveBeenCalledWith(`${API_BASE_URL}/send_sms/`, { phone_number: '01012345678' }));
 
         const codeInput = screen.getByPlaceholderText('인증번호를 입력하세요');
         fireEvent.change(codeInput, { target: { value: '123456' } }); // 유효하지 않은 인증번호 입력
@@ -127,7 +128,7 @@ describe('Auth Component', () => {
         fireEvent.click(verifyButton); // 인증하기 버튼 클릭
 
         // 인증번호 검증 API가 호출되었는지 확인합니다.
-        await waitFor(() => expect(mockedAxios.post).toHaveBeenCalledWith('http://localhost:8000/verify_sms/', { phone_number: '01012345678', auth_code: '123456' }));
+        await waitFor(() => expect(mockedAxios.post).toHaveBeenCalledWith(`${API_BASE_URL}/verify_sms/`, { phone_number: '01012345678', auth_code: '123456' }));
 
         // 에러 메시지가 표시되는지 확인합니다.
         expect(global.alert).toHaveBeenCalledWith('인증번호가 일치하지 않습니다.');

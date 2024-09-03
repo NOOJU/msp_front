@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
@@ -41,7 +42,7 @@ const UserInfo: React.FC = () => {
         studentId: '2021123456',
         department: '컴퓨터공학과',
     };
-    mock.onGet('http://localhost:8000/userinfo').reply(200, mockUserInfo);
+    mock.onGet(`${API_BASE_URL}/userinfo`).reply(200, mockUserInfo);
 
 
 
@@ -49,7 +50,7 @@ const UserInfo: React.FC = () => {
         const fetchUserInfo = async () => {
             try {
                 // 사용자 정보를 가져오는 API 호출
-                const response = await axios.get('http://localhost:8000/userinfo', {
+                const response = await axios.get(`${API_BASE_URL}/userinfo`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}` // 토큰을 헤더에 포함
                     }

@@ -214,7 +214,7 @@ const Apply: React.FC = () => {
 
         try {
             // 서버에 폼 데이터 전송
-            const response = await axios.post('http://localhost:8000/vm-apply', formData, {
+            const response = await axios.post(`${API_BASE_URL}/vm-apply`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

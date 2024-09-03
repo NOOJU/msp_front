@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
+import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 const Container = styled.div`
     max-width: 400px;
@@ -81,7 +82,7 @@ const ExtendRequest: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8000/extend-request', formData, {
+            const response = await axios.post(`${API_BASE_URL}/extend-request`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
