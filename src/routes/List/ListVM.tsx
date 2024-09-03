@@ -3,6 +3,7 @@ import axios from 'axios'; // axios 임포트 (현재는 사용되지 않지만,
 import styled from 'styled-components'; // styled-components 임포트
 import dayjs from 'dayjs'; // dayjs 임포트하여 날짜 비교에 사용
 import { Link, useNavigate } from 'react-router-dom'; // Link 컴포넌트 임포트
+import { API_BASE_URL } from '../../config';  // config 파일에서 URL 가져오기
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
@@ -92,7 +93,7 @@ const ListVM: React.FC = () => {
         { id: '1', name: 'Web1', status: 'running', spec: '2core-4gb', os: 'Ubuntu 20.04', publicIp: '192.168.0.1', startDate: '2024-07-07', endDate: '2024-08-12' },
         { id: '2', name: 'Web2', status: 'stopped', spec: '4core-8gb', os: 'Ubuntu 22.04', publicIp: '192.168.0.2', startDate: '2024-02-01', endDate: '2024-08-31' },
     ];
-    mock.onGet('http://localhost:8000/vmlist').reply(200, mockData);
+    mock.onGet('${API_BASE_URL}/vmlist').reply(200, mockData);
 
 
 
@@ -100,7 +101,7 @@ const ListVM: React.FC = () => {
     useEffect(() => {
         const fetchVMList = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/vmlist', {
+                const response = await axios.get('${API_BASE_URL}/vmlist', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}` // 토큰을 헤더에 포함
                     }

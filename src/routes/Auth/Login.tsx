@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
 import styled from 'styled-components'; // styled-components를 임포트
 import { useRecoilState } from 'recoil';
 import { LoginState } from '../../recoil/authAtom';
+import { API_BASE_URL } from '../../config';  // config 파일에서 URL 가져오기
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
@@ -121,10 +122,10 @@ const Login: React.FC = () => {
 
     // Mock Adapter 테스트 코드
     const mock = new MockAdapter(axios);
-    mock.onPost('http://localhost:8000/send_sms/').reply(200, {
+    mock.onPost('${API_BASE_URL}/send_sms/').reply(200, {
         message: '인증번호가 전송되었습니다.',
     });
-    mock.onPost('http://localhost:8000/verify_sms/').reply(200, {
+    mock.onPost('${API_BASE_URL}/verify_sms/').reply(200, {
         token: 'mocked_token',
         message: 'Auth successful'
         // message: 'Verification successful, proceed to signup'
@@ -158,7 +159,7 @@ const Login: React.FC = () => {
 
         setError('');
         try {
-            const response = await axios.post('http://localhost:8000/send_sms/', { phone_number: phoneNumber });
+            const response = await axios.post('${API_BASE_URL}/send_sms/', { phone_number: phoneNumber });
             console.log(response.data);
             setIsCodeSent(true);
             setVerificationStatus({ ...verificationStatus, sent: true });
@@ -178,7 +179,7 @@ const Login: React.FC = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:8000/verify_sms/', {
+            const response = await axios.post('${API_BASE_URL}/verify_sms/', {
                 phone_number: phoneNumber,
                 auth_code: verificationCode,
             });
