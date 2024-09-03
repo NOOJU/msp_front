@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 
 const Container = styled.div`
     max-width: 400px;
@@ -211,7 +212,7 @@ const Apply: React.FC = () => {
 
         try {
             // 서버에 폼 데이터 전송
-            const response = await axios.post('${API_BASE_URL}/vm-apply', formData, {
+            const response = await axios.post(`${API_BASE_URL}/vm-apply`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

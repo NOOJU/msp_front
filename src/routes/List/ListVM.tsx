@@ -87,21 +87,20 @@ const ListVM: React.FC = () => {
     const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태 변수
     const navigate = useNavigate();
 
-    // Mock Adapter 테스트 코드
-    const mock = new MockAdapter(axios);
-    const mockData = [
-        { id: '1', name: 'Web1', status: 'running', spec: '2core-4gb', os: 'Ubuntu 20.04', publicIp: '192.168.0.1', startDate: '2024-07-07', endDate: '2024-08-12' },
-        { id: '2', name: 'Web2', status: 'stopped', spec: '4core-8gb', os: 'Ubuntu 22.04', publicIp: '192.168.0.2', startDate: '2024-02-01', endDate: '2024-08-31' },
-    ];
-    mock.onGet('${API_BASE_URL}/vmlist').reply(200, mockData);
-
+    // // Mock Adapter 테스트 코드
+    // const mock = new MockAdapter(axios);
+    // const mockData = [
+    //     { id: '1', name: 'Web1', status: 'running', spec: '2core-4gb', os: 'Ubuntu 20.04', publicIp: '192.168.0.1', startDate: '2024-07-07', endDate: '2024-08-12' },
+    //     { id: '2', name: 'Web2', status: 'stopped', spec: '4core-8gb', os: 'Ubuntu 22.04', publicIp: '192.168.0.2', startDate: '2024-02-01', endDate: '2024-08-31' },
+    // ];
+    // mock.onGet(`${API_BASE_URL}/vmlist`).reply(200, mockData);
 
 
     // 실제 API 호출을 사용하는 경우
     useEffect(() => {
         const fetchVMList = async () => {
             try {
-                const response = await axios.get('${API_BASE_URL}/vmlist', {
+                const response = await axios.get(`${API_BASE_URL}/vmlist`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}` // 토큰을 헤더에 포함
                     }

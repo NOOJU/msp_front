@@ -123,7 +123,7 @@ const Signup: React.FC = () => {
         });
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/signup/', formData);
+            const response = await axios.post(`${API_BASE_URL}/signup/`, formData);
             setSuccess('회원가입에 성공했습니다!');
             setError(null);
             console.log('Form Data Submitted:', response.data);

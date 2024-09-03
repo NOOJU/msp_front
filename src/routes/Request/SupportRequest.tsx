@@ -79,7 +79,7 @@ const SupportRequest: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await axios.post('${API_BASE_URL}/support-request', formData, {
+            const response = await axios.post(`${API_BASE_URL}/support-request`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

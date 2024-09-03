@@ -82,7 +82,7 @@ const ExtendRequest: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await axios.post('${API_BASE_URL}/extend-request', formData, {
+            const response = await axios.post(`${API_BASE_URL}/extend-request`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

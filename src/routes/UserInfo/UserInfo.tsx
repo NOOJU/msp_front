@@ -33,16 +33,16 @@ const UserInfo: React.FC = () => {
     const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태 변수
 
 
-    // Mock Adapter 테스트 코드
-    const mock = new MockAdapter(axios);
-    const mockUserInfo = {
-        name: '홍길동',
-        phone: '010-1234-5678',
-        email: 'honggildong@example.com',
-        studentId: '2021123456',
-        department: '컴퓨터공학과',
-    };
-    mock.onGet('${API_BASE_URL}/userinfo').reply(200, mockUserInfo);
+    // // Mock Adapter 테스트 코드
+    // const mock = new MockAdapter(axios);
+    // const mockUserInfo = {
+    //     name: '홍길동',
+    //     phone: '010-1234-5678',
+    //     email: 'honggildong@example.com',
+    //     studentId: '2021123456',
+    //     department: '컴퓨터공학과',
+    // };
+    // mock.onGet(`${API_BASE_URL}/userinfo`).reply(200, mockUserInfo);
 
 
 
@@ -50,7 +50,7 @@ const UserInfo: React.FC = () => {
         const fetchUserInfo = async () => {
             try {
                 // 사용자 정보를 가져오는 API 호출
-                const response = await axios.get('${API_BASE_URL}/userinfo', {
+                const response = await axios.get(`${API_BASE_URL}/userinfo`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}` // 토큰을 헤더에 포함
                     }
