@@ -92,3 +92,4 @@ describe('Apply Component', () => {
         expect(global.alert).toHaveBeenCalledWith('신청 제출에 실패했습니다.');
     });
 });
+
