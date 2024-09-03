@@ -101,6 +101,7 @@ const Apply: React.FC = () => {
         vmName: '',
         vmimage: '',
         vmSpec: '',
+        vmVolume: '',
         inboundRule: '',
         outboundRule: '',
         additionalRequest: '',
@@ -113,6 +114,7 @@ const Apply: React.FC = () => {
         vmName: '',
         vmimage: '',
         vmSpec: '',
+        vmVolume: '',
         inboundRule: '',
         outboundRule: '',
         additionalRequest: '',
@@ -125,6 +127,7 @@ const Apply: React.FC = () => {
         vmName: 'VM 이름',
         vmimage: '운영체제',
         vmSpec: '스펙',
+        vmVolume: '볼륨',
         inboundRule: '인바운드 규칙',
         outboundRule: '아웃바운드 규칙',
         additionalRequest: '기타 요청 사항',
@@ -194,7 +197,7 @@ const Apply: React.FC = () => {
         let hasError = false;
 
         // 필수 필드만 유효성 검사 (additionalRequest 제외)
-        const requiredFields = ['usage', 'applyReason', 'vmName', 'vmimage', 'vmSpec', 'inboundRule', 'outboundRule'];
+        const requiredFields = ['usage', 'applyReason', 'vmName', 'vmimage', 'vmSpec', 'vmVolume', 'inboundRule', 'outboundRule'];
 
         requiredFields.forEach((key) => {
             if (formData[key as keyof typeof formData].trim() === '') {
@@ -264,32 +267,41 @@ const Apply: React.FC = () => {
                     <Label>스펙</Label>
                     <Select name="vmSpec" value={formData.vmSpec} onChange={handleChange} isValid={errors.vmSpec === ''}>
                         <option value="" disabled>옵션을 선택해 주세요</option>
-                        <option value="2core-4gb">2 vCPU, 4GiB memory, SSD 30GB</option>
-                        <option value="4core-8gb">4 vCPU, 8GiB memory, SSD 30GB</option>
-                        <option value="over-spec">상위 스펙은 검토 후 제공</option>
+                        <option value="2 vCPU, 8GiB memory (m2a.large)">2 vCPU, 8GiB memory (m2a.large)</option>
+                        <option value="4 vCPU, 16GiB memory (m2a.xlarge)">4 vCPU, 16GiB memory (m2a.xlarge)</option>
+                        {/*<option value="over-spec">상위 스펙은 검토 후 제공</option>*/}
                     </Select>
                     {errors.vmSpec && <ErrorMessage>{errors.vmSpec}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
-                    <Label>운영체제</Label>
-                    <Select name="vmimage" value={formData.vmimage} onChange={handleChange} isValid={errors.vmimage === ''}>
+                    <Label>볼륨</Label>
+                    <Select name="vmVolume" value={formData.vmVolume} onChange={handleChange} isValid={errors.vmVolume === ''}>
                         <option value="" disabled>옵션을 선택해 주세요</option>
-                        <option value="centos-8">CentOS 8</option>
+                        <option value="30GB">SSD 30GB</option>
+                        <option value="50GB">SSD 50GB</option>
+                    </Select>
+                    {errors.vmVolume && <ErrorMessage>{errors.vmVolume}</ErrorMessage>}
+                </FormGroup>
+                <FormGroup>
+                    <Label>운영체제</Label>
+                    <Select name="vmimage" value={formData.vmimage} onChange={handleChange}
+                            isValid={errors.vmimage === ''}>
+                        <option value="" disabled>옵션을 선택해 주세요</option>
+                        <option value="centos-9">CentOS 9</option>
                         <option value="ubuntu-20.04">Ubuntu 20.04</option>
                         <option value="ubuntu-22.04">Ubuntu 22.04</option>
-                        <option value="window-server-2019">Windows Server 2019</option>
-                        <option value="window-server-2022">Windows Server 2022</option>
+                        <option value="ubuntu-24.04">Ubuntu 24.04</option>
                     </Select>
                     {errors.vmimage && <ErrorMessage>{errors.vmimage}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
                     <Label>인바운드 규칙</Label>
-                    <Input type="text" name="inboundRule" value={formData.inboundRule} onChange={handleChange} isValid={errors.inboundRule === ''} />
+                    <Input type="text" name="inboundRule" value={formData.inboundRule} placeholder={"ex) 22:tcp:0.0.0.0/0, 80:tcp:0.0.0.0/0"} onChange={handleChange} isValid={errors.inboundRule === ''} />
                     {errors.inboundRule && <ErrorMessage>{errors.inboundRule}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
                     <Label>아웃바운드 규칙 </Label>
-                    <Input type="text" name="outboundRule" value={formData.outboundRule} onChange={handleChange} isValid={errors.outboundRule === ''} />
+                    <Input type="text" name="outboundRule" value={formData.outboundRule} placeholder={"ex) ALL:0.0.0.0/0"} onChange={handleChange} isValid={errors.outboundRule === ''} />
                     {errors.outboundRule && <ErrorMessage>{errors.outboundRule}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
