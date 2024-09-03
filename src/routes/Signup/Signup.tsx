@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { LoginState } from '../../recoil/authAtom';
+import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 // 스타일 컴포넌트
 const Container = styled.div`
@@ -122,7 +123,7 @@ const Signup: React.FC = () => {
         });
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/signup/', formData);
+            const response = await axios.post(`${API_BASE_URL}/signup/`, formData);
             setSuccess('회원가입에 성공했습니다!');
             setError(null);
             console.log('Form Data Submitted:', response.data);
