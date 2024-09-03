@@ -36,6 +36,7 @@ const Input = styled.input`
     padding: 0.5em;
     border: 1px solid #ced4da;
     border-radius: 4px;
+    background-color: ${props => props.disabled ? '#e9ecef' : 'white'}; /* 수정 불가 시 배경색 변경 */
 `;
 
 const Button = styled.button`
@@ -123,6 +124,9 @@ const Signup: React.FC = () => {
         });
 
         try {
+            // 데이터 전송 전 출력하여 확인 (디버깅용)
+            console.log('Submitting form data:', formData);
+
             const response = await axios.post(`${API_BASE_URL}/signup/`, formData);
             setSuccess('회원가입에 성공했습니다!');
             setError(null);
@@ -193,6 +197,7 @@ const Signup: React.FC = () => {
                         name="contact"
                         value={formData.contact}
                         onChange={handleChange}
+                        disabled // 수정 불가 설정
                         required
                     />
                     {validationErrors.contact && <ErrorMessage>{validationErrors.contact}</ErrorMessage>}
