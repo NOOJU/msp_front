@@ -127,7 +127,7 @@ const Signup: React.FC = () => {
             setError(null);
             console.log('Form Data Submitted:', response.data);
             setIsLoggedIn(true); // 로그인 전역 상태 관리
-            navigate('/Home'); // 회원가입 성공 시 /Home 경로로 이동
+            navigate('/main'); // 회원가입 성공 시 /main 경로로 이동
         } catch (error) {
             setError('회원가입에 실패했습니다. 다시 시도해 주세요.');
             setSuccess(null);

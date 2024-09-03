@@ -126,7 +126,7 @@ const Login: React.FC = () => {
     });
     mock.onPost('http://localhost:8000/verify_sms/').reply(200, {
         token: 'mocked_token',
-        message: 'Auth successful'
+        message: 'Login successful'
         // message: 'Verification successful, proceed to signup'
     });
 
@@ -183,18 +183,22 @@ const Login: React.FC = () => {
                 auth_code: verificationCode,
             });
 
+            // 코드 다듬기 필요!!
+            if (response.data.message === "Verification successful, proceed to signup") {
+                // 등록되지 않은 사용자라면 signup 페이지로 이동
+                navigate(`/signup?phone_number=${phoneNumber}`);
+            }
+
             if (response.data.token) {
                 setVerificationStatus({ sent: true, verified: true, message: '인증 성공' });
                 stopTimer();
                 localStorage.setItem('token', response.data.token);
+                console.log(response);
 
-                if (response.data.message === "Auth successful") {
+                if (response.data.message === "Login successful") {
                     setIsLoggedIn(true);
                     // 등록된 사용자라면 main 페이지로 이동
                     navigate('/main');
-                } else if (response.data.message === "Verification successful, proceed to signup") {
-                    // 등록되지 않은 사용자라면 signup 페이지로 이동
-                    navigate(`/signup?phone_number=${phoneNumber}`);
                 }
             } else {
                 setVerificationStatus({ sent: true, verified: false, message: '인증번호가 잘못되었습니다.' });

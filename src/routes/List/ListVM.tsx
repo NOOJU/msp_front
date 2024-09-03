@@ -12,7 +12,7 @@ import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
 // 스타일 컴포넌트 정의
 const Container = styled.div`
-    max-width: 800px;
+    max-width: 900px;
     margin: 2em auto;
     padding: 2em;
     background-color: #f8f9fa;
@@ -89,8 +89,8 @@ const ListVM: React.FC = () => {
     // Mock Adapter 테스트 코드
     const mock = new MockAdapter(axios);
     const mockData = [
-        { id: '1', name: 'Web1', status: 'running', spec: '2core-4gb', os: 'Ubuntu 20.04', publicIp: '192.168.0.1', startDate: '2024-07-07', endDate: '2024-08-12' },
-        { id: '2', name: 'Web2', status: 'stopped', spec: '4core-8gb', os: 'Ubuntu 22.04', publicIp: '192.168.0.2', startDate: '2024-02-01', endDate: '2024-08-31' },
+        { id: '1', name: 'Web1', status: '완료', spec: '2core-4gb', os: 'Ubuntu 20.04', publicIp: '192.168.0.1', startDate: '2024-07-07', endDate: '2024-08-12' },
+        { id: '2', name: 'Web2', status: '대기', spec: '4core-8gb', os: 'Ubuntu 22.04', publicIp: '192.168.0.2', startDate: '2024-02-01', endDate: '2024-08-31' },
     ];
     mock.onGet('http://localhost:8000/vmlist').reply(200, mockData);
 
@@ -100,7 +100,7 @@ const ListVM: React.FC = () => {
     useEffect(() => {
         const fetchVMList = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/vmlist', {
+                const response = await axios.get('http://localhost:8000/user_instances/{student_number}', {  // 학번 디코딩 및 삽입 구현 필요
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}` // 토큰을 헤더에 포함
                     }
@@ -109,7 +109,7 @@ const ListVM: React.FC = () => {
                 setVmList(response.data); // API 응답 데이터를 상태에 저장
             } catch (error) {
                 setError('VM 목록을 가져오는데 실패했습니다.'); // 에러 발생 시 메시지 설정
-                alert('VM 목록을 가져오는데 실패했습니다.');
+                alert(error);
             }
         };
         fetchVMList(); // 컴포넌트 마운트 시 API 호출
@@ -123,6 +123,7 @@ const ListVM: React.FC = () => {
 
     // 삭제 요청 처리 함수
     const handleDeleteRequest = (vmName: string) => {
+        //삭제 로직 구현 필요!!
         alert(`${vmName}에 대한 삭제 요청이 처리되었습니다.`);
     };
 
@@ -147,7 +148,8 @@ const ListVM: React.FC = () => {
             <Table>
                 <thead>
                 <tr>
-                    <Th>VM 이름</Th><Th>상태</Th><Th>Spec</Th><Th>Image</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장 요청</Th><Th>삭제 요청</Th>
+                    <Th>VM 이름</Th><Th>status</Th><Th>Spec</Th><Th>Image</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장
+                    요청</Th><Th>삭제 요청</Th>
                 </tr>
                 </thead>
                 <tbody>
