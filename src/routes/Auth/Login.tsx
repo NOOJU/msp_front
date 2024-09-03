@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { LoginState } from '../../recoil/authAtom';
-import { API_BASE_URL } from '../../config';
+import { API_BASE_URL } from '../../config';  // config 파일에서 API_BASE_URL 가져오기
 
+// 매직넘버 상수로 관리
 const INITIAL_TIMER_SECONDS = 180;
 const PHONE_NUMBER_LENGTH = 11;
 const VERIFICATION_CODE_LENGTH = 6;
 
+// 스타일 컴포넌트
 const Container = styled.div`
     max-width: 400px;
     margin: 2em auto;
@@ -70,6 +72,7 @@ const Timer = styled.div`
     margin-bottom: 1em;
 `;
 
+// 타이머 훅 구현
 function useTimer(initialSeconds: number) {
     const [timer, setTimer] = useState(initialSeconds);
     const [isActive, setIsActive] = useState(false);
@@ -96,19 +99,21 @@ function useTimer(initialSeconds: number) {
     return { timer, resetTimer, stopTimer };
 }
 
+// Auth 컴포넌트 정의
 const Login: React.FC = () => {
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [verificationCode, setVerificationCode] = useState('');
-    const [isCodeSent, setIsCodeSent] = useState(false);
-    const [error, setError] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState(''); // phoneNumber 상태를 정의
+    const [verificationCode, setVerificationCode] = useState(''); // verificationCode 상태를 정의
+    const [isCodeSent, setIsCodeSent] = useState(false); // 인증번호 전송 여부를 나타내는 상태를 정의
+    const [error, setError] = useState(''); // 에러 메시지를 나타내는 상태를 정의
     const [verificationStatus, setVerificationStatus] = useState({
         sent: false,
         verified: false,
         message: '',
     });
-    const navigate = useNavigate();
-    const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState);
+    const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅 사용
+    const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState); // recoil을 통한 로그인 상태 전역 관리
 
+    // 타이머 훅 사용
     const { timer, resetTimer, stopTimer } = useTimer(INITIAL_TIMER_SECONDS);
 
     // Mock Adapter 테스트 코드 주석 처리
@@ -123,6 +128,7 @@ const Login: React.FC = () => {
     });
     */
 
+    // 전화번호 입력 시 숫자만 입력하고, 하이픈을 추가하여 포맷
     const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const numbersOnly = e.target.value.replace(/\D/g, '');
         if (numbersOnly.length <= PHONE_NUMBER_LENGTH) {
@@ -140,6 +146,7 @@ const Login: React.FC = () => {
         }
     };
 
+    // 인증번호 전송 함수
     const handleSendCode = async () => {
         if (phoneNumber.length !== PHONE_NUMBER_LENGTH) {
             setError('유효한 휴대폰 번호를 입력하세요.');
@@ -160,6 +167,7 @@ const Login: React.FC = () => {
         }
     };
 
+    // 인증번호 검증 함수
     const handleVerifyCode = async () => {
         if (verificationCode.length !== VERIFICATION_CODE_LENGTH) {
             setVerificationStatus({ sent: true, verified: false, message: '인증번호가 잘못되었습니다.' });
@@ -173,16 +181,15 @@ const Login: React.FC = () => {
             });
 
             if (response.data.token) {
+                // Phone number is registered, log in the user
                 setVerificationStatus({ sent: true, verified: true, message: '인증 성공' });
                 stopTimer();
                 localStorage.setItem('token', response.data.token);
-
-                if (response.data.message === "Auth successful") {
-                    setIsLoggedIn(true);
-                    navigate('/main');
-                } else if (response.data.message === "Verification successful, proceed to signup") {
-                    navigate(`/signup?phone_number=${phoneNumber}`);
-                }
+                navigate('/main');
+            } else if (response.data.message === "Verification successful, proceed to signup") {
+                // Phone number is not registered, redirect to signup
+                alert('회원가입이 필요합니다.');
+                navigate(`/signup?phone_number=${phoneNumber}`);
             } else {
                 setVerificationStatus({ sent: true, verified: false, message: '인증번호가 잘못되었습니다.' });
             }
@@ -201,7 +208,7 @@ const Login: React.FC = () => {
 
     return (
         <Container>
-            <Title>로그인</Title>
+            <Title>전화번호 인증</Title>
             <FormGroup>
                 <Label>휴대폰 번호</Label>
                 <Input
@@ -240,4 +247,4 @@ const Login: React.FC = () => {
     );
 };
 
-export default Login;
+export default Login; // Auth 컴포넌트를 내보냅니다

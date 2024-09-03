@@ -44,10 +44,7 @@ const Home: React.FC = () => (
     <Container>
         <Title>가상머신 신청 사이트</Title>
         <ButtonLink to="/login">
-            <Button>로그인</Button>
-        </ButtonLink>
-        <ButtonLink to="/signup">
-            <Button>회원가입</Button>
+            <Button>로그인/회원가입</Button>
         </ButtonLink>
     </Container>
 );
