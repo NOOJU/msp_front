@@ -118,6 +118,8 @@ const Login: React.FC = () => {
     // 타이머 훅 사용
     const { timer, resetTimer, stopTimer } = useTimer(INITIAL_TIMER_SECONDS);
 
+
+
     // Mock Adapter 테스트 코드
     // const mock = new MockAdapter(axios);
     // mock.onPost(`${API_BASE_URL}/send_sms/`).reply(200, {
@@ -169,7 +171,7 @@ const Login: React.FC = () => {
         }
     };
 
-    //TODO: 인증번호 검증 함수
+    // 인증번호 검증 함수
     const handleVerifyCode = async () => {
         if (verificationCode.length !== VERIFICATION_CODE_LENGTH) {
             setVerificationStatus({ sent: true, verified: false, message: '인증번호가 잘못되었습니다.' });
