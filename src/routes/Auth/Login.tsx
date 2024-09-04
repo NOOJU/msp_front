@@ -118,8 +118,6 @@ const Login: React.FC = () => {
     // 타이머 훅 사용
     const { timer, resetTimer, stopTimer } = useTimer(INITIAL_TIMER_SECONDS);
 
-
-
     // Mock Adapter 테스트 코드
     // const mock = new MockAdapter(axios);
     // mock.onPost(`${API_BASE_URL}/send_sms/`).reply(200, {
