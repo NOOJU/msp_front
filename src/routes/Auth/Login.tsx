@@ -159,10 +159,7 @@ const Login: React.FC = () => {
 
         setError('');
         try {
-            const response = await axios.post(`${API_BASE_URL}/send_sms/`,
-                { phone_number: phoneNumber },  // 요청 데이터
-                { withCredentials: true }  // 자격 증명 옵션 추가
-            );
+            const response = await axios.post(`${API_BASE_URL}/send_sms/`, { phone_number: phoneNumber });
             console.log(response.data);
             setIsCodeSent(true);
             setVerificationStatus({ ...verificationStatus, sent: true });
@@ -182,13 +179,10 @@ const Login: React.FC = () => {
         }
 
         try {
-            const response = await axios.post(`${API_BASE_URL}/verify_sms/`,
-                {
-                    phone_number: phoneNumber,
-                    auth_code: verificationCode,
-                },  // 요청 데이터
-                { withCredentials: true }  // 자격 증명 옵션 추가
-            );
+            const response = await axios.post(`${API_BASE_URL}/verify_sms/`, {
+                phone_number: phoneNumber,
+                auth_code: verificationCode,
+            });
 
             // 코드 다듬기 필요!!
             if (response.data.message === "Verification successful, proceed to signup") {
