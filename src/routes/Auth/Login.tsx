@@ -121,15 +121,15 @@ const Login: React.FC = () => {
 
 
     // Mock Adapter 테스트 코드
-    const mock = new MockAdapter(axios);
-    mock.onPost(`${API_BASE_URL}/send_sms/`).reply(200, {
-        message: '인증번호가 전송되었습니다.',
-    });
-    mock.onPost(`${API_BASE_URL}/verify_sms/`).reply(200, {
-        token: 'mocked_token',
-        message: 'Login successful'
-        // message: 'Verification successful, proceed to signup'
-    });
+    // const mock = new MockAdapter(axios);
+    // mock.onPost(`${API_BASE_URL}/send_sms/`).reply(200, {
+    //     message: '인증번호가 전송되었습니다.',
+    // });
+    // mock.onPost(`${API_BASE_URL}/verify_sms/`).reply(200, {
+    //     token: 'mocked_token',
+    //     message: 'Login successful'
+    //     // message: 'Verification successful, proceed to signup'
+    // });
 
 
     // 전화번호 입력 시 숫자만 입력하고, 하이픈을 추가하여 포맷
@@ -159,7 +159,10 @@ const Login: React.FC = () => {
 
         setError('');
         try {
-            const response = await axios.post(`${API_BASE_URL}/send_sms/`, { phone_number: phoneNumber });
+            const response = await axios.post(`${API_BASE_URL}/send_sms/`,
+                { phone_number: phoneNumber },  // 요청 데이터
+                { withCredentials: true }  // 자격 증명 옵션 추가
+            );
             console.log(response.data);
             setIsCodeSent(true);
             setVerificationStatus({ ...verificationStatus, sent: true });
@@ -171,7 +174,7 @@ const Login: React.FC = () => {
         }
     };
 
-    // 인증번호 검증 함수
+    //TODO: 인증번호 검증 함수
     const handleVerifyCode = async () => {
         if (verificationCode.length !== VERIFICATION_CODE_LENGTH) {
             setVerificationStatus({ sent: true, verified: false, message: '인증번호가 잘못되었습니다.' });
@@ -179,10 +182,13 @@ const Login: React.FC = () => {
         }
 
         try {
-            const response = await axios.post(`${API_BASE_URL}/verify_sms/`, {
-                phone_number: phoneNumber,
-                auth_code: verificationCode,
-            });
+            const response = await axios.post(`${API_BASE_URL}/verify_sms/`,
+                {
+                    phone_number: phoneNumber,
+                    auth_code: verificationCode,
+                },  // 요청 데이터
+                { withCredentials: true }  // 자격 증명 옵션 추가
+            );
 
             // 코드 다듬기 필요!!
             if (response.data.message === "Verification successful, proceed to signup") {
