@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
+import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
+import {API_BASE_URL2} from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
+
 
 const Container = styled.div`
     max-width: 400px;
@@ -96,6 +98,7 @@ const ErrorMessage = styled.div`
 
 
 const Apply: React.FC = () => {
+    const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅 사용
     const [formData, setFormData] = useState({
         usage: '',
         applyReason: '',
@@ -215,7 +218,7 @@ const Apply: React.FC = () => {
 
         try {
             // 서버에 폼 데이터 전송
-            const response = await axios.post(`${API_BASE_URL}/vm-apply`, formData, {
+            const response = await axios.post(`${API_BASE_URL2}/make_pr`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -223,6 +226,8 @@ const Apply: React.FC = () => {
 
             if (response.status === 200) {
                 alert('제출 완료되었습니다.');
+                navigate('/listvm')
+
             } else {
                 throw new Error('서버 응답 오류');
             }
@@ -241,7 +246,7 @@ const Apply: React.FC = () => {
                     <Label>사용 목적</Label>
                     <Select name="usage" value={formData.usage} onChange={handleChange} isValid={errors.usage === ''}>
                         <option value="" disabled>옵션을 선택해 주세요</option>
-                        <option value="personal">개인 프로젝트</option>
+                        <option value="Development">개인 프로젝트</option>
                         <option value="Team">팀 프로젝트</option>
                         <option value="School">학교 수업</option>
                         <option value="research">연구 </option>
@@ -249,7 +254,7 @@ const Apply: React.FC = () => {
                     {errors.usage && <ErrorMessage>{errors.usage}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
-                <Label>사용 목적 설명 (자세하게 작성)</Label>
+                    <Label>사용 목적 설명 (자세하게 작성)</Label>
                     <TextArea name="applyReason" value={formData.applyReason} onChange={handleChange} isValid={errors.applyReason === ''} />
                     {errors.applyReason && <ErrorMessage>{errors.applyReason}</ErrorMessage>}
                 </FormGroup>
@@ -268,8 +273,8 @@ const Apply: React.FC = () => {
                     <Label>스펙</Label>
                     <Select name="vmSpec" value={formData.vmSpec} onChange={handleChange} isValid={errors.vmSpec === ''}>
                         <option value="" disabled>옵션을 선택해 주세요</option>
-                        <option value="2 vCPU, 8GiB memory (m2a.large)">2 vCPU, 8GiB memory (m2a.large)</option>
-                        <option value="4 vCPU, 16GiB memory (m2a.xlarge)">4 vCPU, 16GiB memory (m2a.xlarge)</option>
+                        <option value="m2a.large">2 vCPU, 8GiB memory (m2a.large)</option>
+                        <option value="m2a.xlarge">4 vCPU, 16GiB memory (m2a.xlarge)</option>
                         {/*<option value="over-spec">상위 스펙은 검토 후 제공</option>*/}
                     </Select>
                     {errors.vmSpec && <ErrorMessage>{errors.vmSpec}</ErrorMessage>}
@@ -278,8 +283,8 @@ const Apply: React.FC = () => {
                     <Label>볼륨</Label>
                     <Select name="vmVolume" value={formData.vmVolume} onChange={handleChange} isValid={errors.vmVolume === ''}>
                         <option value="" disabled>옵션을 선택해 주세요</option>
-                        <option value="30GB">SSD 30GB</option>
-                        <option value="50GB">SSD 50GB</option>
+                        <option value="30">SSD 30GB</option>
+                        <option value="50">SSD 50GB</option>
                     </Select>
                     {errors.vmVolume && <ErrorMessage>{errors.vmVolume}</ErrorMessage>}
                 </FormGroup>
@@ -288,10 +293,10 @@ const Apply: React.FC = () => {
                     <Select name="vmimage" value={formData.vmimage} onChange={handleChange}
                             isValid={errors.vmimage === ''}>
                         <option value="" disabled>옵션을 선택해 주세요</option>
-                        <option value="centos-9">CentOS 9</option>
-                        <option value="ubuntu-20.04">Ubuntu 20.04</option>
-                        <option value="ubuntu-22.04">Ubuntu 22.04</option>
-                        <option value="ubuntu-24.04">Ubuntu 24.04</option>
+                        <option value="centos 9">CentOS 9</option>
+                        <option value="ubuntu 20.04">Ubuntu 20.04</option>
+                        <option value="ubuntu 22.04">Ubuntu 22.04</option>
+                        <option value="ubuntu 24.04">Ubuntu 24.04</option>
                     </Select>
                     {errors.vmimage && <ErrorMessage>{errors.vmimage}</ErrorMessage>}
                 </FormGroup>
