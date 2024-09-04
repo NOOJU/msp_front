@@ -101,6 +101,26 @@ function useTimer(initialSeconds: number) {
     return { timer, resetTimer, stopTimer };
 }
 
+// JWT 디코딩 함수
+function parseJwt(token: string) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+            atob(base64)
+                .split('')
+                .map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                })
+                .join('')
+        );
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Invalid token format', error);
+        return null;
+    }
+}
+
 // Auth 컴포넌트 정의
 const Login: React.FC = () => {
     const [phoneNumber, setPhoneNumber] = useState(''); // phoneNumber 상태를 정의
@@ -119,17 +139,19 @@ const Login: React.FC = () => {
     const { timer, resetTimer, stopTimer } = useTimer(INITIAL_TIMER_SECONDS);
 
 
-
     // Mock Adapter 테스트 코드
-    // const mock = new MockAdapter(axios);
-    // mock.onPost(`${API_BASE_URL}/send_sms/`).reply(200, {
-    //     message: '인증번호가 전송되었습니다.',
-    // });
-    // mock.onPost(`${API_BASE_URL}/verify_sms/`).reply(200, {
-    //     token: 'mocked_token',
-    //     message: 'Login successful'
-    //     // message: 'Verification successful, proceed to signup'
-    // });
+    const mock = new MockAdapter(axios);
+    const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +  // Header 부분
+        'eyJzdWIiOiIyMDIxMTAxMDA3IiwibmFtZSI6Ik1vY2tVc2VyIn0.' + // Payload 부분
+        'SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';  // Signature 부분
+
+    mock.onPost(`${API_BASE_URL}/send_sms/`).reply(200, {
+        message: '인증번호가 전송되었습니다.',
+    });
+    mock.onPost(`${API_BASE_URL}/verify_sms/`).reply(200, {
+        token: mockToken,  // 유효한 JWT 형식의 가짜 토큰 사용
+        message: 'Login successful'
+    });
 
 
     // 전화번호 입력 시 숫자만 입력하고, 하이픈을 추가하여 포맷
@@ -184,21 +206,18 @@ const Login: React.FC = () => {
                 auth_code: verificationCode,
             });
 
-            // 코드 다듬기 필요!!
-            if (response.data.message === "Verification successful, proceed to signup") {
-                // 등록되지 않은 사용자라면 signup 페이지로 이동
-                navigate(`/signup?phone_number=${phoneNumber}`);
-            }
-
             if (response.data.token) {
                 setVerificationStatus({ sent: true, verified: true, message: '인증 성공' });
                 stopTimer();
                 localStorage.setItem('token', response.data.token);
-                console.log(response);
+                console.log('Token:', response.data.token); // 토큰 출력 (확인용)
+
+                // 토큰 디코딩 후 확인
+                const decodedToken = parseJwt(response.data.token);
+                console.log('Decoded Token:', decodedToken);  // 디코딩된 토큰 확인
 
                 if (response.data.message === "Login successful") {
                     setIsLoggedIn(true);
-                    // 등록된 사용자라면 main 페이지로 이동
                     navigate('/main');
                 }
             } else {

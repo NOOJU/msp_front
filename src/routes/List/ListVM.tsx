@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'; // React와 훅 임포트
+import React, {useEffect, useState} from 'react'; // React와 훅 임포트
 import axios from 'axios'; // axios 임포트 (현재는 사용되지 않지만, 실제 API 사용 시 필요)
 import styled from 'styled-components'; // styled-components 임포트
 import dayjs from 'dayjs'; // dayjs 임포트하여 날짜 비교에 사용
-import { Link, useNavigate } from 'react-router-dom'; // Link 컴포넌트 임포트
-import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
+import {Link, useNavigate} from 'react-router-dom'; // Link 컴포넌트 임포트
+import {API_BASE_URL} from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 // const jwt_decode = require('jwt-decode');  // require 방식으로 가져오기
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
@@ -105,7 +105,7 @@ const ListVM: React.FC = () => {
     const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태 변수
     const navigate = useNavigate();
 
-    // Mock Adapter 테스트 코드
+    // Mock Adapter 테스트 코드(아님)
     // const mock = new MockAdapter(axios);
     // const mockData = [
     //     { id: '1', name: 'Web1', status: '완료', spec: '2core-4gb', os: 'Ubuntu 20.04', publicIp: '192.168.0.1', startDate: '2024-07-07', endDate: '2024-08-12' },
@@ -113,26 +113,75 @@ const ListVM: React.FC = () => {
     // ];
     // mock.onGet(`${API_BASE_URL}/vmlist`).reply(200, mockData);
 
+
+    // Mock Adapter 테스트 코드
+    const mock = new MockAdapter(axios);
+
+    // 가짜 토큰 데이터 (student_number가 포함된 토큰)
+    const mockToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +  // Header 부분
+        'eyJzdWIiOiIyMDIxMTAxMDA3IiwibmFtZSI6Ik1vY2tVc2VyIn0.' + // Payload 부분
+        'SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';  // Signature 부분
+
+    // Mock 데이터를 학번에 맞게 설정
+    // mockData를 문자열 인덱스로 접근할 수 있도록 타입 정의 수정
+    const mockData: { [key: string]: { id: string; name: string; spec: string; os: string; publicIp: string; startDate: string; endDate: string; status: string }[] } = {
+        '2021101007': [
+            {
+                id: '1',
+                name: 'TestVM1',
+                spec: '2core-4gb',
+                os: 'Ubuntu 20.04',
+                publicIp: '192.168.1.1',
+                startDate: '2023-07-01',
+                endDate: '2023-12-31',
+                status: 'Active',
+            },
+        ],
+        '2021111111': [
+            {
+                id: '2',
+                name: 'TestVM2',
+                spec: '4core-8gb',
+                os: 'CentOS 7',
+                publicIp: '192.168.1.2',
+                startDate: '2023-01-01',
+                endDate: '2023-06-30',
+                status: 'Pending',
+            },
+        ],
+    };
+
     // 실제 API 호출을 사용하는 경우
     useEffect(() => {
         const fetchVMList = async () => {
             try {
-                const token = localStorage.getItem('token');
+                // 실제 환경에서는 이걸 사용
+                // const realToken = localStorage.getItem('token');  // 실제 토큰 사용 시
+                // console.log('Original Token:', realToken);  // 원래의 토큰 출력
+
+                // mockToken 사용 시
+                const token = mockToken;
+                console.log('Mock Token:', token);  // 치환된 토큰 출력
+
                 if (token) {
                     const decodedToken = parseJwt(token);  // JWT 직접 디코딩
                     console.log('Decoded Token:', decodedToken);  // 콘솔에 디코딩된 토큰 출력
 
                     if (decodedToken) {
-                        const studentNumber = decodedToken.sub;  // 학번 추출
+                        const studentNumber: string = decodedToken.sub;  // 학번 추출  // 학번 추출
                         console.log('Student Number:', studentNumber);  // 학번 출력
 
-                        const response = await axios.get(`${API_BASE_URL}/user_instances/${studentNumber}`, {
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
+                        // 실제 API 호출 주석 처리
+                        // const response = await axios.get(`${API_BASE_URL}/user_instances/${studentNumber}`, {
+                        //     headers: {
+                        //         'Authorization': `Bearer ${token}`
+                        //     }
+                        // });
 
-                        console.log('VM List Response:', response.data);  // API 응답 데이터 출력
+                        // Mock 데이터를 사용하여 response 대체
+                        const response = { data: mockData[studentNumber] || [] };  // 학번에 맞는 mock 데이터 반환
+                        console.log('Mock VM List Response:', response.data);  // Mock 데이터 출력
+
                         setVmList(response.data);
                     } else {
                         setError('유효하지 않은 토큰입니다.');
@@ -182,7 +231,8 @@ const ListVM: React.FC = () => {
             <Table>
                 <thead>
                 <tr>
-                    <Th>VM 이름</Th><Th>status</Th><Th>Spec</Th><Th>Image</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장
+                    <Th>VM 이름</Th><Th>status</Th><Th>Spec</Th><Th>Image</Th><Th>Public
+                    IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장
                     요청</Th><Th>삭제 요청</Th>
                 </tr>
                 </thead>
