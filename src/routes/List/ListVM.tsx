@@ -4,9 +4,9 @@ import styled from 'styled-components'; // styled-components 임포트
 import dayjs from 'dayjs'; // dayjs 임포트하여 날짜 비교에 사용
 import { Link, useNavigate } from 'react-router-dom'; // Link 컴포넌트 임포트
 import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
-// const jwt_decode = require('jwt-decode');  // require 방식으로 가져오기
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
+
 
 // 스타일 컴포넌트 정의
 const Container = styled.div`
@@ -78,34 +78,13 @@ const CreateButton = styled(Link)`
     }
 `;
 
-
-// JWT 디코딩 함수
-function parseJwt(token: string) {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(
-            atob(base64)
-                .split('')
-                .map(function (c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                })
-                .join('')
-        );
-        return JSON.parse(jsonPayload);
-    } catch (error) {
-        console.error('Invalid token format', error);
-        return null;
-    }
-}
-
 // List 컴포넌트 정의
 const ListVM: React.FC = () => {
     const [vmList, setVmList] = useState<any[]>([]); // VM 목록을 저장할 상태 변수
     const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태 변수
     const navigate = useNavigate();
 
-    // Mock Adapter 테스트 코드
+    // // Mock Adapter 테스트 코드
     // const mock = new MockAdapter(axios);
     // const mockData = [
     //     { id: '1', name: 'Web1', status: '완료', spec: '2core-4gb', os: 'Ubuntu 20.04', publicIp: '192.168.0.1', startDate: '2024-07-07', endDate: '2024-08-12' },
@@ -113,41 +92,25 @@ const ListVM: React.FC = () => {
     // ];
     // mock.onGet(`${API_BASE_URL}/vmlist`).reply(200, mockData);
 
+
     // 실제 API 호출을 사용하는 경우
     useEffect(() => {
         const fetchVMList = async () => {
             try {
-                const token = localStorage.getItem('token');
-                if (token) {
-                    const decodedToken = parseJwt(token);  // JWT 직접 디코딩
-                    console.log('Decoded Token:', decodedToken);  // 콘솔에 디코딩된 토큰 출력
-
-                    if (decodedToken) {
-                        const studentNumber = decodedToken.sub;  // 학번 추출
-                        console.log('Student Number:', studentNumber);  // 학번 출력
-
-                        const response = await axios.get(`${API_BASE_URL}/user_instances/${studentNumber}`, {
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
-
-                        console.log('VM List Response:', response.data);  // API 응답 데이터 출력
-                        setVmList(response.data);
-                    } else {
-                        setError('유효하지 않은 토큰입니다.');
+                const response = await axios.get(`${API_BASE_URL}/user_instances`, {  // 학번 디코딩 및 삽입 구현 필요
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}` // 토큰을 헤더에 포함
                     }
-                } else {
-                    setError('로그인이 필요합니다.');
-                }
+                });
+                console.log(response);
+                setVmList(response.data); // API 응답 데이터를 상태에 저장
             } catch (error) {
-                setError('VM 목록을 가져오는데 실패했습니다.');
-                alert(error);
+                setError('VM 목록을 가져오는데 실패했습니다.'); // 에러 발생 시 메시지 설정
+                alert('VM 목록을 가져오는데 실패했습니다.');
             }
         };
-        fetchVMList();
+        fetchVMList(); // 컴포넌트 마운트 시 API 호출
     }, []);
-
 
     // 연장 요청 처리 함수
     const handleExtendRequest = (vmName: string) => {
@@ -182,20 +145,20 @@ const ListVM: React.FC = () => {
             <Table>
                 <thead>
                 <tr>
-                    <Th>VM 이름</Th><Th>status</Th><Th>Spec</Th><Th>Image</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장
+                    <Th>VM 이름</Th><Th>Status</Th><Th>Spec</Th><Th>Image</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장
                     요청</Th><Th>삭제 요청</Th>
                 </tr>
                 </thead>
                 <tbody>
-                {vmList.map((vm) => (
-                    <tr key={vm.id}>
-                        <Td>{vm.name}</Td>
+                {vmList.map((vm, index) => (
+                    <tr key={index}>
+                        <Td>{vm.instance_name}</Td> {/* API의 필드에 맞춰 수정 */}
                         <Td>{vm.status}</Td>
-                        <Td>{vm.spec}</Td>
-                        <Td>{vm.os}</Td>
-                        <Td>{vm.publicIp}</Td>
-                        <Td>{vm.startDate}</Td>
-                        <Td>{vm.endDate}</Td>
+                        <Td>{vm.flavor_name}</Td>
+                        <Td>{vm.image_name}</Td>
+                        <Td>{vm.floating_ip}</Td>
+                        <Td>{vm.start_date}</Td>
+                        <Td>{vm.end_date}</Td>
                         <Td>
                             <Button
                                 onClick={() => handleExtendRequest(vm.name)} // 연장 요청 버튼 클릭 시 호출
