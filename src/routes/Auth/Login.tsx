@@ -118,7 +118,9 @@ const Login: React.FC = () => {
     // 타이머 훅 사용
     const { timer, resetTimer, stopTimer } = useTimer(INITIAL_TIMER_SECONDS);
 
-    // Mock Adapter 테스트 코드
+
+
+    // // Mock Adapter 테스트 코드
     // const mock = new MockAdapter(axios);
     // mock.onPost(`${API_BASE_URL}/send_sms/`).reply(200, {
     //     message: '인증번호가 전송되었습니다.',
@@ -157,10 +159,7 @@ const Login: React.FC = () => {
 
         setError('');
         try {
-            const response = await axios.post(`${API_BASE_URL}/send_sms/`,
-                { phone_number: phoneNumber },  // 요청 데이터
-                { withCredentials: true }  // 자격 증명 옵션 추가
-            );
+            const response = await axios.post(`${API_BASE_URL}/send_sms/`, { phone_number: phoneNumber });
             console.log(response.data);
             setIsCodeSent(true);
             setVerificationStatus({ ...verificationStatus, sent: true });
@@ -172,7 +171,7 @@ const Login: React.FC = () => {
         }
     };
 
-    //TODO: 인증번호 검증 함수
+    // 인증번호 검증 함수
     const handleVerifyCode = async () => {
         if (verificationCode.length !== VERIFICATION_CODE_LENGTH) {
             setVerificationStatus({ sent: true, verified: false, message: '인증번호가 잘못되었습니다.' });
@@ -180,13 +179,10 @@ const Login: React.FC = () => {
         }
 
         try {
-            const response = await axios.post(`${API_BASE_URL}/verify_sms/`,
-                {
-                    phone_number: phoneNumber,
-                    auth_code: verificationCode,
-                },  // 요청 데이터
-                { withCredentials: true }  // 자격 증명 옵션 추가
-            );
+            const response = await axios.post(`${API_BASE_URL}/verify_sms/`, {
+                phone_number: phoneNumber,
+                auth_code: verificationCode,
+            });
 
             // 코드 다듬기 필요!!
             if (response.data.message === "Verification successful, proceed to signup") {
