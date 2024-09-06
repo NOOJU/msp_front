@@ -9,7 +9,7 @@ import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
 // 매직넘버 상수로 관리
-const INITIAL_TIMER_SECONDS = 800; // 5분
+const INITIAL_TIMER_SECONDS = 300; // 5분
 const PHONE_NUMBER_LENGTH = 11;
 const VERIFICATION_CODE_LENGTH = 6;
 
