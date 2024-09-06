@@ -114,11 +114,17 @@ const Login: React.FC = () => {
     });
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅 사용
     const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState); // recoil을 통한 로그인 상태 전역 관리
+    const [isExpired, setIsExpired] = useState(false); // 인증 시간 만료 여부 상태
 
     // 타이머 훅 사용
     const { timer, resetTimer, stopTimer } = useTimer(INITIAL_TIMER_SECONDS);
 
-
+    useEffect(() => {
+        if (timer === 0) {
+            setIsExpired(true); // 인증 시간 만료로 설정
+            stopTimer(); // 타이머 정지
+        }
+    }, [timer]);
 
     // // Mock Adapter 테스트 코드
     // const mock = new MockAdapter(axios);
@@ -158,6 +164,7 @@ const Login: React.FC = () => {
         }
 
         setError('');
+        setIsExpired(false); // 재전송 시 만료 상태 초기화
         try {
             const response = await axios.post(`${API_BASE_URL}/send_sms/`, { phone_number: phoneNumber });
             console.log(response.data);
@@ -237,6 +244,7 @@ const Login: React.FC = () => {
             {verificationStatus.sent && (
                 <>
                     <Timer>{`남은 시간: ${Math.floor(timer / 60)}:${timer % 60 < 10 ? '0' : ''}${timer % 60}`}</Timer>
+                    {isExpired && <ErrorMessage>인증 시간이 만료되었습니다. 재전송해주세요.</ErrorMessage>}
                     <FormGroup>
                         <Label>인증번호</Label>
                         <Input
@@ -244,9 +252,10 @@ const Login: React.FC = () => {
                             value={verificationCode}
                             onChange={handleVerificationCodeChange}
                             placeholder="인증번호를 입력하세요"
+                            disabled={isExpired} // 만료 시 입력 필드 비활성화
                         />
                     </FormGroup>
-                    <Button onClick={handleVerifyCode}>
+                    <Button onClick={handleVerifyCode} disabled={isExpired}>
                         인증하기
                     </Button>
                     {verificationStatus.message && (
