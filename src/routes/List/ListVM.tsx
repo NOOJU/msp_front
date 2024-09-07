@@ -87,10 +87,10 @@ const ListVM: React.FC = () => {
     // // Mock Adapter 테스트 코드
     // const mock = new MockAdapter(axios);
     // const mockData = [
-    //     { id: '1', name: 'Web1', status: '완료', spec: '2core-4gb', os: 'Ubuntu 20.04', publicIp: '192.168.0.1', startDate: '2024-07-07', endDate: '2024-08-12' },
-    //     { id: '2', name: 'Web2', status: '대기', spec: '4core-8gb', os: 'Ubuntu 22.04', publicIp: '192.168.0.2', startDate: '2024-02-01', endDate: '2024-08-31' },
+    //     { instance_name: 'Web1', status: '완료', flavor_name: '2core-4gb', image_name: 'Ubuntu 20.04', floating_ip: '192.168.0.1', start_date: '2024-07-07', end_date: '2024-08-12' },
+    //     { instance_name: 'Web2', status: '대기', flavor_name: '4core-8gb', image_name: 'Ubuntu 22.04', floating_ip: '192.168.0.2', start_date: '2024-02-01', end_date: '2024-08-31' },
     // ];
-    // mock.onGet(`${API_BASE_URL}/vmlist`).reply(200, mockData);
+    // mock.onGet(`${API_BASE_URL}/user_instances`).reply(200, mockData);
 
 
     // 실제 API 호출을 사용하는 경우
@@ -113,15 +113,15 @@ const ListVM: React.FC = () => {
     }, []);
 
     // 연장 요청 처리 함수
-    const handleExtendRequest = (vmName: string) => {
-        navigate(`/extendrequest/${vmName}`);
-        // alert(`${vmName}에 대한 연장 요청이 처리되었습니다.`);
+    const handleExtendRequest = (instance_name: string) => {
+        navigate(`/extendrequest?instance_name=${instance_name}`);
+        // alert(`${instance_name}에 대한 연장 요청이 처리되었습니다.`);
     };
 
     // 삭제 요청 처리 함수
-    const handleDeleteRequest = (vmName: string) => {
+    const handleDeleteRequest = (instance_name: string) => {
         //삭제 로직 구현 필요!!
-        alert(`${vmName}에 대한 삭제 요청이 처리되었습니다.`);
+        alert(`${instance_name}에 대한 삭제 요청이 처리되었습니다.`);
     };
 
     // 버튼 비활성화 여부를 결정하는 함수
@@ -137,22 +137,22 @@ const ListVM: React.FC = () => {
 
     return (
         <Container>
-            <Title>Virtual Machine 목록</Title>
+            <Title>가상 머신 목록</Title>
             <ButtonContainer>
                 <CreateButton to="/apply">VM 생성 요청</CreateButton>
-                <CreateButton to="/supportrequest">기타 요청 사항</CreateButton>
+                <CreateButton to="/supportrequest">기타 요청</CreateButton>
             </ButtonContainer>
             <Table>
                 <thead>
                 <tr>
-                    <Th>VM 이름</Th><Th>Status</Th><Th>Spec</Th><Th>Image</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장
-                    요청</Th><Th>삭제 요청</Th>
+                    <Th>이름</Th><Th>Status</Th><Th>Spec</Th><Th>Image</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장
+                </Th><Th>삭제</Th>
                 </tr>
                 </thead>
                 <tbody>
                 {vmList.map((vm, index) => (
                     <tr key={index}>
-                        <Td>{vm.instance_name}</Td> {/* API의 필드에 맞춰 수정 */}
+                        <Td>{vm.instance_name}</Td>
                         <Td>{vm.status}</Td>
                         <Td>{vm.flavor_name}</Td>
                         <Td>{vm.image_name}</Td>
@@ -161,7 +161,7 @@ const ListVM: React.FC = () => {
                         <Td>{vm.end_date}</Td>
                         <Td>
                             <Button
-                                onClick={() => handleExtendRequest(vm.name)} // 연장 요청 버튼 클릭 시 호출
+                                onClick={() => handleExtendRequest(vm.instance_name)} // 연장 요청 버튼 클릭 시 호출
                                 disabled={isButtonDisabled(vm.endDate)} // 종료일이 일주일 이상 남았는지 확인하여 버튼 비활성화 여부 결정
                             >
                                 연장 요청
@@ -169,7 +169,7 @@ const ListVM: React.FC = () => {
                         </Td>
                         <Td>
                             <Button
-                                onClick={() => handleDeleteRequest(vm.name)} // 삭제 요청 버튼 클릭 시 호출
+                                onClick={() => handleDeleteRequest(vm.instance_name)} // 삭제 요청 버튼 클릭 시 호출
                                 disabled={isButtonDisabled(vm.endDate)} // 종료일이 일주일 이상 남았는지 확인하여 버튼 비활성화 여부 결정
                             >
                                 삭제 요청
