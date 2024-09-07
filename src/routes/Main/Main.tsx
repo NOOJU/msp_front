@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Logout } from '../Auth/Logout'; // useLogout 훅을 임포트
 
 const Container = styled.div`
-    max-width: 400px;
+    max-width: 450px;
     margin: 2em auto;
     padding: 2em;
     background-color: #f8f9fa;
@@ -53,9 +53,9 @@ const Main: React.FC = () => {
 
     return (
         <Container>
-            <Title>메인 페이지</Title>
+            <Title>가상머신 신청 서비스</Title>
             <ButtonLink to="/userinfo">
-                <Button>사용자 정보</Button>
+                <Button>내 정보</Button>
             </ButtonLink>
             <ButtonLink to="/listvm">
                 <Button>Virtual Machine</Button>
