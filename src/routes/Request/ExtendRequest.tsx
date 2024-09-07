@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; // useLocation으로 쿼리 파라미터 가져오기
 import styled from 'styled-components';
 import axios from 'axios';
 import { API_BASE_URL2 } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
+// 스타일 컴포넌트 정의
 const Container = styled.div`
     max-width: 400px;
     margin: 2em auto;
@@ -63,14 +64,39 @@ const Button = styled.button`
     }
 `;
 
+const FixedInstanceName = styled.div`
+    padding: 0.5em;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    color: #495057;
+`;
+
+// URL 쿼리 파라미터를 파싱하는 함수
+const useQuery = () => {
+    return new URLSearchParams(useLocation().search);
+};
+
+// ExtendRequest 컴포넌트 정의
 const ExtendRequest: React.FC = () => {
-    const { vmName } = useParams<{ vmName: string }>(); // URL 파라미터에서 vmName 가져오기
+    const query = useQuery(); // 쿼리 파라미터를 가져옴
+    const instanceNameFromQuery = query.get('instance_name'); // instance_name 파라미터 가져오기
+
     const [formData, setFormData] = useState({
-        vmName: vmName || '', // URL 파라미터로 받은 vmName을 기본값으로 설정
+        instance_name: instanceNameFromQuery || '', // 쿼리 파라미터로 받은 instance_name을 기본값으로 설정
         endDate: '',
         extensionReason: '',
     });
 
+    useEffect(() => {
+        // 쿼리 파라미터로 받은 instance_name을 상태에 반영
+        setFormData(prevState => ({
+            ...prevState,
+            instance_name: instanceNameFromQuery || '', // instance_name이 없으면 빈 문자열 사용
+        }));
+    }, [instanceNameFromQuery]);
+
+    // 입력 필드 변경 처리 함수
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prevState => ({
@@ -79,6 +105,7 @@ const ExtendRequest: React.FC = () => {
         }));
     };
 
+    // 폼 제출 처리 함수
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
@@ -100,7 +127,7 @@ const ExtendRequest: React.FC = () => {
             <form onSubmit={handleSubmit}>
                 <FormGroup>
                     <Label>VM 이름</Label>
-                    <Input type="text" name="vmName" value={formData.vmName} onChange={handleChange} required />
+                    <FixedInstanceName>{formData.instance_name}</FixedInstanceName>
                 </FormGroup>
                 <FormGroup>
                     <Label>연장 기간 기준</Label>

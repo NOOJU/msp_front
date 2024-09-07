@@ -79,7 +79,7 @@ const UserInfo: React.FC = () => {
 
     return (
         <Container>
-            <Title>사용자 정보</Title>
+            <Title>내 정보</Title>
             <InfoTable>
                 <tbody>
                 <TableRow>
