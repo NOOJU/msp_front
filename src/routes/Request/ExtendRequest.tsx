@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom'; // useLocation으로 쿼리 파라미터 가져오기
+import { useLocation, useNavigate } from 'react-router-dom'; // useLocation으로 쿼리 파라미터 가져오기
 import styled from 'styled-components';
 import axios from 'axios';
 import { API_BASE_URL2 } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
@@ -79,6 +79,7 @@ const useQuery = () => {
 
 // ExtendRequest 컴포넌트 정의
 const ExtendRequest: React.FC = () => {
+    const navigate = useNavigate();
     const query = useQuery(); // 쿼리 파라미터를 가져옴
     const instanceNameFromQuery = query.get('instance_name'); // instance_name 파라미터 가져오기
 
@@ -109,12 +110,13 @@ const ExtendRequest: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${API_BASE_URL2}/extend-request`, formData, {
+            const response = await axios.post(`${API_BASE_URL2}/extend_pr`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
             alert('연장 요청이 성공적으로 제출되었습니다.');
+            navigate('/listvm')
         } catch (error) {
             console.error(error);
             alert('연장 요청 제출에 실패했습니다.');
