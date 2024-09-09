@@ -5,6 +5,10 @@ import dayjs from 'dayjs'; // dayjs 임포트하여 날짜 비교에 사용
 import { Link, useNavigate } from 'react-router-dom'; // Link 컴포넌트 임포트
 import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
+import { useRecoilState, useRecoilValue } from 'recoil'; // Recoil 훅 추가
+import { vmListState } from '../../recoil/vmListState'; // Recoil 상태 (VM 목록)
+import { requestStatusState, fetchRequestStatusSelector } from '../../recoil/requestStatusState'; // Recoil 상태 (신청 상태)
+
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
 
@@ -81,6 +85,7 @@ const CreateButton = styled(Link)`
 // List 컴포넌트 정의
 const ListVM: React.FC = () => {
     const [vmList, setVmList] = useState<any[]>([]); // VM 목록을 저장할 상태 변수
+    const requestStatus = useRecoilValue(fetchRequestStatusSelector); // 신청 상태를 Recoil selector로 가져오기
     const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태 변수
     const navigate = useNavigate();
 
@@ -145,14 +150,14 @@ const ListVM: React.FC = () => {
             <Table>
                 <thead>
                 <tr>
-                    <Th>이름</Th><Th>Status</Th><Th>Spec</Th><Th>Image</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장
-                </Th><Th>삭제</Th>
+                    <Th>이름</Th><Th>신청 상태</Th><Th>Status</Th><Th>Spec</Th><Th>Image</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장</Th><Th>삭제</Th>
                 </tr>
                 </thead>
                 <tbody>
                 {vmList.map((vm, index) => (
                     <tr key={index}>
                         <Td>{vm.instance_name}</Td>
+                        <Td>{requestStatus[vm.instance_name] || ''}</Td> {/* 신청 상태가 없으면 빈 문자열로 표시 */}
                         <Td>{vm.status}</Td>
                         <Td>{vm.flavor_name}</Td>
                         <Td>{vm.image_name}</Td>
@@ -161,16 +166,16 @@ const ListVM: React.FC = () => {
                         <Td>{vm.end_date}</Td>
                         <Td>
                             <Button
-                                onClick={() => handleExtendRequest(vm.instance_name)} // 연장 요청 버튼 클릭 시 호출
-                                disabled={isButtonDisabled(vm.endDate)} // 종료일이 일주일 이상 남았는지 확인하여 버튼 비활성화 여부 결정
+                                onClick={() => handleExtendRequest(vm.instance_name)}
+                                disabled={isButtonDisabled(vm.end_date)} // 종료일에 따른 버튼 비활성화 여부 결정
                             >
                                 연장 요청
                             </Button>
                         </Td>
                         <Td>
                             <Button
-                                onClick={() => handleDeleteRequest(vm.instance_name)} // 삭제 요청 버튼 클릭 시 호출
-                                disabled={isButtonDisabled(vm.endDate)} // 종료일이 일주일 이상 남았는지 확인하여 버튼 비활성화 여부 결정
+                                onClick={() => handleDeleteRequest(vm.instance_name)}
+                                disabled={isButtonDisabled(vm.end_date)} // 종료일에 따른 버튼 비활성화 여부 결정
                             >
                                 삭제 요청
                             </Button>
