@@ -293,10 +293,10 @@ const Apply: React.FC = () => {
                     <Select name="vmimage" value={formData.vmimage} onChange={handleChange}
                             isValid={errors.vmimage === ''}>
                         <option value="" disabled>옵션을 선택해 주세요</option>
-                        <option value="centos 9">CentOS 9</option>
-                        <option value="ubuntu 20.04">Ubuntu 20.04</option>
-                        <option value="ubuntu 22.04">Ubuntu 22.04</option>
-                        <option value="ubuntu 24.04">Ubuntu 24.04</option>
+                        <option value="CentOS Stream 9">CentOS 9</option>
+                        <option value="Ubuntu 20.04">Ubuntu 20.04</option>
+                        <option value="Ubuntu 22.04">Ubuntu 22.04</option>
+                        <option value="Ubuntu 24.04">Ubuntu 24.04</option>
                     </Select>
                     {errors.vmimage && <ErrorMessage>{errors.vmimage}</ErrorMessage>}
                 </FormGroup>
