@@ -3,8 +3,7 @@ import axios from 'axios'; // axios 임포트 (현재는 사용되지 않지만,
 import styled from 'styled-components'; // styled-components 임포트
 import dayjs from 'dayjs'; // dayjs 임포트하여 날짜 비교에 사용
 import { Link, useNavigate } from 'react-router-dom'; // Link 컴포넌트 임포트
-import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
-
+import { API_BASE_URL, API_BASE_URL2 } from '../../config';  // config.ts 파일에서 API_BASE_URL2 가져오기
 import { useRecoilState, useRecoilValue } from 'recoil'; // Recoil 훅 추가
 import { vmListState } from '../../recoil/vmListState'; // Recoil 상태 (VM 목록)
 import { requestStatusState, fetchRequestStatusSelector } from '../../recoil/requestStatusState'; // Recoil 상태 (신청 상태)
@@ -91,12 +90,22 @@ const ListVM: React.FC = () => {
 
     // // Mock Adapter 테스트 코드
     // const mock = new MockAdapter(axios);
+    // // 목 데이터 설정 (requestStatus 추가)
     // const mockData = [
     //     { instance_name: 'Web1', status: '완료', flavor_name: '2core-4gb', image_name: 'Ubuntu 20.04', floating_ip: '192.168.0.1', start_date: '2024-07-07', end_date: '2024-08-12' },
     //     { instance_name: 'Web2', status: '대기', flavor_name: '4core-8gb', image_name: 'Ubuntu 22.04', floating_ip: '192.168.0.2', start_date: '2024-02-01', end_date: '2024-08-31' },
     // ];
+    // // 목 API 응답 설정
     // mock.onGet(`${API_BASE_URL}/user_instances`).reply(200, mockData);
-
+    // // 신청 상태 목 데이터 설정 (requestStatus)
+    // const requestStatusMockData = {
+    //     Web1: '승인됨',
+    //     Web2: '대기중',
+    // };
+    // // 목 API로 신청 상태를 반환하도록 설정
+    // mock.onGet(`${API_BASE_URL2}/request_status`).reply(200, requestStatusMockData);
+    // // 실제 API 호출이 아닌 목 데이터를 사용하여 상태를 설정
+    // setVmList(mockData); // VM 목록 상태 설정
 
     // 실제 API 호출을 사용하는 경우
     useEffect(() => {
