@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'; // React와 훅 임포트
+import React, {useEffect, useState} from 'react'; // React와 훅 임포트
 import axios from 'axios'; // axios 임포트 (현재는 사용되지 않지만, 실제 API 사용 시 필요)
 import styled from 'styled-components'; // styled-components 임포트
 import dayjs from 'dayjs'; // dayjs 임포트하여 날짜 비교에 사용
-import { Link, useNavigate } from 'react-router-dom'; // Link 컴포넌트 임포트
-import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
+import {Link, useNavigate} from 'react-router-dom'; // Link 컴포넌트 임포트
+import {API_BASE_URL} from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
@@ -87,8 +87,26 @@ const ListVM: React.FC = () => {
     // // Mock Adapter 테스트 코드
     // const mock = new MockAdapter(axios);
     // const mockData = [
-    //     { instance_name: 'Web1', status: '완료', flavor_name: '2core-4gb', image_name: 'Ubuntu 20.04', floating_ip: '192.168.0.1', start_date: '2024-07-07', end_date: '2024-08-12' },
-    //     { instance_name: 'Web2', status: '대기', flavor_name: '4core-8gb', image_name: 'Ubuntu 22.04', floating_ip: '192.168.0.2', start_date: '2024-02-01', end_date: '2024-08-31' },
+    //     {
+    //         instance_name: 'Web1',
+    //         csp: 'Kakaocloud', // Kakaocloud로 설정된 VM
+    //         status: '완료',
+    //         flavor_name: '2core-4gb',
+    //         image_name: 'Ubuntu 20.04',
+    //         floating_ip: '192.168.0.1',
+    //         start_date: '2024-07-07',
+    //         end_date: '2024-08-12',
+    //     },
+    //     {
+    //         instance_name: 'Web2',
+    //         csp: '', // 빈 값
+    //         status: '대기',
+    //         flavor_name: '4core-8gb',
+    //         image_name: 'Ubuntu 22.04',
+    //         floating_ip: '192.168.0.2',
+    //         start_date: '2024-02-01',
+    //         end_date: '2024-08-31',
+    //     }
     // ];
     // mock.onGet(`${API_BASE_URL}/user_instances`).reply(200, mockData);
 
@@ -145,13 +163,16 @@ const ListVM: React.FC = () => {
             <Table>
                 <thead>
                 <tr>
-                    <Th>이름</Th><Th>Status</Th><Th>Spec</Th><Th>Image</Th><Th>Public IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장
+                    <Th>CSP</Th><Th>VM 이름</Th><Th>상태</Th><Th>유형</Th><Th>이미지</Th><Th>Public
+                    IP</Th><Th>시작일</Th><Th>종료일</Th><Th>연장
                 </Th><Th>삭제</Th>
                 </tr>
                 </thead>
                 <tbody>
                 {vmList.map((vm, index) => (
                     <tr key={index}>
+                        {/*CSP 항목이 백엔드에서 제공되지 않을 경우 '-'로 표시*/}
+                        <Td>{vm.csp || '-'}</Td>
                         <Td>{vm.instance_name}</Td>
                         <Td>{vm.status}</Td>
                         <Td>{vm.flavor_name}</Td>
