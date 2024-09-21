@@ -3,7 +3,7 @@ import axios from 'axios'; // axios를 임포트
 import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
 import styled from 'styled-components'; // styled-components를 임포트
 import { useRecoilState } from 'recoil';
-import { LoginState } from '../../recoil/authAtom';
+import { LoginState, UserInfoState } from '../../recoil/authAtom';
 import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
@@ -114,6 +114,7 @@ const Login: React.FC = () => {
     });
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅 사용
     const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState); // recoil을 통한 로그인 상태 전역 관리
+    const [userInfo, setUserInfo] = useRecoilState(UserInfoState); // 사용자 정보 저장을 위한 Recoil 상태 추가
     const [isExpired, setIsExpired] = useState(false); // 인증 시간 만료 여부 상태
 
     // 타이머 훅 사용
@@ -126,15 +127,21 @@ const Login: React.FC = () => {
         }
     }, [timer]);
 
-    // // Mock Adapter 테스트 코드
+    // Mock Adapter 테스트 코드
+    // // MockAdapter 설정
     // const mock = new MockAdapter(axios);
+    //
+    // // Mock 데이터 설정: 인증번호 전송 응답
     // mock.onPost(`${API_BASE_URL}/send_sms/`).reply(200, {
     //     message: '인증번호가 전송되었습니다.',
     // });
+    //
+    // // Mock 데이터 설정: 인증번호 검증 응답
     // mock.onPost(`${API_BASE_URL}/verify_sms/`).reply(200, {
     //     token: 'mocked_token',
+    //     student_number: '2020123456',  // 테스트용 학번 (Mock)
+    //     email: 'test@student.university.com',  // 테스트용 이메일 (Mock)
     //     message: 'Login successful'
-    //     // message: 'Verification successful, proceed to signup'
     // });
 
 
@@ -205,6 +212,17 @@ const Login: React.FC = () => {
 
                 if (response.data.message === "Login successful") {
                     setIsLoggedIn(true);
+
+                    // 학번과 이메일 전역 상태 저장
+                    setUserInfo({
+                        studentNumber: response.data.student_number, // 서버에서 받은 학번
+                        email: response.data.email                  // 서버에서 받은 이메일
+                    });
+
+                    // 확인용 콘솔 로그 추가
+                    console.log('학번:', response.data.student_number);
+                    console.log('이메일:', response.data.email);
+
                     // 등록된 사용자라면 main 페이지로 이동
                     navigate('/main');
                 }
