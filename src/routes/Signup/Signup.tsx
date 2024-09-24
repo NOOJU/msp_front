@@ -3,8 +3,9 @@ import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
-import { LoginState } from '../../recoil/authAtom';
+import { LoginState, UserInfoState } from '../../recoil/authAtom';
 import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
+import { jwtDecode } from 'jwt-decode';
 
 // 스타일 컴포넌트
 const Container = styled.div`
@@ -63,6 +64,8 @@ const Signup: React.FC = () => {
     const location = useLocation(); // 현재 URL 정보를 가져오기 위한 훅
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState); // Recoil을 통한 로그인 상태 전역 관리
+    const [userInfo, setUserInfo] = useRecoilState(UserInfoState); // 사용자 정보 저장을 위한 Recoil 상태 추가
+
 
     // URL에서 쿼리 파라미터 추출
     const queryParams = new URLSearchParams(location.search);
@@ -126,11 +129,38 @@ const Signup: React.FC = () => {
             const response = await axios.post(`${API_BASE_URL}/signup/`, formData, {
                 withCredentials: true, // 쿠키가 포함되도록 설정
             });
-            setSuccess('회원가입에 성공했습니다!');
-            setError(null);
-            console.log('Form Data Submitted:', response.data);
-            setIsLoggedIn(true); // 로그인 전역 상태 관리
-            navigate('/main'); // 회원가입 성공 시 /main 경로로 이동
+
+            if (response.data.access_token) {
+                setSuccess('회원가입에 성공했습니다!');
+                setError(null);
+                console.log('Form Data Submitted:', response.data);
+                console.log(response);
+
+                // JWT 토큰 디코딩
+                const decodedToken: { sub: string; email: string } = jwtDecode(response.data.access_token);
+                const { sub: student_number, email } = decodedToken; // 토큰에서 학번과 이메일 추출
+
+                // 학번과 이메일 전역 상태 저장 (Recoil state)
+                setUserInfo({
+                    student_number: student_number, // 서버에서 받은 학번
+                    email: email                    // 서버에서 받은 이메일
+                });
+
+                // 확인용 콘솔 로그
+                console.log('학번:', student_number);
+                console.log('이메일:', email);
+
+                // 액세스 토큰을 localStorage에 저장
+                localStorage.setItem('access_token', response.data.access_token);
+
+
+                // 회원가입 성공 메시지가 있으면 로그인 상태를 true로 설정
+                if (response.data.message === "Signup successful") {
+                    setIsLoggedIn(true);
+                    // 등록된 사용자라면 main 페이지로 이동
+                    navigate('/main');
+                }
+            }
         } catch (error) {
             setError('회원가입에 실패했습니다. 다시 시도해 주세요.');
             setSuccess(null);
