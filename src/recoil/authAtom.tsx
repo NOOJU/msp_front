@@ -17,7 +17,7 @@ export const LoginState = atom<boolean>({
 export const UserInfoState = atom({
     key: 'UserInfoState',
     default: {
-        studentNumber: '',
+        student_number: '',
         email: ''
     },
     effects_UNSTABLE: [persistAtom], // 상태 유지

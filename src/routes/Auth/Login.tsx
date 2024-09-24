@@ -5,6 +5,7 @@ import styled from 'styled-components'; // styled-components를 임포트
 import { useRecoilState } from 'recoil';
 import { LoginState, UserInfoState } from '../../recoil/authAtom';
 import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
+import { jwtDecode } from 'jwt-decode';
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
@@ -138,7 +139,7 @@ const Login: React.FC = () => {
     //
     // // Mock 데이터 설정: 인증번호 검증 응답
     // mock.onPost(`${API_BASE_URL}/verify_sms/`).reply(200, {
-    //     token: 'mocked_token',
+    //     access_token: 'mocked_token',
     //     student_number: '2020123456',  // 테스트용 학번 (Mock)
     //     email: 'test@student.university.com',  // 테스트용 이메일 (Mock)
     //     message: 'Login successful'
@@ -196,6 +197,8 @@ const Login: React.FC = () => {
             const response = await axios.post(`${API_BASE_URL}/verify_sms/`, {
                 phone_number: phoneNumber,
                 auth_code: verificationCode,
+            }, {
+                withCredentials: true, // 쿠키가 포함되도록 설정
             });
 
             // 코드 다듬기 필요!!
@@ -204,24 +207,29 @@ const Login: React.FC = () => {
                 navigate(`/signup?phone_number=${phoneNumber}`);
             }
 
-            if (response.data.token) {
+            if (response.data.access_token) {
                 setVerificationStatus({ sent: true, verified: true, message: '인증 성공' });
                 stopTimer();
-                localStorage.setItem('token', response.data.token);
-                console.log(response);
+
+                // JWT 토큰 디코딩
+                const decodedToken: { sub: string; email: string } = jwtDecode(response.data.access_token);
+                const { sub: student_number, email } = decodedToken; // 토큰에서 학번과 이메일 추출
+
+                // 학번과 이메일 전역 상태 저장 (Recoil state)
+                setUserInfo({
+                    student_number: student_number, // 서버에서 받은 학번
+                    email: email                    // 서버에서 받은 이메일
+                });
+
+                // 디버그용 콘솔 출력
+                console.log('학번:', student_number);
+                console.log('이메일:', email);
+
+                // 토큰 로컬 스토리지에 저장
+                localStorage.setItem('access_token', response.data.access_token);
 
                 if (response.data.message === "Login successful") {
                     setIsLoggedIn(true);
-
-                    // 학번과 이메일 전역 상태 저장
-                    setUserInfo({
-                        studentNumber: response.data.student_number, // 서버에서 받은 학번
-                        email: response.data.email                  // 서버에서 받은 이메일
-                    });
-
-                    // 확인용 콘솔 로그 추가
-                    console.log('학번:', response.data.student_number);
-                    console.log('이메일:', response.data.email);
 
                     // 등록된 사용자라면 main 페이지로 이동
                     navigate('/main');
