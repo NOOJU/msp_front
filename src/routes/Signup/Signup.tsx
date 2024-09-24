@@ -73,14 +73,14 @@ const Signup: React.FC = () => {
         student_number: '',
         department: '',
         email: '',
-        contact: phoneNumberFromUrl, // URL 파라미터로 받은 전화번호를 기본값으로 설정
+        phone_number: phoneNumberFromUrl, // URL 파라미터로 받은 전화번호를 기본값으로 설정
     });
 
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [validationErrors, setValidationErrors] = useState({
         email: '',
-        contact: '',
+        phone_number: '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,23 +107,25 @@ const Signup: React.FC = () => {
         e.preventDefault();
 
         const isEmailValid = validateEmail(formData.email);
-        const isPhoneValid = validatePhoneNumber(formData.contact);
+        const isPhoneValid = validatePhoneNumber(formData.phone_number);
 
         if (!isEmailValid || !isPhoneValid) {
             setValidationErrors({
                 email: isEmailValid ? '' : '유효한 이메일 주소를 입력해주세요.',
-                contact: isPhoneValid ? '' : '유효한 전화번호를 입력해주세요.',
+                phone_number: isPhoneValid ? '' : '유효한 전화번호를 입력해주세요.',
             });
             return;
         }
 
         setValidationErrors({
             email: '',
-            contact: '',
+            phone_number: '',
         });
 
         try {
-            const response = await axios.post(`${API_BASE_URL}/signup/`, formData);
+            const response = await axios.post(`${API_BASE_URL}/signup/`, formData, {
+                withCredentials: true, // 쿠키가 포함되도록 설정
+            });
             setSuccess('회원가입에 성공했습니다!');
             setError(null);
             console.log('Form Data Submitted:', response.data);
@@ -191,11 +193,11 @@ const Signup: React.FC = () => {
                         type="tel"
                         id="contact"
                         name="contact"
-                        value={formData.contact}
+                        value={formData.phone_number}
                         onChange={handleChange}
                         required
                     />
-                    {validationErrors.contact && <ErrorMessage>{validationErrors.contact}</ErrorMessage>}
+                    {validationErrors.phone_number && <ErrorMessage>{validationErrors.phone_number}</ErrorMessage>}
                 </FormGroup>
                 <Button type="submit">회원가입</Button>
                 {error && <ErrorMessage>{error}</ErrorMessage>}

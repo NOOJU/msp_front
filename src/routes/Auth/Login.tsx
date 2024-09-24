@@ -196,6 +196,8 @@ const Login: React.FC = () => {
             const response = await axios.post(`${API_BASE_URL}/verify_sms/`, {
                 phone_number: phoneNumber,
                 auth_code: verificationCode,
+            }, {
+                withCredentials: true, // 쿠키가 포함되도록 설정
             });
 
             // 코드 다듬기 필요!!
@@ -207,6 +209,7 @@ const Login: React.FC = () => {
             if (response.data.token) {
                 setVerificationStatus({ sent: true, verified: true, message: '인증 성공' });
                 stopTimer();
+
                 localStorage.setItem('token', response.data.token);
                 console.log(response);
 
