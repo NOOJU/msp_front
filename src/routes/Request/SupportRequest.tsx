@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import botClient from '../../api/botClient';  // botClient를 가져옴 (axios 대신)
 import { API_BASE_URL2 } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 const Container = styled.div`
@@ -79,11 +80,8 @@ const SupportRequest: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${API_BASE_URL2}/support-request`, formData, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
+            // botClient를 사용하여 봇 서버로 POST 요청을 보냄
+            const response = await botClient.post(`/support-request`, formData);
             alert('지원 요청이 성공적으로 제출되었습니다.');
         } catch (error) {
             console.error(error);
