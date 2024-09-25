@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
+import { useRecoilValue } from 'recoil'; // Recoil에서 값을 불러오기 위해 사용
+import { LoginState, UserInfoState } from '../../recoil/authAtom'; // Recoil에서 학번과 이메일 상태를 가져옴
 import {API_BASE_URL2} from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 
@@ -99,6 +101,9 @@ const ErrorMessage = styled.div`
 
 const Apply: React.FC = () => {
     const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅 사용
+    // Recoil에서 학번과 이메일 값을 가져옴
+    const { student_number, email } = useRecoilValue(UserInfoState);
+
     const [formData, setFormData] = useState({
         usage: '',
         applyReason: '',
@@ -217,10 +222,18 @@ const Apply: React.FC = () => {
         }
 
         try {
+
+            // Recoil에서 가져온 student_number와 email을 formData에 추가
+            const extendedFormData = {
+                ...formData,
+                student_number, // 학번
+                email,          // 이메일
+            };
+
             // 서버에 폼 데이터 전송
-            const response = await axios.post(`${API_BASE_URL2}/make_pr`, formData, {
+            const response = await axios.post(`${API_BASE_URL2}/make_pr`, extendedFormData, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
                 }
             });
 
