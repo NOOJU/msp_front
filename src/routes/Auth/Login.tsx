@@ -75,6 +75,13 @@ const Timer = styled.div`
     margin-bottom: 1em;
 `;
 
+const InfoText = styled.p`
+    font-size: 0.85em;
+    color: #6c757d;
+    text-align: center;
+    margin-top: 1.5em;
+`;
+
 // 타이머 훅 구현
 function useTimer(initialSeconds: number) {
     const [timer, setTimer] = useState(initialSeconds);
@@ -252,7 +259,7 @@ const Login: React.FC = () => {
 
     return (
         <Container>
-            <Title>로그인</Title>
+            <Title>휴대폰 번호로 로그인</Title>
             <FormGroup>
                 <Label>휴대폰 번호</Label>
                 <Input
@@ -289,6 +296,9 @@ const Login: React.FC = () => {
                     )}
                 </>
             )}
+            <InfoText>
+                휴대폰 번호 인증 시 자동으로 회원가입 화면으로 넘어갑니다.
+            </InfoText>
         </Container>
     );
 };
