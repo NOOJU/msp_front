@@ -44,10 +44,7 @@ const Home: React.FC = () => (
     <Container>
         <Title>삼육대학교 <br/> 가상머신 사용 신청</Title>
         <ButtonLink to="/login">
-            <Button>로그인</Button>
-        </ButtonLink>
-        <ButtonLink to="/signup">
-            <Button>회원가입</Button>
+            <Button>시작하기</Button>
         </ButtonLink>
     </Container>
 );
