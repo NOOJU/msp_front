@@ -5,6 +5,9 @@ import {authClient} from "../../api/apiClient";
 // import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
+// import { mockTestScenario } from '../../api/apiClient';
+// Mock 설정을 호출하는 위치
+// mockTestScenario();  // Mock 시나리오 실행
 
 // 스타일 컴포넌트
 const Container = styled.div`
