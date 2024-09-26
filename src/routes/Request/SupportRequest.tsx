@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
-import botClient from '../../api/botClient';  // botClient를 가져옴 (axios 대신)
-import { API_BASE_URL2 } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
+import { botClient } from '../../api/apiClient';  // botClient 가져오기 (axios 대신)
+// import { API_BASE_URL2 } from '../../config';
+// import axios from 'axios';
 
 const Container = styled.div`
     max-width: 400px;

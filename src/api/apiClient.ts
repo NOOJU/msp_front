@@ -1,6 +1,12 @@
 import axios from 'axios';
 import { API_BASE_URL, API_BASE_URL2 } from '../config';  // API 주소를 가져옴
 
+// 인증 서버로 요청을 보내기 위한 Axios 인스턴스 생성
+const authClient = axios.create({
+    baseURL: API_BASE_URL,  // 인증 서버의 기본 URL 설정
+    withCredentials: true,  // 쿠키를 포함 (Refresh Token을 포함하여 전송)
+});
+
 // 봇 서버로 요청을 보내기 위한 Axios 인스턴스 생성
 const botClient = axios.create({
     baseURL: API_BASE_URL2,  // 봇 서버의 기본 URL 설정
@@ -14,7 +20,7 @@ botClient.interceptors.request.use(
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;  // Access Token이 있으면 Authorization 헤더에 추가
         }
-        return config;  // 요청 설정을 반환하여 진행
+        return config;
     },
     (error) => Promise.reject(error)  // 요청 에러가 발생하면 그대로 반환
 );
@@ -31,7 +37,7 @@ botClient.interceptors.response.use(
 
             try {
                 // 인증 서버로 새로운 Access Token 발급 요청
-                const response = await axios.post(`${API_BASE_URL}/access_reissue/`, {}, {
+                const response = await authClient.post('/access_reissue/', {}, {
                     withCredentials: true,  // 쿠키에 저장된 Refresh Token을 포함하여 요청
                 });
 
@@ -43,7 +49,7 @@ botClient.interceptors.response.use(
 
                 // 원래의 요청을 봇 서버에 재시도
                 return botClient(originalRequest);
-            } catch (reissueError:any) {
+            } catch (reissueError: any) {
                 if (reissueError.response?.status === 403) {
                     // Refresh Token도 만료된 경우 로그아웃 처리
                     localStorage.removeItem('access_token');  // Access Token 삭제
@@ -57,4 +63,4 @@ botClient.interceptors.response.use(
     }
 );
 
-export default botClient;  // 설정된 botClient를 내보냄
+export { botClient, authClient };  // 설정된 botClient와 authClient를 내보냄
