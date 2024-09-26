@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
-import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
+import {authClient} from "../../api/apiClient";
+// import axios from 'axios';
+// import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 
@@ -50,7 +51,7 @@ const UserInfo: React.FC = () => {
         const fetchUserInfo = async () => {
             try {
                 // 사용자 정보를 가져오는 API 호출
-                const response = await axios.get(`${API_BASE_URL}/user_info`, {
+                const response = await authClient.get(`/user_info`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}` // 토큰을 헤더에 포함
                     }

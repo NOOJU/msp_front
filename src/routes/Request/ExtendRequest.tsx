@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'; // useLocation으로 쿼리 파라미터 가져오기
 import styled from 'styled-components';
-import axios from 'axios';
-import { API_BASE_URL2 } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
+import {botClient} from "../../api/apiClient";
+// import axios from 'axios';
+// import { API_BASE_URL2 } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 // 스타일 컴포넌트 정의
 const Container = styled.div`
@@ -110,7 +111,7 @@ const ExtendRequest: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${API_BASE_URL2}/extend_pr`, formData, {
+            const response = await botClient.post(`/extend_pr`, formData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

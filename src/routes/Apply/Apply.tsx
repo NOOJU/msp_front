@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
 import { useRecoilValue } from 'recoil'; // Recoil에서 값을 불러오기 위해 사용
 import { LoginState, UserInfoState } from '../../recoil/authAtom'; // Recoil에서 학번과 이메일 상태를 가져옴
-import {API_BASE_URL2} from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
+import { botClient } from '../../api/apiClient';  // botClient를 가져옴 (axios 대신)
+// import axios from 'axios';
+// import {API_BASE_URL2} from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 
 const Container = styled.div`
@@ -231,7 +232,7 @@ const Apply: React.FC = () => {
             };
 
             // 서버에 폼 데이터 전송
-            const response = await axios.post(`${API_BASE_URL2}/make_pr`, extendedFormData, {
+            const response = await botClient.post(`/make_pr`, extendedFormData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`
                 }
