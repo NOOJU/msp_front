@@ -3,12 +3,12 @@ import { useRecoilValue } from "recoil";
 import { LoginState } from "../recoil/authAtom";
 
 const ProtectedRoute = () => {
-    const isLogin = useRecoilValue(LoginState);
+    const isLoggedIn = useRecoilValue(LoginState);
     const currentLocation = useLocation();
 
-    console.log(isLogin)
+    // console.log(isLoggedIn) // 디버깅 확인용
 
-    return isLogin ? (
+    return isLoggedIn ? (
         <Outlet />
     ) : (
         <Navigate
