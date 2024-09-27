@@ -15,34 +15,6 @@ const botClient = axios.create({
 });
 
 
-// // Mock 테스트 시나리오 함수
-// export const mockTestScenario = () => {
-//     console.log('Mock Test 실행');
-//
-//     // Mock 설정
-//     const mock = new MockAdapter(authClient);
-//
-//     // 401 에러 반환하여 액세스 토큰 만료 시나리오 모의
-//     mock.onGet('/user_info').reply(401, () => {
-//         console.log('[Mock] 액세스 토큰 만료됨 (401 에러)');
-//         return { message: 'Access token expired' };
-//     });
-//
-//     // 리프레시 토큰을 사용해 새로운 액세스 토큰 발급 시나리오 모의
-//     mock.onPost('/access_reissue').reply(200, {
-//         access_token: 'new_mocked_access_token',  // 모의 새로운 액세스 토큰
-//         message: 'New access token issued'
-//     }, () => {
-//         console.log('[Mock] 새로운 액세스 토큰 발급됨');
-//     });
-//
-//     // 리프레시 토큰도 만료된 경우를 모의 (403 에러)
-//     mock.onPost('/access_reissue').reply(403, () => {
-//         console.log('[Mock] 리프레시 토큰 만료됨 (403 에러)');
-//         return { message: 'Refresh token expired' };
-//     });
-// };
-
 
 // 요청 인터셉터: 모든 봇 서버 요청에 Access Token 추가
 botClient.interceptors.request.use(
@@ -66,7 +38,7 @@ botClient.interceptors.response.use(
         // Access Token 만료로 인한 401 에러 처리
         if (error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;  // 무한 재시도를 방지하기 위해 플래그 설정
-            console.log('액세스 토큰 만료 새로운 토큰 발급 요청 중');
+            console.log('액세스 토큰 만료, 새로운 토큰 발급 요청 중');
 
             try {
                 // 인증 서버로 새로운 Access Token 발급 요청
@@ -99,3 +71,58 @@ botClient.interceptors.response.use(
 );
 
 export { botClient, authClient };  // 설정된 botClient와 authClient를 내보냄
+
+
+
+// // Mock 테스트 시나리오 함수
+// export const mockTestScenario = async () => {
+//     console.log('Mock Test 실행');
+//
+//     // Mock 설정
+//     const mockBot = new MockAdapter(botClient);
+//     const mockAuth = new MockAdapter(authClient);
+//
+//     // 1. 401 에러 시나리오 설정 (액세스 토큰 만료)
+//     mockBot.onPost('/make_pr').replyOnce(401, {
+//         message: 'Access token expired',
+//     });
+//
+//     // 2. 새로운 토큰 발급 시나리오 설정 (/access_reissue)
+//     mockAuth.onPost('/access_reissue').reply(200, {
+//         access_token: 'new_mocked_access_token',
+//     });
+//
+//     // 3. 새로운 토큰으로 재시도된 /make_pr 요청에 대한 성공 응답
+//     mockBot.onPost('/make_pr').reply(200, {
+//         message: 'PR created successfully',
+//     });
+//
+//     // 테스트 진행
+//     try {
+//         // 요청 로직
+//         await botClient.post('/make_pr', { data: 'example' });
+//     } catch (error) {
+//         // 에러 타입 가드
+//         if (axios.isAxiosError(error)) {
+//             // AxiosError 타입일 때 처리
+//             if (error.response?.status === 401) {
+//                 console.log('401 에러 발생: 토큰 만료');
+//
+//                 // 토큰 재발급 요청
+//                 const reissueResponse = await authClient.post('/access_reissue');
+//                 const newAccessToken = reissueResponse.data.access_token;
+//
+//                 // 새로운 토큰 저장 및 재시도
+//                 localStorage.setItem('access_token', newAccessToken);
+//                 botClient.defaults.headers['Authorization'] = `Bearer ${newAccessToken}`;
+//
+//                 // 원래 요청 재시도
+//                 const retryResponse = await botClient.post('/make_pr', { data: 'example' });
+//                 console.log('재시도 성공:', retryResponse.data);
+//             }
+//         } else {
+//             // 다른 에러 처리
+//             console.error('알 수 없는 에러 발생:', error);
+//         }
+//     }
+// };
