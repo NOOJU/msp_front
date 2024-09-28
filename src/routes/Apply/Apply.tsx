@@ -3,9 +3,13 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom'; // useNavigate를 임포트
 import { useRecoilValue } from 'recoil'; // Recoil에서 값을 불러오기 위해 사용
 import { LoginState, UserInfoState } from '../../recoil/authAtom'; // Recoil에서 학번과 이메일 상태를 가져옴
-import { botClient } from '../../api/apiClient';  // botClient를 가져옴 (axios 대신)
+import { botClient } from '../../api/botClient';  // botClient를 가져옴 (axios 대신)
 // import axios from 'axios';
 // import {API_BASE_URL2} from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
+
+import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
+// Mock 설정을 호출하는 위치
+// mockTestScenario();  // Mock 시나리오 실행
 
 
 const Container = styled.div`
@@ -232,11 +236,7 @@ const Apply: React.FC = () => {
             };
 
             // 서버에 폼 데이터 전송
-            const response = await botClient.post(`/make_pr`, extendedFormData, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                }
-            });
+            const response = await botClient.post(`/make_pr`, extendedFormData);
 
             if (response.status === 200) {
                 alert('제출 완료되었습니다.');

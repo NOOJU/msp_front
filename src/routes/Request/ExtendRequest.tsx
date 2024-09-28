@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'; // useLocation으로 쿼리 파라미터 가져오기
 import styled from 'styled-components';
-import {botClient} from "../../api/apiClient";
+import {botClient} from "../../api/botClient";
 // import axios from 'axios';
 // import { API_BASE_URL2 } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
@@ -111,11 +111,7 @@ const ExtendRequest: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await botClient.post(`/extend_pr`, formData, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
+            const response = await botClient.post(`/extend_pr`, formData);
             alert('연장 요청이 성공적으로 제출되었습니다.');
             navigate('/listvm')
         } catch (error) {

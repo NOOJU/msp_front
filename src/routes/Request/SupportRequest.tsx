@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { botClient } from '../../api/apiClient';  // botClient 가져오기 (axios 대신)
+import { botClient } from '../../api/botClient';  // botClient 가져오기 (axios 대신)
 // import { API_BASE_URL2 } from '../../config';
 // import axios from 'axios';
 

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {authClient} from "../../api/apiClient";
+import {authClient} from "../../api/authClient";
 // import axios from 'axios';
 // import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
-import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
+// import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
 // import { mockTestScenario } from '../../api/apiClient';
-// Mock 설정을 호출하는 위치
+// // Mock 설정을 호출하는 위치
 // mockTestScenario();  // Mock 시나리오 실행
 
 // 스타일 컴포넌트
@@ -54,12 +54,8 @@ const UserInfo: React.FC = () => {
         const fetchUserInfo = async () => {
             try {
                 // 사용자 정보를 가져오는 API 호출
-                const response = await authClient.get(`/user_info`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}` // 토큰을 헤더에 포함
-                    }
-                });
-                console.log(response);
+                const response = await authClient.get(`/user_info`);
+                console.log(response);  // 디버깅용
                 setUserInfo(response.data); // API 응답 데이터를 상태에 저장
             } catch (error) {
                 console.error('Error fetching user info:', error); // 에러 로그 출력
@@ -92,7 +88,7 @@ const UserInfo: React.FC = () => {
                 </TableRow>
                 <TableRow>
                     <TableHeader>전화번호</TableHeader>
-                    <TableCell>{userInfo.contact}</TableCell>
+                    <TableCell>{userInfo.phone_number}</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableHeader>이메일</TableHeader>
