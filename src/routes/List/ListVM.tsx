@@ -2,7 +2,11 @@ import React, {useEffect, useState} from 'react'; // React와 훅 임포트
 import styled from 'styled-components'; // styled-components 임포트
 import dayjs from 'dayjs'; // dayjs 임포트하여 날짜 비교에 사용
 import {Link, useNavigate} from 'react-router-dom'; // Link 컴포넌트 임포트
-import {authClient} from "../../api/apiClient";
+import {botClient} from "../../api/botClient";
+import {useRecoilValue} from 'recoil';
+import {UserInfoState} from '../../recoil/authAtom';
+
+
 // import axios from 'axios'; // axios 임포트 (현재는 사용되지 않지만, 실제 API 사용 시 필요)
 // import {API_BASE_URL} from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
@@ -81,8 +85,11 @@ const CreateButton = styled(Link)`
 
 // List 컴포넌트 정의
 const ListVM: React.FC = () => {
+    const [statusList, setStatusList] = useState<any[]>([]); // 신청 목록을 저장할 상태 변수
     const [vmList, setVmList] = useState<any[]>([]); // VM 목록을 저장할 상태 변수
     const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태 변수
+    const userInfo = useRecoilValue(UserInfoState);  // Recoil atom에서 전체 값 가져오기
+    const studentNumber = userInfo.student_number;  // student_number만 선택적으로 사용
     const navigate = useNavigate();
 
     // // Mock Adapter 테스트 코드
@@ -114,21 +121,42 @@ const ListVM: React.FC = () => {
 
     // 실제 API 호출을 사용하는 경우
     useEffect(() => {
-        const fetchVMList = async () => {
+        const fetchStatusList = async (student_number: number) => {
             try {
-                const response = await authClient.get(`/user_instances`, {  // 학번 디코딩 및 삽입 구현 필요
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}` // 토큰을 헤더에 포함
+                const response = await botClient.get(`/admin_status/`, {
+                    params: {
+                        student_number: student_number,
                     }
                 });
-                console.log(response);
-                setVmList(response.data); // API 응답 데이터를 상태에 저장
+                console.log(response);  // 디버깅용
+                setStatusList(response.data); // API 응답 데이터를 상태에 저장
             } catch (error) {
-                setError('VM 목록을 가져오는데 실패했습니다.'); // 에러 발생 시 메시지 설정
-                alert('VM 목록을 가져오는데 실패했습니다.');
+                console.error('Error fetching status List:', error); // 에러 로그 출력
+                setError('신청 목록을 가져오는데 실패했습니다.'); // 에러 발생 시 메시지 설정
+                // alert('신청 목록을 가져오는데 실패했습니다.');
             }
         };
-        fetchVMList(); // 컴포넌트 마운트 시 API 호출
+
+
+        const fetchVMList = async (student_number: number) => {
+            try {
+                const response = await botClient.get(`/user_instances`, {
+                    params: {
+                        student_number: student_number,
+                    }
+                });
+                console.log(response);  // 디버깅용
+                setVmList(response.data); // API 응답 데이터를 상태에 저장
+            } catch (error) {
+                console.error('Error fetching VM List:', error); // 에러 로그 출력
+                setError('VM 목록을 가져오는데 실패했습니다.'); // 에러 발생 시 메시지 설정
+                // alert('VM 목록을 가져오는데 실패했습니다.');
+            }
+        };
+        if (studentNumber) {  // 학번이 존재하는 경우에만 API 요청을 보냄
+            fetchVMList(studentNumber);
+            fetchStatusList(studentNumber);
+        }
     }, []);
 
     // 연장 요청 처리 함수
@@ -161,6 +189,21 @@ const ListVM: React.FC = () => {
                 <CreateButton to="/apply">VM 생성 요청</CreateButton>
                 <CreateButton to="/supportrequest">기타 요청</CreateButton>
             </ButtonContainer>
+            <Table>
+                <thead>
+                <tr>
+                    <Th>VM 이름</Th><Th>신청 상태</Th>
+                </tr>
+                </thead>
+                <tbody>
+                {statusList.map((st, index) => (
+                    <tr key={index}>
+                        <Td>{st.vmName}</Td>
+                        <Td>{st.status}</Td>
+                    </tr>
+                ))}
+                </tbody>
+            </Table>
             <Table>
                 <thead>
                 <tr>
