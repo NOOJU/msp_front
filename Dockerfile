@@ -15,11 +15,11 @@ RUN npm run build
 FROM nginx:alpine
 
 # 5. Nginx 설정 파일 복사
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
 
 # 6. 인증서 파일 복사
-COPY ./nginx/selfsigned.crt /etc/nginx/ssl/selfsigned.crt
-COPY ./nginx/selfsigned.key /etc/nginx/ssl/selfsigned.key
+COPY ./selfsigned.crt /etc/nginx/ssl/selfsigned.crt
+COPY ./selfsigned.key /etc/nginx/ssl/selfsigned.key
 
 # 7. 빌드된 React 앱 복사
 COPY --from=build /app/build /usr/share/nginx/html
