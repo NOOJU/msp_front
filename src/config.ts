@@ -1,6 +1,7 @@
 // 인증서버 로직
-export const API_BASE_URL = "https://61.109.237.118:9000";
+// export const API_BASE_URL = "https://61.109.237.118:9000";
 // export const API_BASE_URL = "http://localhost:8000";
+export const API_BASE_URL = "https://api.syucloud.store";
 
 
 // 봇서버 로직
