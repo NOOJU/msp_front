@@ -115,7 +115,7 @@ const ListVM: React.FC = () => {
     useEffect(() => {
         const fetchVMList = async () => {
             try {
-                const response = await axios.get(`${API_BASE_URL}/user_instances`, {  // 학번 디코딩 및 삽입 구현 필요
+                const response = await axios.get(`${API_BASE_URL}/user_instances/`, {  // 학번 디코딩 및 삽입 구현 필요
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}` // 토큰을 헤더에 포함
                     }
