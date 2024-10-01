@@ -135,7 +135,7 @@ const Login: React.FC = () => {
         }
     }, [timer]);
 
-    // Mock Adapter 테스트 코드
+
     // // MockAdapter 설정
     // const mock = new MockAdapter(axios);
     //
@@ -147,8 +147,6 @@ const Login: React.FC = () => {
     // // Mock 데이터 설정: 인증번호 검증 응답
     // mock.onPost(`${API_BASE_URL}/verify_sms/`).reply(200, {
     //     access_token: 'mocked_token',
-    //     student_number: '2020123456',  // 테스트용 학번 (Mock)
-    //     email: 'test@student.university.com',  // 테스트용 이메일 (Mock)
     //     message: 'Login successful'
     // });
 
