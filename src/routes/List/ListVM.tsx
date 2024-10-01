@@ -141,7 +141,7 @@ const ListVM: React.FC = () => {
 
         const fetchVMList = async (student_number: number) => {
             try {
-                const response = await botClient.get(`/user_instances`, {
+                const response = await botClient.get(`/user_instances/`, {
                     params: {
                         student_number: student_number,
                     }
