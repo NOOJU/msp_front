@@ -37,7 +37,7 @@ authClient.interceptors.response.use(
 
             try {
                 // 인증 서버로 새로운 Access Token 발급 요청
-                const response = await axios.post(`${API_BASE_URL}/access_reissue/`, {}, {
+                const response = await axios.post(`${API_BASE_URL}/refresh/access_reissue/`, {}, {
                     withCredentials: true,  // 쿠키에 저장된 Refresh Token을 포함하여 요청
                 });
 
