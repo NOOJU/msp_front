@@ -5,6 +5,7 @@ import MockAdapter from 'axios-mock-adapter';  // axios-mock-adapter
 // 인증 서버로 요청을 보내기 위한 Axios 인스턴스 생성
 const authClient = axios.create({
     baseURL: API_BASE_URL,  // 인증 서버의 기본 URL 설정
+    withCredentials: false,  // 쿠키를 포함하지 않음 (Refresh Token은 포함하지 않음)
     // withCredentials: true,  // 쿠키를 포함 (Refresh Token을 포함하여 전송)
 });
 

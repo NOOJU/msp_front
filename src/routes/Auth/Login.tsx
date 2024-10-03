@@ -201,10 +201,7 @@ const Login: React.FC = () => {
         try {
             const response = await axios.post(`${API_BASE_URL}/verify_sms/`, {
                 phone_number: phoneNumber,
-                auth_code: verificationCode,
-            }, {
-                withCredentials: true, // 쿠키가 포함되도록 설정
-            });
+                auth_code: verificationCode,});
 
             // 코드 다듬기 필요!!
             if (response.data.message === "Verification successful, proceed to signup") {
