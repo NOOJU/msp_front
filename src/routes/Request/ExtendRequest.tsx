@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'; // useLocation으로 쿼리 파라미터 가져오기
+import { useRecoilValue } from 'recoil'; // Recoil에서 값을 불러오기 위해 사용
+import { UserInfoState } from '../../recoil/authAtom'; // Recoil에서 학번과 이메일 상태를 가져옴
 import styled from 'styled-components';
-import {botClient} from "../../api/botClient";
+import { botClient } from "../../api/botClient";
 // import axios from 'axios';
 // import { API_BASE_URL2 } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
@@ -83,15 +85,28 @@ const ExtendRequest: React.FC = () => {
     const navigate = useNavigate();
     const query = useQuery(); // 쿼리 파라미터를 가져옴
     const instanceNameFromQuery = query.get('instance_name'); // instance_name 파라미터 가져오기
+    const { student_number, email } = useRecoilValue(UserInfoState);  // Recoil에서 학번과 이메일 값을 가져옴
+
 
     const [formData, setFormData] = useState({
         instance_name: instanceNameFromQuery || '', // 쿼리 파라미터로 받은 instance_name을 기본값으로 설정
         endDate: '',
         extensionReason: '',
+        studentNumber: '',
     });
 
+    // student_number 값이 변경되면 formData를 업데이트
     useEffect(() => {
-        // 쿼리 파라미터로 받은 instance_name을 상태에 반영
+        if (student_number) {
+            setFormData((prevState) => ({
+                ...prevState,
+                studentNumber: student_number,  // Recoil에서 가져온 student_number를 업데이트
+            }));
+        }
+    }, [student_number]);
+
+    // 쿼리 파라미터로 받은 instance_name을 상태에 반영
+    useEffect(() => {
         setFormData(prevState => ({
             ...prevState,
             instance_name: instanceNameFromQuery || '', // instance_name이 없으면 빈 문자열 사용

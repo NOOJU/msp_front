@@ -167,9 +167,18 @@ const ListVM: React.FC = () => {
     };
 
     // 삭제 요청 처리 함수
-    const handleDeleteRequest = (instance_name: string) => {
-        //삭제 로직 구현 필요!!
-        alert(`${instance_name}에 대한 삭제 요청이 처리되었습니다.`);
+    const handleDeleteRequest = async (instance_name: string, student_number: number) => {
+        try {
+            const response = await botClient.post('/delete_pr', {
+                vm_name: instance_name,  // 삭제할 VM 이름
+                studentNumber: student_number  // 학번
+            });
+            console.log(response.data.message);  // 디버깅용 서버 응답 확인
+            alert(`${instance_name}에 대한 삭제 요청이 처리되었습니다.`);
+        } catch (error) {
+            console.error('삭제 요청 중 에러 발생:', error); // 디버깅
+            alert('삭제 요청을 처리하는 도중 오류가 발생했습니다.');
+        }
     };
 
     // 버튼 비활성화 여부를 결정하는 함수
@@ -235,7 +244,7 @@ const ListVM: React.FC = () => {
                         </Td>
                         <Td>
                             <Button
-                                onClick={() => handleDeleteRequest(vm.instance_name)} // 삭제 요청 버튼 클릭 시 호출
+                                onClick={() => handleDeleteRequest(vm.instance_name, userInfo.student_number)} // 삭제 요청 버튼 클릭 시 호출
                                 disabled={isButtonDisabled(vm.endDate)} // 종료일이 일주일 이상 남았는지 확인하여 버튼 비활성화 여부 결정
                             >
                                 삭제 요청
