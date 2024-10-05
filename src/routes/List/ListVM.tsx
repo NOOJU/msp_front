@@ -173,9 +173,9 @@ const ListVM: React.FC = () => {
     };
 
     // 버튼 비활성화 여부를 결정하는 함수
-    const isButtonDisabled = (endDate: string) => {
+    const isButtonDisabled = (end_Date: string) => {
         const today = dayjs(); // 현재 날짜
-        const end = dayjs(endDate); // 종료일
+        const end = dayjs(end_Date); // 종료일
         return end.diff(today, 'day') > 7; // 종료일이 일주일 이상 남았는지 확인
     };
 
@@ -228,7 +228,7 @@ const ListVM: React.FC = () => {
                         <Td>
                             <Button
                                 onClick={() => handleExtendRequest(vm.instance_name)} // 연장 요청 버튼 클릭 시 호출
-                                disabled={isButtonDisabled(vm.endDate)} // 종료일이 일주일 이상 남았는지 확인하여 버튼 비활성화 여부 결정
+                                disabled={isButtonDisabled(vm.end_date)} // 종료일이 일주일 이상 남았는지 확인하여 버튼 비활성화 여부 결정
                             >
                                 연장 요청
                             </Button>
@@ -236,7 +236,7 @@ const ListVM: React.FC = () => {
                         <Td>
                             <Button
                                 onClick={() => handleDeleteRequest(vm.instance_name)} // 삭제 요청 버튼 클릭 시 호출
-                                disabled={isButtonDisabled(vm.endDate)} // 종료일이 일주일 이상 남았는지 확인하여 버튼 비활성화 여부 결정
+                                disabled={isButtonDisabled(vm.end_date)} // 종료일이 일주일 이상 남았는지 확인하여 버튼 비활성화 여부 결정
                             >
                                 삭제 요청
                             </Button>
