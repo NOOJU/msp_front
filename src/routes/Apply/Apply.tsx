@@ -119,6 +119,7 @@ const Apply: React.FC = () => {
         inboundRule: '',
         outboundRule: '',
         additionalRequest: '',
+        csp: '',
     });
 
     const [agree, setAgree] = useState(false);
@@ -132,6 +133,7 @@ const Apply: React.FC = () => {
         inboundRule: '',
         outboundRule: '',
         additionalRequest: '',
+        csp: '',
     });
 
     // 필드 이름을 사용자에게 친숙한 이름으로 매핑하는 객체
@@ -211,7 +213,7 @@ const Apply: React.FC = () => {
         let hasError = false;
 
         // 필수 필드만 유효성 검사 (additionalRequest 제외)
-        const requiredFields = ['usage', 'applyReason', 'vmName', 'vmimage', 'vmSpec', 'vmVolume', 'inboundRule', 'outboundRule'];
+        const requiredFields = ['usage', 'applyReason', 'vmName', 'vmimage', 'vmSpec', 'vmVolume', 'inboundRule', 'outboundRule', 'csp'];
 
         requiredFields.forEach((key) => {
             if (formData[key as keyof typeof formData].trim() === '') {
@@ -282,6 +284,14 @@ const Apply: React.FC = () => {
                         isValid={errors.vmName === ''}
                     />
                     {errors.vmName && <ErrorMessage>{errors.vmName}</ErrorMessage>}
+                </FormGroup>
+                <FormGroup>
+                    <Label>CSP 선택</Label>
+                    <Select name="csp" value={formData.csp} onChange={handleChange} isValid={errors.csp === ''}>
+                        <option value="" disabled>옵션을 선택해 주세요</option>
+                        <option value="KakaoCloud">KakaoCloud</option>
+                    </Select>
+                    {errors.csp && <ErrorMessage>{errors.csp}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
                     <Label>스펙</Label>
