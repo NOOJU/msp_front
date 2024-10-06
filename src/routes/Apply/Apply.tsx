@@ -136,6 +136,8 @@ const Apply: React.FC = () => {
         csp: '',
     });
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     // 필드 이름을 사용자에게 친숙한 이름으로 매핑하는 객체
     const fieldNames: { [key: string]: string } = {
         usage: '사용 목적',
@@ -228,6 +230,8 @@ const Apply: React.FC = () => {
             return;
         }
 
+        setIsSubmitting(true); // 제출 중 상태로 변경하여 버튼 비활성화
+
         try {
 
             // Recoil에서 가져온 student_number와 email을 formData에 추가
@@ -250,6 +254,8 @@ const Apply: React.FC = () => {
         } catch (error) {
             console.error(error);
             alert('신청 제출에 실패했습니다.');
+        } finally {
+            setIsSubmitting(false); // 요청 완료 후 버튼 활성화
         }
     };
 
@@ -275,6 +281,14 @@ const Apply: React.FC = () => {
                     {errors.applyReason && <ErrorMessage>{errors.applyReason}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
+                    <Label>CSP 선택</Label>
+                    <Select name="csp" value={formData.csp} onChange={handleChange} isValid={errors.csp === ''}>
+                        <option value="" disabled>옵션을 선택해 주세요</option>
+                        <option value="KakaoCloud">KakaoCloud</option>
+                    </Select>
+                    {errors.csp && <ErrorMessage>{errors.csp}</ErrorMessage>}
+                </FormGroup>
+                <FormGroup>
                     <Label>VM 이름</Label>
                     <Input
                         type="text"
@@ -284,14 +298,6 @@ const Apply: React.FC = () => {
                         isValid={errors.vmName === ''}
                     />
                     {errors.vmName && <ErrorMessage>{errors.vmName}</ErrorMessage>}
-                </FormGroup>
-                <FormGroup>
-                    <Label>CSP 선택</Label>
-                    <Select name="csp" value={formData.csp} onChange={handleChange} isValid={errors.csp === ''}>
-                        <option value="" disabled>옵션을 선택해 주세요</option>
-                        <option value="KakaoCloud">KakaoCloud</option>
-                    </Select>
-                    {errors.csp && <ErrorMessage>{errors.csp}</ErrorMessage>}
                 </FormGroup>
                 <FormGroup>
                     <Label>스펙</Label>
@@ -357,7 +363,9 @@ const Apply: React.FC = () => {
                     <CheckBox type="checkbox" checked={agree} onChange={handleAgree} />
                     <Label style={{ display: 'inline' }}>위의 모든 조건에 동의합니다.</Label>
                 </FormGroup>
-                <Button type="submit" disabled={!agree}>제출</Button>
+                <Button type="submit" disabled={!agree || isSubmitting}>
+                    {isSubmitting ? '제출 중...' : '제출'}
+                </Button>
             </form>
         </Container>
     );
