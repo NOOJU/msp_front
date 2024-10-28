@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'; // React와 훅 임포트
 import axios from 'axios'; // axios 임포트 (현재는 사용되지 않지만, 실제 API 사용 시 필요)
-import styled from 'styled-components'; // styled-components 임포트
+import { styled, keyframes } from 'styled-components';
 import dayjs from 'dayjs'; // dayjs 임포트하여 날짜 비교에 사용
 import {Link, useNavigate} from 'react-router-dom'; // Link 컴포넌트 임포트
 import {botClient} from "../../api/botClient";
@@ -12,6 +12,34 @@ import {UserInfoState} from '../../recoil/authAtom';
 // import {API_BASE_URL} from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
 import MockAdapter from 'axios-mock-adapter'; // axios-mock-adapter 임포트
+
+// 로딩 스피너 애니메이션 추가
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const LoadingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+`;
+
+const Spinner = styled.div`
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #007bff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: ${spin} 1s linear infinite;
+`;
 
 
 // 스타일 컴포넌트 정의
@@ -91,6 +119,7 @@ const ListVM: React.FC = () => {
     const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태 변수
     const userInfo = useRecoilValue(UserInfoState);  // Recoil atom에서 전체 값 가져오기
     const studentNumber = userInfo.student_number;  // student_number만 선택적으로 사용
+    const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
     const navigate = useNavigate();
 
     // // Mock Adapter 테스트 코드
@@ -168,6 +197,7 @@ const ListVM: React.FC = () => {
 
     // 삭제 요청 처리 함수
     const handleDeleteRequest = async (instance_name: string, student_number: number) => {
+        setIsLoading(true); // 로딩 상태 시작
         try {
             const response = await botClient.post('/delete_pr', {
                 vm_name: instance_name,  // 삭제할 VM 이름
@@ -178,6 +208,8 @@ const ListVM: React.FC = () => {
         } catch (error) {
             console.error('삭제 요청 중 에러 발생:', error); // 디버깅
             alert('삭제 요청을 처리하는 도중 오류가 발생했습니다.');
+        } finally {
+            setIsLoading(false); // 로딩 상태 종료
         }
     };
 
@@ -254,6 +286,13 @@ const ListVM: React.FC = () => {
                 ))}
                 </tbody>
             </Table>
+
+            {/* 로딩 중일 때 스피너 표시 */}
+            {isLoading && (
+                <LoadingOverlay>
+                    <Spinner />
+                </LoadingOverlay>
+            )}
         </Container>
     );
 };
