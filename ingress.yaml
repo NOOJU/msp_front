@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sanhak-ingress
+  namespace: sanhak
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+    - hosts:
+        - syucloud.store
+        - www.syucloud.store
+      secretName: syucloud-tls
+  rules:
+    - host: syucloud.store
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
+          - path: /auth/
+            pathType: Prefix
+            backend:
+              service:
+                name: auth-service
+                port:
+                  number: 9000
+          - path: /bot/
+            pathType: Prefix
+            backend:
+              service:
+                name: bot-service
+                port:
+                  number: 5000
