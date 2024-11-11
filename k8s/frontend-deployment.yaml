@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: kakao-sw-club.kr-central-2.kcr.dev/sanhak/front:latest
+          image: sanhak.kr-central-2.kcr.dev/sanhak-repo/front:latest
           ports:
             - containerPort: 80
       imagePullSecrets:
