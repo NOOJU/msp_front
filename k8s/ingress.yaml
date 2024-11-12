@@ -4,8 +4,16 @@ metadata:
   name: sanhak-ingress
   namespace: sanhak
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-nginx
+    acme.cert-manager.io/http01-edit-in-place: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-redirect-from: http
+    nginx.ingress.kubernetes.io/proxy-redirect-to: https
+    nginx.ingress.kubernetes.io/proxy-set-headers: "true"
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://syucloud.store, https://www.syucloud.store"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
 spec:
   ingressClassName: nginx
   tls:
