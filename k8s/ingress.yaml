@@ -4,29 +4,30 @@ metadata:
   name: sanhak-ingress
   namespace: sanhak
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-nginx
-    acme.cert-manager.io/http01-edit-in-place: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://syucloud.store https://www.syucloud.store"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://www.syucloud.store"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
-    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type,Authorization,Access-Control-Allow-Origin,Access-Control-Allow-Methods,Access-Control-Allow-Headers,Access-Control-Allow-Credentials"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type, Authorization"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/cors-expose-headers: "Content-Length, Content-Type"
+    nginx.ingress.kubernetes.io/cors-max-age: "86400"
     nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Host $host;
       proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
-    nginx.ingress.kubernetes.io/auth-always-set-cookie: "true"
-    nginx.ingress.kubernetes.io/session-cookie-conditional-samesite-none: "true"
-    nginx.ingress.kubernetes.io/session-cookie-samesite: "None"
-    nginx.ingress.kubernetes.io/proxy-cookie-domain: "syucloud.store www.syucloud.store"
+    nginx.ingress.kubernetes.io/proxy-cookie-domain: "localhost https://www.syucloud.store"
     nginx.ingress.kubernetes.io/proxy-cookie-path: "/ /"
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
     nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/auth-always-set-cookie: "true"
+    nginx.ingress.kubernetes.io/session-cookie-conditional-samesite-none: "true"
+    nginx.ingress.kubernetes.io/session-cookie-samesite: "None"
 spec:
   ingressClassName: nginx
   tls:
