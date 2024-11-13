@@ -22,7 +22,6 @@ metadata:
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
-    nginx.ingress.kubernetes.io/proxy-cookie-domain: "https://www.syucloud.store"
     nginx.ingress.kubernetes.io/proxy-cookie-path: "/ /"
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
