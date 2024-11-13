@@ -12,7 +12,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-prefer-server-ciphers: "on"
 
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://www.syucloud.store"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://syucloud.store"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
     nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
@@ -23,7 +23,6 @@ spec:
   tls:
     - hosts:
         - syucloud.store
-        - www.syucloud.store
       secretName: syucloud-tls
   rules:
     - host: syucloud.store
