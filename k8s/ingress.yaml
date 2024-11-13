@@ -8,6 +8,8 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-origin: "https://www.syucloud.store"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type, Authorization"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -20,7 +22,7 @@ metadata:
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
-    nginx.ingress.kubernetes.io/proxy-cookie-domain: "localhost https://www.syucloud.store"
+    nginx.ingress.kubernetes.io/proxy-cookie-domain: "https://www.syucloud.store"
     nginx.ingress.kubernetes.io/proxy-cookie-path: "/ /"
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
@@ -29,7 +31,7 @@ metadata:
     nginx.ingress.kubernetes.io/session-cookie-conditional-samesite-none: "true"
     nginx.ingress.kubernetes.io/session-cookie-samesite: "None"
 spec:
-  ingressClassName: nginx
+  ingressClassName: "nginx"
   tls:
     - hosts:
         - syucloud.store
