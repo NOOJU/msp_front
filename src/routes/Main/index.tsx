@@ -68,11 +68,9 @@ const Main: React.FC = () => {
                 <span>가상머신</span>
               </div>
               {/* 신청하기 버튼 */}
-              <div className="shadow_15 flexCenter">
-                <span>
-                  <Link to="/apply">신청하기</Link>
-                </span>
-              </div>
+              <Link to="/apply" className="shadow_15 flexCenter">
+                신청하기
+              </Link>
             </div>
             {/* <div></div> 배경화면 */}
           </MainPageSlider1>
@@ -87,11 +85,9 @@ const Main: React.FC = () => {
                 <span style={{ fontSize: isPc ? "7rem" : "3.5rem" }}>로드밸런서</span>
               </div>
               {/* 신청하기 버튼 */}
-              <div className="shadow_15 flexCenter">
-                <span>
-                  <Link to="/apply">신청하기</Link>
-                </span>
-              </div>
+              <Link to="/apply" className="shadow_15 flexCenter">
+                신청하기
+              </Link>
             </div>
             {/* <div></div> 배경화면 */}
           </MainPageSlider1>

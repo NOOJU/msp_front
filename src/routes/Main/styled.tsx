@@ -67,7 +67,7 @@ export const MainPageSlider1 = styled.section`
     font-weight: 700;
   }
 
-  & > div:first-child > div:last-child {
+  & > div:first-child > *:nth-child(2) {
     max-width: 500px;
     width: ${({ theme }) => (theme.isPc ? "28vw" : "75vw")};
     height: ${({ theme }) => (theme.isPc ? "50px" : "50px")};
