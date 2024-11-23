@@ -1,110 +1,90 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { botClient } from '../../api/botClient';  // botClient 가져오기 (axios 대신)
+import React, { useState } from "react";
+import styled, { useTheme } from "styled-components";
+import { botClient } from "../../api/botClient"; // botClient 가져오기 (axios 대신)
 // import { API_BASE_URL2 } from '../../config';
 // import axios from 'axios';
+const SupportRequestMainStyled = styled.section`
+  width: 100%;
+  height: ${({ theme }) => (theme.isPc ? "calc(100vh - 70px)" : "calc(100vh - 115px)")};
+  background-color: ${({ theme }) => (theme.isPc ? ({ theme }) => theme.palette.BgColor : "white")};
 
-const Container = styled.div`
-    max-width: 400px;
-    margin: 2em auto;
-    padding: 2em;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-`;
+  & > section {
+    background-color: white;
+    max-width: ${({ theme }) => (theme.isPc ? "1080px" : "100%")};
+    width: ${({ theme }) => (theme.isPc ? "60%" : "100%")};
+    height: ${({ theme }) => (theme.isPc ? "75%" : "100%")};
+    max-height: ${({ theme }) => (theme.isPc ? "700px" : "100%")};
+    border-radius: ${({ theme }) => (theme.isPc ? "25px" : "0")};
+    padding-bottom: ${({ theme }) => (theme.isPc ? "" : "85px")};
+    position: relative;
+    overflow: auto;
+    display: flex;
+  }
 
-const Title = styled.h1`
-    text-align: center;
-    color: #343a40;
-`;
+  & > section > div {
+    width: 90%;
+  }
 
-const FormGroup = styled.div`
-    margin-bottom: 1em;
-`;
-
-const Label = styled.label`
-    display: block;
-    margin-bottom: 0.5em;
-    color: #495057;
-`;
-
-const Input = styled.input`
+  & p {
+    margin-bottom: 20px;
     width: 100%;
-    padding: 0.5em;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-`;
-
-const TextArea = styled.textarea`
-    width: 100%;
-    padding: 0.75em;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    height: 150px; /* Increased height for more space */
-`;
-
-const Button = styled.button`
-    width: 100%;
-    padding: 0.75em;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-
-    &:hover {
-        background-color: #0056b3;
-    }
-
-    &:disabled {
-        background-color: #6c757d;
-        cursor: not-allowed;
-    }
+  }
 `;
 
 const SupportRequest: React.FC = () => {
-    const [formData, setFormData] = useState({
-        vmName: '',
-        request: '',
-    });
+  const isPc = useTheme().isPc;
+  // const [formData, setFormData] = useState({
+  //   vmName: "",
+  //   request: "",
+  // });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevState) => ({
+  //     ...prevState,
+  //     [name]: value,
+  //   }));
+  // };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            // botClient를 사용하여 봇 서버로 POST 요청을 보냄
-            const response = await botClient.post(`/support-request`, formData);
-            alert('지원 요청이 성공적으로 제출되었습니다.');
-        } catch (error) {
-            console.error(error);
-            alert('지원 요청 제출에 실패했습니다.');
-        }
-    };
+  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   try {
+  //     // botClient를 사용하여 봇 서버로 POST 요청을 보냄
+  //     const response = await botClient.post(`/support-request`, formData);
+  //     alert("지원 요청이 성공적으로 제출되었습니다.");
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert("지원 요청 제출에 실패했습니다.");
+  //   }
+  // };
 
-    return (
-        <Container>
-            <Title>기타 요청 사항</Title>
-            <form onSubmit={handleSubmit}>
-                <FormGroup>
-                    <Label>VM 이름</Label>
-                    <Input type="text" name="vmName" value={formData.vmName} onChange={handleChange} required />
-                </FormGroup>
-                <FormGroup>
-                    <Label>요청 사항</Label>
-                    <TextArea name="request" value={formData.request} onChange={handleChange} required />
-                </FormGroup>
-                <Button type="submit">제출</Button>
-            </form>
-        </Container>
-    );
+  return (
+    <SupportRequestMainStyled className="flexCenter">
+      <section className="flexCenter shadow_25">
+        <div>
+          <p style={{ fontSize: "2.3rem", fontWeight: 700, textAlign: "center" }}>문의사항</p>
+          {/* 안내글과 카카오톡 오픈채팅방 링크 들어갈 자리 */}
+          <div
+            style={{
+              margin: "40px auto",
+              maxWidth: "85%",
+              lineHeight: "180%",
+              marginTop: "40px",
+              padding: isPc ? "3rem" : "1rem",
+              border: "1px solid lightgray",
+              borderRadius: "10px",
+            }}>
+            <p>문의 사항이 있을 경우, 관리자 메일이나 오픈채팅방에 접속하여 질문해주시기 바랍니다. </p>
+            <p style={{ fontWeight: 600 }}>
+              관리자 메일: {!isPc && <br />} wnsdn3366@naver.com
+              <br />
+              오픈채팅방: {!isPc && <br />} <a href="https://open.kakao.com/o/ge0aycgg"> open.kakao.com/o/ge0aycgg</a>
+            </p>
+          </div>
+        </div>
+      </section>
+    </SupportRequestMainStyled>
+  );
 };
 
 export default SupportRequest;
