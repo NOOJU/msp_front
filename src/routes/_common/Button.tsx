@@ -5,7 +5,7 @@ const ButtonStyled = styled.div`
   width: 155px;
   height: 45px;
   text-align: center;
-  line-height: center;
+  line-height: 45px;
   border-radius: 85px;
   font-size: 1rem;
   font-weight: 700;
