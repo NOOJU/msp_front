@@ -58,55 +58,58 @@ const VmListLi = ({ csp, instance_name, status, floating_ip, start_date, end_dat
   };
 
   return (
-    <VmListLiStyled>
-      <div className="flexHeightCenter">
-        {/* CSP */}
-        <p>{csp}</p>
-        {/* 가상머신 이름 */}
-        <p>{instance_name}</p>
-        {/* 상태 */}
-        <p style={{ color: status === "활성화" ? "#549F30" : theme.pointRed }}>{status}</p>
-        {/* 퍼블릭 IP */}
-        <p>{floating_ip || "-"}</p>
-        {/* 시작일 */}
-        <p>{start_date.replace(/(\d{2})(\d{2})년 (\d{2})월 (\d{2})일/, "$2. $3. $4") || "-"}</p>
-        {/* 종료일 */}
-        <p>{end_date.replace(/(\d{2})(\d{2})년 (\d{2})월 (\d{2})일/, "$2. $3. $4") || "-"}</p>
-        {/* 기간연장 */}
-        <p>
-          {status === "활성화" && (
-            <span onClick={handleExtendRequest}>
+      <VmListLiStyled>
+        <div className="flexHeightCenter">
+          {/* CSP */}
+          <p>{csp}</p>
+          {/* 가상머신 이름 */}
+          <p>{instance_name}</p>
+          {/* 상태 */}
+          <p style={{ color: status === "활성화" ? "#549F30" : theme.pointRed }}>{status}</p>
+          {/* 퍼블릭 IP */}
+          <p>{floating_ip || "-"}</p>
+          {/* 시작일 */}
+          <p>{start_date.replace(/(\d{2})(\d{2})년 (\d{2})월 (\d{2})일/, "$2. $3. $4") || "-"}</p>
+          {/* 종료일 */}
+          <p>{end_date.replace(/(\d{2})(\d{2})년 (\d{2})월 (\d{2})일/, "$2. $3. $4") || "-"}</p>
+          {/* 기간연장 */}
+          <p>
+            {status === "활성화" && (
+                <span onClick={handleExtendRequest}>
               <FontAwesomeIcon icon={faCalendar} />
             </span>
-          )}
-          {status !== "활성화" && "-"}
-        </p>
-        {/* 삭제 */}
-        <p>
-          <span onClick={handleDeleteRequest} style={{ color: theme.pointRed }}>
-            <FontAwesomeIcon icon={faTrash} />
-          </span>
-        </p>
-        <p style={{ cursor: "pointer", padding: "5px" }}>
-          {!openState && (
-            <span onClick={() => setOpenState(true)}>
+            )}
+            {status !== "활성화" && "-"}
+          </p>
+          {/* 삭제 */}
+          <p>
+            {status === "활성화" && (
+                <span onClick={handleDeleteRequest} style={{ color: theme.pointRed }}>
+              <FontAwesomeIcon icon={faTrash} />
+            </span>
+            )}
+            {status !== "활성화" && "-"}
+          </p>
+          <p style={{ cursor: "pointer", padding: "5px" }}>
+            {!openState && (
+                <span onClick={() => setOpenState(true)}>
               <FontAwesomeIcon icon={faCaretDown} />
             </span>
-          )}
-          {openState && (
-            <span onClick={() => setOpenState(false)}>
+            )}
+            {openState && (
+                <span onClick={() => setOpenState(false)}>
               <FontAwesomeIcon icon={faCaretUp} />
             </span>
-          )}
-        </p>
-      </div>
-      {openState && (
-        <p className="flexHeightCenter">
-          <span>유형: {flavor_name}</span>
-          <span>이미지: {image_name}</span>
-        </p>
-      )}
-    </VmListLiStyled>
+            )}
+          </p>
+        </div>
+        {openState && (
+            <p className="flexHeightCenter">
+              <span>유형: {flavor_name}</span>
+              <span>이미지: {image_name}</span>
+            </p>
+        )}
+      </VmListLiStyled>
   );
 };
 export default VmListLi;

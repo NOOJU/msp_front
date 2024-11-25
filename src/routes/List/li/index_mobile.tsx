@@ -132,10 +132,12 @@ const VmListMobileLi = ({ csp, instance_name, status, floating_ip, start_date, e
                 <p>이미지</p>
                 <p>{image_name}</p>
             </p>
-            <div>
-                <FontAwesomeIcon icon={faCalendar} className="icon" onClick={handleExtendRequest} />
-                <FontAwesomeIcon icon={faTrash} className="icon red" onClick={handleDeleteRequest} />
-            </div>
+            {status === "활성화" && (
+                <div>
+                    <FontAwesomeIcon icon={faCalendar} className="icon" onClick={handleExtendRequest} />
+                    <FontAwesomeIcon icon={faTrash} className="icon red" onClick={handleDeleteRequest} />
+                </div>
+            )}
         </VmListMobileLiStyled>
     );
 };

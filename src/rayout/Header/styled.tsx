@@ -81,7 +81,7 @@ export const HeaderMoblieBar = styled.div`
   & > ul {
     width: 90%;
     height: 45px;
-    font-size: 1.0rem;
+    font-size: 0.9rem;
     color: #717171;
     justify-content: space-around;
   }
