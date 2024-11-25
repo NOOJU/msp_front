@@ -45,7 +45,7 @@ const Main: React.FC = () => {
   const settings = {
     dots: true, // 도트
     infinite: true, // 무한
-    speed: 1000, // 속도
+    speed: 3000, // 속도
     slidesToShow: 1, // 슬라이드 표시
     slidesToScroll: 1, // 슬라이드로스크롤
     autoplay: true, // 자동재생
@@ -54,59 +54,59 @@ const Main: React.FC = () => {
   };
 
   return (
-    <MainPageStyled>
-      <div className="slider-container">
-        <Slider ref={(slider) => (sliderRef = slider)} {...settings}>
-          {/* 1번 슬라이드 _ 가상머신 생성 */}
-          <MainPageSlider1>
-            <div className="flexCenter">
-              <div>
+      <MainPageStyled>
+        <div className="slider-container">
+          <Slider ref={(slider) => (sliderRef = slider)} {...settings}>
+            {/* 1번 슬라이드 _ 가상머신 생성 */}
+            <MainPageSlider1>
+              <div className="flexCenter">
+                <div>
                 <span>
                   VIRTUAL MACHINE
                   <br />
                 </span>
-                <span>가상머신</span>
+                  <span>가상머신</span>
+                </div>
+                {/* 신청하기 버튼 */}
+                <Link to="/apply" className="shadow_15 flexCenter">
+                  신청하기
+                </Link>
               </div>
-              {/* 신청하기 버튼 */}
-              <Link to="/apply" className="shadow_15 flexCenter">
-                신청하기
-              </Link>
-            </div>
-            {/* <div></div> 배경화면 */}
-          </MainPageSlider1>
-          {/* 2번 슬라이더 _  */}
-          <MainPageSlider1>
-            <div className="flexCenter">
-              <div>
+              {/* <div></div> 배경화면 */}
+            </MainPageSlider1>
+            {/* 2번 슬라이더 _  */}
+            <MainPageSlider1>
+              <div className="flexCenter">
+                <div>
                 <span>
                   LOAD BALANCER
                   <br />
                 </span>
-                <span style={{ fontSize: isPc ? "7rem" : "3.5rem" }}>로드밸런서</span>
+                  <span style={{ fontSize: isPc ? "7rem" : "3.5rem" }}>로드밸런서</span>
+                </div>
+                {/* 신청하기 버튼 */}
+                <Link to="/loadbalancer" className="shadow_15 flexCenter">
+                  신청하기
+                </Link>
               </div>
-              {/* 신청하기 버튼 */}
-              <Link to="/apply" className="shadow_15 flexCenter">
-                신청하기
-              </Link>
-            </div>
-            {/* <div></div> 배경화면 */}
-          </MainPageSlider1>
-        </Slider>
-        {/* 재생 / 정지 버튼 */}
-        <div className="slider-button-div flexCenter shadow_15" style={{ textAlign: "center" }} onClick={onPlay ? pause : play}>
-          {!onPlay && (
-            <button className="button">
-              <FontAwesomeIcon icon={faPlay} className="icon" style={{ paddingLeft: "0.3rem", cursor: "pointer" }} />
-            </button>
-          )}
-          {onPlay && (
-            <button className="button">
-              <FontAwesomeIcon icon={faPause} className="icon" style={{ cursor: "pointer" }} />
-            </button>
-          )}
+              {/* <div></div> 배경화면 */}
+            </MainPageSlider1>
+          </Slider>
+          {/* 재생 / 정지 버튼 */}
+          <div className="slider-button-div flexCenter shadow_15" style={{ textAlign: "center" }} onClick={onPlay ? pause : play}>
+            {!onPlay && (
+                <button className="button">
+                  <FontAwesomeIcon icon={faPlay} className="icon" style={{ paddingLeft: "0.3rem", cursor: "pointer" }} />
+                </button>
+            )}
+            {onPlay && (
+                <button className="button">
+                  <FontAwesomeIcon icon={faPause} className="icon" style={{ cursor: "pointer" }} />
+                </button>
+            )}
+          </div>
         </div>
-      </div>
-    </MainPageStyled>
+      </MainPageStyled>
   );
 };
 
