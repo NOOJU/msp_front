@@ -18,10 +18,17 @@ const LayOutHeader = () => {
   return (
       <HeaderMainStlyed className="flexCenter shadow_25">
         <div className="flexHeightCenter">
-          {!isPc && <p>SYU CloudLAB</p>}
+          {!isPc && (
+              <p>
+                <Link to="/">SYU CloudLAB</Link>
+              </p>
+          )}
           {/** Pc 왼쪽 text 메뉴 */}
           {isPc && (
               <ul className="flexHeightCenter">
+                <li>
+                  <Link to="/">SYU CloudLAB</Link>
+                </li>
                 <li>
                   <Link to="/apply">가상 머신 신청</Link>
                 </li>

@@ -19,26 +19,35 @@ export const HeaderMainStlyed = styled.header`
   }
 
   /* PC 왼쪽 text 메뉴 */
-  & > div:first-child > ul > li {
-    font-size: 1.1rem;
-    padding-right: 1.5rem;
+  /* SYU CloudLAB ( 로고 ) */
+  & > div:first-child > ul > li:first-child {
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding-left: 10px;
+    cursor: pointer;
   }
 
-  & > div:first-child > ul > li {
+  /* & > div:first-child > ul > li {
     font-size: 1.1rem;
+    padding-right: 1.5rem;
+  } */
+
+  & > div:first-child > ul > li {
+    font-size: 1rem;
     margin-right: 2rem;
     padding: 10px 0;
     transition: all 0.2s;
     cursor: pointer;
     user-select: none; /* 텍스트 선택 방지 */
   }
+
   & > div > ul > li:hover {
     font-weight: 700;
   }
 
   /* 오른쪽 icon 메뉴 */
   & > div:first-child > div:last-child > div {
-    width: ${({ theme }) => (theme.isPc ? "70px" : "55px")};
+    width: ${({ theme }) => (theme.isPc ? "70px" : "45px")};
   }
 
   & > div:first-child > div:last-child > div.logoutDiv {
@@ -59,7 +68,7 @@ export const HeaderMainStlyed = styled.header`
 
   /* 모바일: 사이트이름 */
   & > div:first-child > p:first-child {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-weight: 700;
     padding-left: 10px;
   }
@@ -72,7 +81,7 @@ export const HeaderMoblieBar = styled.div`
   & > ul {
     width: 90%;
     height: 45px;
-    font-size: 0.9rem;
+    font-size: 1.0rem;
     color: #717171;
     justify-content: space-around;
   }
