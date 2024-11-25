@@ -11,6 +11,7 @@ import MockAdapter from "axios-mock-adapter"; // axios-mock-adapter 임포트
 import { LoginPadgeMainStlyed } from "./style";
 import Button from "../../_common/Button";
 import TextInput from "../../_common/input/textInput";
+import Loading from "../../_common/loading";
 
 // 매직넘버 상수로 관리
 const INITIAL_TIMER_SECONDS = 299; // 5분
@@ -57,6 +58,7 @@ const Login: React.FC = () => {
     verified: false,
     message: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅 사용
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(LoginState); // recoil을 통한 로그인 상태 전역 관리
@@ -93,18 +95,20 @@ const Login: React.FC = () => {
       setError("유효한 휴대폰 번호를 입력하세요.");
       return;
     }
-
+    setIsLoading(true);
     setError("");
     setIsExpired(false); // 재전송 시 만료 상태 초기화
     try {
       const response = await axios.post(`${API_BASE_URL}/send_sms/`, { phone_number: phoneNumber });
       // console.log(response.data);
       setIsCodeSent(true);
+      setIsLoading(false);
       setVerificationStatus({ ...verificationStatus, sent: true });
       resetTimer();
       alert("인증번호가 전송되었습니다.");
     } catch (error) {
       console.error(error);
+      setIsLoading(false);
       alert("인증번호 전송에 실패했습니다.");
     }
   };
@@ -207,8 +211,8 @@ const Login: React.FC = () => {
     const numbersOnly = value.replace(/\D/g, "");
     if (numbersOnly.length > PHONE_NUMBER_LENGTH) {
       return `${numbersOnly.slice(0, PHONE_NUMBER_LENGTH).slice(0, 3)} - ${numbersOnly.slice(0, PHONE_NUMBER_LENGTH).slice(3, 7)} - ${numbersOnly
-        .slice(0, PHONE_NUMBER_LENGTH)
-        .slice(7)}`;
+          .slice(0, PHONE_NUMBER_LENGTH)
+          .slice(7)}`;
     }
 
     if (numbersOnly.length <= 3) {
@@ -234,98 +238,52 @@ const Login: React.FC = () => {
   };
 
   return (
-    // <Container>
-    //     <Title>휴대폰 번호로 로그인</Title>
-    //     <FormGroup>
-    //         <Label>휴대폰 번호</Label>
-    //         <Input
-    //             type="text"
-    //             value={displayFormattedPhoneNumber(phoneNumber)}
-    //             onChange={handlePhoneNumberChange}
-    //             placeholder="휴대폰 번호를 입력하세요"
-    //             disabled={isCodeSent}
-    //         />
-    //         {error && <ErrorMessage>{error}</ErrorMessage>}
-    //     </FormGroup>
-    //     <Button onClick={handleSendCode}>
-    //         {!verificationStatus.sent ? '본인인증하기' : '재전송'}
-    //     </Button>
-    //     {verificationStatus.sent && (
-    //         <>
-    //             <Timer>{`남은 시간: ${Math.floor(timer / 60)}:${timer % 60 < 10 ? '0' : ''}${timer % 60}`}</Timer>
-    //             {isExpired && <ErrorMessage>인증 시간이 만료되었습니다. 재전송해주세요.</ErrorMessage>}
-    //             <FormGroup>
-    //                 <Label>인증번호</Label>
-    //                 <Input
-    //                     type="text"
-    //                     value={verificationCode}
-    //                     onChange={handleVerificationCodeChange}
-    //                     placeholder="인증번호를 입력하세요"
-    //                     disabled={isExpired} // 만료 시 입력 필드 비활성화
-    //                 />
-    //             </FormGroup>
-    //             <Button onClick={handleVerifyCode} disabled={isExpired}>
-    //                 인증하기
-    //             </Button>
-    //             {verificationStatus.message && (
-    //                 <ErrorMessage>{verificationStatus.message}</ErrorMessage>
-    //             )}
-    //         </>
-    //     )}
-    //     <InfoText>
-    //         휴대폰 번호 인증 시 자동으로 회원가입 화면으로 넘어갑니다.
-    //     </InfoText>
-    // </Container>
-    // const [확인상태, set Verification Status] = useState({
-    //   전송된: false,
-    //   검증됨: false,
-    //   메시지: "",
-    // });
-    <LoginPadgeMainStlyed className="flexCenter">
-      <section className="shadow_25">
-        <div className="shadow_15 flexCenter">
-          <div>
-            <p>Welcome!</p>
-            <span>
-              휴대전화 번호 인증 이후, 계정이 없다면
-              <br />
-              회원가입으로 이동됩니다.
-            </span>
-          </div>
-        </div>
-        <div className="flexCenter">
-          <div>
-            <p>Login</p>
+      <LoginPadgeMainStlyed className="flexCenter">
+        <section className="shadow_25">
+          <div className="shadow_15 flexCenter">
             <div>
-              <div className="flexHeightCenter">
-                <TextInput textInputProps={TextInputOptionPhoneNumber} />
-                <div className="flexCenter" onClick={handleSendCode}>
-                  {!verificationStatus.sent ? "본인 인증" : "재전송"}
-                </div>
-              </div>
-              <TextInput textInputProps={TextInputOptionVerification} />
-              <p>
-                {isExpired && <span className="error">인증 시간 만료</span>}
-                {verificationStatus.message.length === 0 && isCodeSent && !isExpired && !error && (
-                  <span>{`남은 시간: ${Math.floor(timer / 60)}:${timer % 60 < 10 ? "0" : ""}${timer % 60}`}</span>
-                )}
-                {error.length !== 0 && <span className="error">{error}</span>}
-                {verificationStatus.message.length !== 0 && <span className="error">{verificationStatus.message}</span>}
-              </p>
-            </div>
-            {/* 버튼 컴포넌트 */}
-            <div onClick={handleVerifyCode} style={{ paddingTop: "10px" }}>
-              <Button color={theme.palette.pointColor}>LOGIN</Button>
-            </div>
-            <span>
+              <p>Welcome!</p>
+              <span>
               휴대전화 번호 인증 이후, 계정이 없다면
               <br />
               회원가입으로 이동됩니다.
             </span>
+            </div>
           </div>
-        </div>
-      </section>
-    </LoginPadgeMainStlyed>
+          <div className="flexCenter">
+            <div>
+              <p>Login</p>
+              <div>
+                <div className="flexHeightCenter">
+                  <TextInput textInputProps={TextInputOptionPhoneNumber} />
+                  <div className="flexCenter" onClick={handleSendCode} style={{ pointerEvents: isLoading ? "none" : "auto", userSelect: "none" }}>
+                    {!verificationStatus.sent ? "본인 인증" : "재전송"}
+                  </div>
+                </div>
+                <TextInput textInputProps={TextInputOptionVerification} />
+                <p>
+                  {isExpired && <span className="error">인증 시간 만료</span>}
+                  {verificationStatus.message.length === 0 && isCodeSent && !isExpired && !error && (
+                      <span>{`남은 시간: ${Math.floor(timer / 60)}:${timer % 60 < 10 ? "0" : ""}${timer % 60}`}</span>
+                  )}
+                  {error.length !== 0 && <span className="error">{error}</span>}
+                  {verificationStatus.message.length !== 0 && <span className="error">{verificationStatus.message}</span>}
+                </p>
+              </div>
+              {/* 버튼 컴포넌트 */}
+              <div onClick={handleVerifyCode} style={{ paddingTop: "10px" }}>
+                <Button color={theme.palette.pointColor}>LOGIN</Button>
+              </div>
+              <span>
+              휴대전화 번호 인증 이후, 계정이 없다면
+              <br />
+              회원가입으로 이동됩니다.
+            </span>
+            </div>
+          </div>
+        </section>
+        {/* {isLoading && <Loading />} */}
+      </LoginPadgeMainStlyed>
   );
 };
 
