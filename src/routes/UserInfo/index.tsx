@@ -5,6 +5,7 @@ import { userInfoType } from "../../types/pages/userInfo";
 import { UserInfoMainStyled } from "./styled";
 import Button from "../_common/Button";
 import Loading from "../_common/loading";
+import { Logout } from "../Auth/Logout";
 // import axios from 'axios';
 // import { API_BASE_URL } from '../../config';  // config.ts 파일에서 API_BASE_URL 가져오기
 
@@ -19,6 +20,7 @@ const UserInfo: React.FC = () => {
   const [error, setError] = useState<string | null>(null); // 에러 메시지를 저장할 상태 변수
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const theme = useTheme();
+  const logoutHandler = Logout(); // 로그아웃 핸들러 호출
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -39,9 +41,9 @@ const UserInfo: React.FC = () => {
 
   if (error) {
     return (
-      <div style={{ textAlign: "center", height: "80vh" }} className="flexCenter">
-        <div>{error}</div>
-      </div>
+        <div style={{ textAlign: "center", height: "80vh" }} className="flexCenter">
+          <div>{error}</div>
+        </div>
     );
   }
 
@@ -50,36 +52,38 @@ const UserInfo: React.FC = () => {
   }
 
   return (
-    <UserInfoMainStyled className="flexCenter">
-      <section className="shadow_15 flexCenter">
-        <div>
-          <p>My Info</p>
-          <ul>
-            <li className="flexHeightCenter">
-              <p>이름</p>
-              <p>{userInfo.name}</p>
-            </li>
-            <li className="flexHeightCenter">
-              <p>학번</p>
-              <p>{userInfo.student_number}</p>
-            </li>
-            <li className="flexHeightCenter">
-              <p>EMAIL</p>
-              <p>{userInfo.email}</p>
-            </li>
-            <li className="flexHeightCenter">
-              <p>P.N</p>
-              <p>{userInfo.phone_number}</p>
-            </li>
-            <li className="flexHeightCenter">
-              <p>학과</p>
-              <p>{userInfo.department}</p>
-            </li>
-          </ul>
-          <Button color={theme.palette.pointRed}>LOGOUT</Button>
-        </div>
-      </section>
-    </UserInfoMainStyled>
+      <UserInfoMainStyled className="flexCenter">
+        <section className="shadow_15 flexCenter">
+          <div>
+            <p>My Info</p>
+            <ul>
+              <li className="flexHeightCenter">
+                <p>이름</p>
+                <p>{userInfo.name}</p>
+              </li>
+              <li className="flexHeightCenter">
+                <p>학번</p>
+                <p>{userInfo.student_number}</p>
+              </li>
+              <li className="flexHeightCenter">
+                <p>EMAIL</p>
+                <p>{userInfo.email}</p>
+              </li>
+              <li className="flexHeightCenter">
+                <p>P.N</p>
+                <p>{userInfo.phone_number}</p>
+              </li>
+              <li className="flexHeightCenter">
+                <p>학과</p>
+                <p>{userInfo.department}</p>
+              </li>
+            </ul>
+            <div onClick={logoutHandler}>
+              <Button color={theme.palette.pointRed}>LOGOUT</Button>
+            </div>
+          </div>
+        </section>
+      </UserInfoMainStyled>
   );
 };
 
