@@ -245,7 +245,7 @@ const ListVM: React.FC = () => {
                   </div>
                 </li>
                 {vmList.map((item, idx) => (
-                    <VmListLi key={idx} student_number="studentNumber" {...item} />
+                    <VmListLi key={idx} student_number={studentNumber} {...item} />
                 ))}
                 {vmList.length === 0 && !isLoading && (
                     <li style={{ width: "100%", height: "300px" }} className="flexCenter">
@@ -258,7 +258,7 @@ const ListVM: React.FC = () => {
           {!isPc && (
               <ul>
                 {vmList.map((item, idx) => (
-                    <VmListMobileLi key={idx} student_number="studentNumber" {...item} />
+                    <VmListMobileLi key={idx} student_number={studentNumber} {...item} />
                 ))}
               </ul>
           )}
