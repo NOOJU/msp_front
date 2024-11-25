@@ -63,7 +63,7 @@ const ExtendRequestMainStyled = styled.section`
     width: 100%;
     font-size: 2rem;
     margin: ${({ theme }) => (theme.isPc ? "0" : "10% auto")};
-    font-family: "Noto Sans Telugu", sans-serif;
+    font-family: "Noto Sans Telugu", "Apple SD Gothic Neo", sans-serif;
     text-align: center;
   }
 
@@ -160,27 +160,27 @@ const ExtendRequest: React.FC = () => {
   };
 
   return (
-    <ExtendRequestMainStyled className="flexCenter">
-      <section className="shadow_25">
-        <div>
-          <p>가상 머신 연장 신청</p>
-          <TextInput textInputProps={vmNameTextInputProps} />
-          <TextInput textInputProps={endDateTextInputProps} />
-          <div className="text">
-            <p>1회 최대 30일 연장 신청 가능</p>
-            <p>(연장 횟수는 신청 인원, 횟수를 고려함)</p>
-          </div>
-          <TextAreaInput {...TextAreaObjProps} />
+      <ExtendRequestMainStyled className="flexCenter">
+        <section className="shadow_25">
+          <div>
+            <p>가상 머신 연장 신청</p>
+            <TextInput textInputProps={vmNameTextInputProps} />
+            <TextInput textInputProps={endDateTextInputProps} />
+            <div className="text">
+              <p>1회 최대 30일 연장 신청 가능</p>
+              <p>(연장 횟수는 신청 인원, 횟수를 고려함)</p>
+            </div>
+            <TextAreaInput {...TextAreaObjProps} />
 
-          <div className="button">
-            <form onClick={handleSubmit}>
-              <Button color={theme.pointColor}>신청하기</Button>
-            </form>
+            <div className="button">
+              <form onClick={handleSubmit}>
+                <Button color={theme.pointColor}>신청하기</Button>
+              </form>
+            </div>
           </div>
-        </div>
-      </section>
-      {isLoading && <Loading />}
-    </ExtendRequestMainStyled>
+        </section>
+        {isLoading && <Loading />}
+      </ExtendRequestMainStyled>
   );
 };
 
