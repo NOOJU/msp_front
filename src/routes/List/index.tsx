@@ -25,88 +25,88 @@ const ListVM: React.FC = () => {
   const isPc = useTheme().isPc;
 
   // // Mock Adapter 테스트 코드
-  const mock = new MockAdapter(axios);
-  const mockData: vmListTypeProps[] = [
-    {
-      instance_name: "test",
-      status: "활성화",
-      flavor_name: "m2a.large",
-      image_name: "CentOS Stream 9",
-      floating_ip: "210.109.14.112",
-      start_date: "2024년 11월 18일",
-      end_date: "2024년 11월 26일",
-      csp: "KAKAO",
-    },
-    {
-      instance_name: "테스트12",
-      status: "활성화",
-      flavor_name: "m2a.large",
-      image_name: "CentOS Stream 9",
-      floating_ip: "210.109.14.112",
-      start_date: "2024년 11월 18일",
-      end_date: "2024년 11월 29일",
-      csp: "KAKAO",
-    },
-  ];
+  // const mock = new MockAdapter(axios);
+  // const mockData: vmListTypeProps[] = [
+  //   {
+  //     instance_name: "test",
+  //     status: "활성화",
+  //     flavor_name: "m2a.large",
+  //     image_name: "CentOS Stream 9",
+  //     floating_ip: "210.109.14.112",
+  //     start_date: "2024년 11월 18일",
+  //     end_date: "2024년 11월 26일",
+  //     csp: "KAKAO",
+  //   },
+  //   {
+  //     instance_name: "테스트12",
+  //     status: "활성화",
+  //     flavor_name: "m2a.large",
+  //     image_name: "CentOS Stream 9",
+  //     floating_ip: "210.109.14.112",
+  //     start_date: "2024년 11월 18일",
+  //     end_date: "2024년 11월 29일",
+  //     csp: "KAKAO",
+  //   },
+  // ];
   // mock.onGet(`${API_BASE_URL}/user_instances`).reply(200, mockData);
 
-  const testData = [
-    {
-      pr_number: 679,
-      status: "생성 신청",
-      user_email: "[wnsdn3366@naver.com](mailto:wnsdn3366@naver.com)",
-      created_at: "2024-11-18 14:06:37.972339",
-      apply_reason: "1118TEST1",
-      vm_name: "신청1",
-      vm_image: "CentOS Stream 9",
-      inbound_rule: "0:all:0.0.0.0/0",
-      additional_request: "1118TEST1",
-      auto_remove: 1,
-      id: 55,
-      student_number: "2018100942",
-      usage: "School",
-      csp: "KakaoCloud",
-      vm_spec: "m2a.large",
-      vm_volume: 30,
-      outbound_rule: "0:all:0.0.0.0/0",
-      combined_vm_name: "2018100942_1118TEST1",
-    },
-    {
-      pr_number: 679,
-      status: "생성 신청",
-      user_email: "[wnsdn3366@naver.com](mailto:wnsdn3366@naver.com)",
-      created_at: "2024-11-18 14:06:37.972339",
-      apply_reason: "1118TEST1",
-      vm_name: "신청2",
-      vm_image: "CentOS Stream 9",
-      inbound_rule: "0:all:0.0.0.0/0",
-      additional_request: "1118TEST1",
-      auto_remove: 1,
-      id: 55,
-      student_number: "2018100942",
-      usage: "School",
-      csp: "KakaoCloud",
-      vm_spec: "m2a.large",
-      vm_volume: 30,
-      outbound_rule: "0:all:0.0.0.0/0",
-      combined_vm_name: "2018100942_1118TEST1",
-    },
-  ];
+  // const testData = [
+  //   {
+  //     pr_number: 679,
+  //     status: "생성 신청",
+  //     user_email: "[wnsdn3366@naver.com](mailto:wnsdn3366@naver.com)",
+  //     created_at: "2024-11-18 14:06:37.972339",
+  //     apply_reason: "1118TEST1",
+  //     vm_name: "신청1",
+  //     vm_image: "CentOS Stream 9",
+  //     inbound_rule: "0:all:0.0.0.0/0",
+  //     additional_request: "1118TEST1",
+  //     auto_remove: 1,
+  //     id: 55,
+  //     student_number: "2018100942",
+  //     usage: "School",
+  //     csp: "KakaoCloud",
+  //     vm_spec: "m2a.large",
+  //     vm_volume: 30,
+  //     outbound_rule: "0:all:0.0.0.0/0",
+  //     combined_vm_name: "2018100942_1118TEST1",
+  //   },
+  //   {
+  //     pr_number: 679,
+  //     status: "생성 신청",
+  //     user_email: "[wnsdn3366@naver.com](mailto:wnsdn3366@naver.com)",
+  //     created_at: "2024-11-18 14:06:37.972339",
+  //     apply_reason: "1118TEST1",
+  //     vm_name: "신청2",
+  //     vm_image: "CentOS Stream 9",
+  //     inbound_rule: "0:all:0.0.0.0/0",
+  //     additional_request: "1118TEST1",
+  //     auto_remove: 1,
+  //     id: 55,
+  //     student_number: "2018100942",
+  //     usage: "School",
+  //     csp: "KakaoCloud",
+  //     vm_spec: "m2a.large",
+  //     vm_volume: 30,
+  //     outbound_rule: "0:all:0.0.0.0/0",
+  //     combined_vm_name: "2018100942_1118TEST1",
+  //   },
+  // ];
 
-  useEffect(() => {
-    const transformedData: vmListTypeProps[] = testData.map((item) => ({
-      instance_name: item.vm_name,
-      status: "대기", // 고정값
-      flavor_name: item.vm_spec,
-      image_name: item.vm_image,
-      floating_ip: "", // 기본값
-      start_date: "", // 기본값
-      end_date: "", // 기본값
-      csp: item.csp,
-    }));
-
-    setVmList([...mockData, ...transformedData]); // API 응답 데이터를 상태에 저장
-  }, []); // 빈 배열을 넣어 마운트 시 한 번만 실행되도록 설정
+  // useEffect(() => {
+  //   const transformedData: vmListTypeProps[] = testData.map((item) => ({
+  //     instance_name: item.vm_name,
+  //     status: "대기", // 고정값
+  //     flavor_name: item.vm_spec,
+  //     image_name: item.vm_image,
+  //     floating_ip: "", // 기본값
+  //     start_date: "", // 기본값
+  //     end_date: "", // 기본값
+  //     csp: item.csp,
+  //   }));
+  //
+  //   setVmList([...mockData, ...transformedData]); // API 응답 데이터를 상태에 저장
+  // }, []); // 빈 배열을 넣어 마운트 시 한 번만 실행되도록 설정
 
   // 실제 API 호출을 사용하는 경우
   useEffect(() => {
