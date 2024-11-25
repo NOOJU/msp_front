@@ -50,7 +50,8 @@ const Main: React.FC = () => {
   const settings = {
     dots: true, // 도트
     infinite: true, // 무한
-    speed: 4500, // 속도
+    autoplaySpeed: 5000, // 자동 재생 속도
+    speed: 500, // 속도
     slidesToShow: 1, // 슬라이드 표시
     slidesToScroll: 1, // 슬라이드로스크롤
     autoplay: true, // 자동재생
