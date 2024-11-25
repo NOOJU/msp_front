@@ -104,100 +104,167 @@ const ListVM: React.FC = () => {
   //     end_date: "", // 기본값
   //     csp: item.csp,
   //   }));
-  //
+
   //   setVmList([...mockData, ...transformedData]); // API 응답 데이터를 상태에 저장
   // }, []); // 빈 배열을 넣어 마운트 시 한 번만 실행되도록 설정
 
   // 실제 API 호출을 사용하는 경우
+  // useEffect(() => {
+  //   const fetchStatusList = async (student_number: number) => {
+  //     try {
+  //       const response = await botClient.get(`/admin_status/`, {
+  //         params: {
+  //           student_number: student_number,
+  //         },
+  //       });
+  //       console.log(response); // 디버깅용
+  //       const transformedData = response.data.map((item: any) => ({
+  //         instance_name: item.vm_name,
+  //         status: "대기", // 고정값
+  //         flavor_name: item.vm_spec,
+  //         image_name: item.vm_image,
+  //         floating_ip: "", // 기본값
+  //         start_date: "", // 기본값
+  //         end_date: "", // 기본값
+  //         csp: item.csp,
+  //       }));
+  //       // setVmList([...vmList, ...transformedData]); // API 응답 데이터를 상태에 저장
+  //       return transformedData;
+  //     } catch (error) {
+  //       console.error("Error fetching status List:", error); // 에러 로그 출력
+  //     }
+  //   };
+
+  //   const fetchVMList = async (student_number: number) => {
+  //     try {
+  //       const response = await botClient.get(`/user_instances/`, {
+  //         params: {
+  //           student_number: student_number,
+  //         },
+  //       });
+  //       // console.log(response); // 디버깅용
+  //       // setVmList([...vmList, ...response.data]); // API 응답 데이터를 상태에 저장
+  //       return response.data;
+  //     } catch (error) {
+  //       console.error("Error fetching VM List:", error); // 에러 로그 출력
+  //     }
+  //   };
+  //   if (studentNumber) {
+  //     // 학번이 존재하는 경우에만 API 요청을 보냄
+  //     const data1 = fetchVMList(studentNumber);
+  //     const data2 = fetchStatusList(studentNumber);
+
+  //     setVmList([...data1, ...data2]);
+  //   }
+  // }, []);
+
   useEffect(() => {
-    const fetchStatusList = async (student_number: number) => {
+    const fetchData = async () => {
       try {
-        const response = await botClient.get(`/admin_status/`, {
-          params: {
-            student_number: student_number,
-          },
-        });
-        console.log(response); // 디버깅용
-        const transformedData = response.data.map((item: any) => ({
-          instance_name: item.vm_name,
-          status: "대기", // 고정값
-          flavor_name: item.vm_spec,
-          image_name: item.vm_image,
-          floating_ip: "", // 기본값
-          start_date: "", // 기본값
-          end_date: "", // 기본값
-          csp: item.csp,
-        }));
-        setVmList([...vmList, ...transformedData]); // API 응답 데이터를 상태에 저장
+        if (studentNumber) {
+          // 학번이 존재하는 경우에만 API 요청
+          const data1 = await fetchVMList(studentNumber);
+          const data2 = await fetchStatusList(studentNumber);
+
+          // data1과 data2가 없을 경우 빈 배열을 사용하여 상태 업데이트
+          setVmList([
+            ...(data1 || []), // data1이 없으면 빈 배열
+            ...(data2 || []), // data2가 없으면 빈 배열
+          ]);
+        }
       } catch (error) {
-        console.error("Error fetching status List:", error); // 에러 로그 출력
+        console.error("Error fetching data:", error);
       }
     };
 
-    const fetchVMList = async (student_number: number) => {
-      try {
-        const response = await botClient.get(`/user_instances/`, {
-          params: {
-            student_number: student_number,
-          },
-        });
-        console.log(response); // 디버깅용
-        setVmList([...vmList, ...response.data]); // API 응답 데이터를 상태에 저장
-      } catch (error) {
-        console.error("Error fetching VM List:", error); // 에러 로그 출력
-      }
-    };
-    if (studentNumber) {
-      // 학번이 존재하는 경우에만 API 요청을 보냄
-      fetchVMList(studentNumber);
-      fetchStatusList(studentNumber);
+    fetchData();
+  }, [studentNumber]); // studentNumber가 변경되었을 때만 실행
+
+  // fetchStatusList 함수
+  const fetchStatusList = async (student_number: number) => {
+    try {
+      const response = await botClient.get(`/admin_status/`, {
+        params: {
+          student_number: student_number,
+        },
+      });
+      console.log(response); // 디버깅용
+      const transformedData = response.data.map((item: any) => ({
+        instance_name: item.vm_name,
+        status: "대기", // 고정값
+        flavor_name: item.vm_spec,
+        image_name: item.vm_image,
+        floating_ip: "", // 기본값
+        start_date: "", // 기본값
+        end_date: "", // 기본값
+        csp: item.csp,
+      }));
+      return transformedData;
+    } catch (error) {
+      console.error("Error fetching status List:", error);
+      return []; // 에러 발생 시 빈 배열 반환
     }
-  }, []);
+  };
+
+  // fetchVMList 함수
+  const fetchVMList = async (student_number: number) => {
+    try {
+      const response = await botClient.get(`/user_instances/`, {
+        params: {
+          student_number: student_number,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching VM List:", error);
+      return []; // 에러 발생 시 빈 배열 반환
+    }
+  };
 
   // console.log(vmList);
 
   return (
-    <ListVMMainStyled>
-      <section>
-        <p>가상 머신 목록</p>
-        {/* PC */}
+      <ListVMMainStyled>
+        <section>
+          <p>가상 머신 목록</p>
+          {/* PC */}
 
-        {isPc && (
-          <VmListUl>
-            <li>
-              <div className="flexHeightCenter">
-                <p>CSP</p>
-                <p>가상 머신 이름</p>
-                <p>상태</p>
-                <p>Public IP</p>
-                <p>시작일</p>
-                <p>종료일</p>
-                <p>기간 연장</p>
-                <p>삭제</p>
-                <p>상세</p>
-              </div>
-            </li>
-            {vmList.map((item, idx) => (
-              <VmListLi key={idx} student_number="studentNumber" {...item} />
-            ))}
-            {vmList.length === 0 && !isLoading && (
-              <li style={{ width: "100%", height: "300px" }} className="flexCenter">
-                <span>조회된 항목이 없습니다.</span>
-              </li>
-            )}
-          </VmListUl>
-        )}
-        {/* mobile */}
-        {!isPc && (
-          <ul>
-            {vmList.map((item, idx) => (
-              <VmListMobileLi key={idx} student_number="studentNumber" {...item} />
-            ))}
-          </ul>
-        )}
-      </section>
-      {isLoading && <Loading />}
-    </ListVMMainStyled>
+          {isPc && (
+              <VmListUl>
+                <li>
+                  <div className="flexHeightCenter">
+                    <p>CSP</p>
+                    <p>가상 머신 이름</p>
+                    <p>상태</p>
+                    <p>Public IP</p>
+                    <p>시작일</p>
+                    <p>종료일</p>
+                    <p>기간 연장</p>
+                    <p>삭제</p>
+                    <p>상세</p>
+                  </div>
+                </li>
+                {vmList.map((item, idx) => (
+                    <VmListLi key={idx} student_number="studentNumber" {...item} />
+                ))}
+                {vmList.length === 0 && !isLoading && (
+                    <li style={{ width: "100%", height: "300px" }} className="flexCenter">
+                      <span>조회된 항목이 없습니다.</span>
+                    </li>
+                )}
+              </VmListUl>
+          )}
+          {/* mobile */}
+          {!isPc && (
+              <ul>
+                {vmList.map((item, idx) => (
+                    <VmListMobileLi key={idx} student_number="studentNumber" {...item} />
+                ))}
+              </ul>
+          )}
+        </section>
+        {isLoading && <Loading />}
+      </ListVMMainStyled>
   );
 };
 
