@@ -218,8 +218,7 @@ const Signup: React.FC = () => {
         // 회원가입 성공 메시지가 있으면 로그인 상태를 true로 설정
         if (response.data.message === "Signup successful") {
           setIsLoggedIn(true);
-          // 등록된 사용자라면 main 페이지로 이동
-          navigate("/main");
+          navigate("/");
         }
       }
     } catch (error) {
